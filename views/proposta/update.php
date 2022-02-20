@@ -1,3 +1,5 @@
+<?php //$this->beginContent('@app/views/layouts/main_old.php'); ?>
+
 <?php
 
 use yii\helpers\Html;
@@ -7,6 +9,12 @@ use yii\bootstrap\Modal;
 // use kartik\checkbox\CheckboxX;
 use kartik\select2\Select2;
 use kartik\form\ActiveForm;
+
+use deyraka\materialdashboard\widgets\Card;
+use deyraka\materialdashboard\widgets\CardProduct;
+use deyraka\materialdashboard\widgets\CardStats;
+use deyraka\materialdashboard\widgets\Progress;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\SloProposta */
@@ -256,7 +264,7 @@ $this->params['breadcrumbs'][] = 'Editar';
 <style>
     .item1,.item2,.item3,.item4,.item5,.item6,.item7,.item8,.item9,.item10 {
         position:absolute;
-        margin-top:-12px;
+        margin-top:-17px;
         z-index:1;
         height:45px;
         width:45px;
@@ -340,10 +348,10 @@ $this->params['breadcrumbs'][] = 'Editar';
         // }
         // echo '<pre>'.generateRandomString().'</pre>';
     ?>
-    <h3 style="text-align: center">
+    <!-- <h3 style="text-align: center">
         <div class="float-left" style="position: absolute !important; z-index: 1000;"><a href="<?=Yii::$app->homeUrl?>/site/indexlocacao" class="btn btn-primary"><b><i class="fas fa-arrow-left"></i> Voltar</b><br>Propostas</a></div>
         <strong><?= Html::encode($this->title) ?></strong>
-    </h3>
+    </h3> -->
     <div class="row"><br />
         <div class="col-md-1"></div>
 		<div class="col-md-10" style="padding-right: 0px !important;">
@@ -424,233 +432,307 @@ $this->params['breadcrumbs'][] = 'Editar';
                 <?php endif; ?>
                 
                 <div class="progress-bar" style="width: <?= $etapa_atual ?>;"></div>
+                
             </div>
             <br />
             <br />
             <br />
             <div class="clearfix"></div>
-            <div class="col-md-4" style="border: 1px solid ghostwhite; height: 200px;">
+            <br />
+            <br />
+            <br />
+            <div class="clearfix"></div>
+            <div class="row">
+	            <div class="col-md-4">
+                    <?php
+                        Card::begin([  
+                            'id' => 'card1', 
+                            'color' => Card::COLOR_INFO, 
+                            'headerIcon' => 'info', 
+                            'collapsable' => false, 
+                            'title' => '<strong style="font-size: 15px">Tela da Fase, no site:</strong>', 
+                            'titleTextType' => Card::TYPE_INFO, 
+                            'showFooter' => true,
+                            'footerContent' => 'Clique nos botões pra ver as diferentes fases desse processo',
+                        ])
+                    ?>
+                    <img id="preview-site" src="<?=Yii::$app->homeUrl.'uploads/capturas-tela/credpago_'.$model->etapa_andamento.'.png';?>" style="width: 100%; height: auto"/>
+                    <?php 
+                        // echo '<center style="outline: 1px solid">';
+                        for($i=1;$i<=$quant_etapas;$i++) {
+                            Modal::begin([
+                                // 'header' => '<h3 style="text-align: center">Visualizar etapa '.$i.' no Site</h3>',
+                                'size' => 'modal-lg',
+                                'toggleButton' => [
+                                    'id' => $i,
+                                    // 'label' => '<strong>'.$i.' <i class="fa fa-eye"></i></strong>',
+                                    'label' => '<strong>'.$i.'</strong>',
+                                    'title' => 'Visualizar etapa '.$i,
+                                    'alt' => 'Visualizar etapa '.$i,
+                                    'class' => 'btn btn-info',
+                                    'style' => 'padding: 0 !important;font-size: 13px; font-weight: bolder; position: relative; left: '.(($i*5)).'px;z-index:1000; border-radius: 50%;width:40px;height:40px'
+                                ]
+                            ]);
+                            echo '<h3 style="text-align: center">Visualizar etapa '.$i.' no Site</h3>';
+                            echo '<img src="'.Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo."_$i.png".'" style="width: 100%"/>';
+                            Modal::end();
+                        }
+                        // echo '</center>';
+                    ?>
+                    <?php Card::end(); ?>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-12" style="text-align: center">
+                        <?php if ($model->etapa_andamento - 1 == 1): ?>
+                        <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprop?resposta=0&etapa=3&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
+                        <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=1&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '1' ? 'primary' : 'default')?>">Pendenciado</a>
+                        <?php 
+                            // Modal aqui
+                            if ($model->opcoes == '1'):
+                                Modal::begin([
+                                    // 'header' => 'Definir Documentos',
+                                    'size' => 'modal-md',
+                                    'toggleButton' => [
+                                        'label' => '<i class="fa fa-check-square"></i> Docs',
+                                        'class' => 'btn btn-success',
+                                        'style' => 'font-weight: bolder',
+                                    ]
+                                ]);
+                                echo "<h3><center>Definir Documentos</center></h3>";
+                                $docs_escolha = [
+                                    'CPF' => 'CPF',
+                                    'RG (frente)' => 'RG (frente)',
+                                    'RG (verso)' => 'RG (verso)',
+                                    'Extrato bancário' => 'Extrato bancário',
+                                    'Imposto de renda (completo)' => 'Imposto de renda (completo)',
+                                    'Comprovante de endereço' => 'Comprovante de endereço',
+                                    'Carteira de trabalho (registro do emprego)' => 'Carteira de trabalho (registro do emprego)',
+                                    'Extrato INSS' => 'Extrato INSS',
+                                ];
+                                // $k = 1;
+                                // echo '<div class="col-md-12" style="text-align: left">';
+                                // foreach ($docs_escolha as $val) {
+                                //     $valor = 0;
+                                //     if (preg_match($pattern, $tags)) {
+                                //         $valor = 1;
+                                //     }
+                                //     echo '<div class="col-md-6" style="text-align: left">';
+                                //     echo CheckboxX::widget([
+                                //         'name' => 'documento['.$val.']',
+                                //         'value' => $valor,
+                                //         'initInputType' => CheckboxX::INPUT_CHECKBOX,
+                                //         'pluginOptions' => [
+                                //             'threeState'=>false
+                                //         ],
+                                //         'pluginEvents' => [
+                                //             'change' => 'function() {
+                                //                 console.log("checkbox changed");
+                                //                 $.ajax({
+                                //                     method: "POST",
+                                //                     url: "definedocs",
+                                //                     data: {
+                                //                         ch: $(this).prop(\'checked\'),
+                                //                         id: '.$model->id.',
+                                //                         vl: '.$val.'
+                                //                     },
+                                //                 });
+                                //             }'
+                                //         ],
+                                //         'labelSettings' => [
+                                //             'label' => '',
+                                //             'position' => CheckboxX::LABEL_LEFT
+                                //         ],
+                                        
+                                //     ]).' <span class="" style="position: relative;top: -6px;">'.$val.'</span><br>';
+                                //     echo '</div>';
+                                //     $k++;
+                                // }
+                                // echo '</div>';
+                                // echo '<label class="control-label">Tag Multiple</label>';
+                                $form = ActiveForm::begin([
+                                    'options' => [
+                                    ],
+                                    'action' => [
+                                        'definedocs',
+                                        'id' => $model->id
+                                    ]
+                                ]);
+                                $preselect = explode(',', $model->motivo_locacao);
+                                echo Select2::widget([
+                                    'name' => 'motivo_locacao',
+                                    'value' => $preselect, // initial value
+                                    'data' => $docs_escolha,
+                                    'maintainOrder' => true,
+                                    'options' => [
+                                        'placeholder' => 'Selecione', 
+                                        'multiple' => true
+                                    ],
+                                    'pluginOptions' => [
+                                        'tags' => false,
+                                        'maximumInputLength' => 20
+                                    ],
+                                ]);
+                                echo '<br>';
+                                echo Html::submitButton('Confirmar  <i class="fas fa-angle-double-right"></i>', [
+                                    'class' => 'btn btn-primary btn-destaque', 
+                                    'style'=>'font-weight: bolder'
+                                ]);
+                                ActiveForm::end();
+                                echo '<div class="clearfix"></div>';
+                                Modal::end();
+                            endif;
+                        ?>
+                        <?php if($model->tipo == "Credpago"): ?>
+                            <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=2&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '2' ? 'primary' : 'default')?>">Precisa de Co-responsável</a>
+                        <?php endif; ?>
+                        <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=3&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '3' ? 'primary' : 'default')?>">Reprovado</a>
+                        <?php else: ?>
+                        <?php 
+                            switch ($model->opcoes) {
+                                case '0': $resultado_analise_feita = 'Não há pendências'; break;
+                                case '1': $resultado_analise_feita = 'Precisa de fatura'; break;
+                                case '2': $resultado_analise_feita = 'Precisa de Co-responsável'; break;
+                                case '3': $resultado_analise_feita = 'Reprovado'; break;
+                                default: $resultado_analise_feita = 'A verificar'; break;
+                            }    
+                        ?>
+                        <label for=""><strong>Resultado da Análise: </strong><?=$resultado_analise_feita?></label>
+                        <?php endif; ?>
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+                    <div class="clearfix"></div>
+                    <div class="col-md-12">
+                        <?php 
+                            $url = 'https://cafeimobiliaria.com.br/'.$linkcp;
+                            // $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
+                            $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
+                            $bitly->shorten($url);
+                        ?>
+                        
+                        <center>
+                            <label for=""><strong>Url original: </strong><?=$url?></label><br>
+                            <!-- The text field -->
+                            <input type="text" value="<?=$bitly->debug()?>" id="myInput" style="width: 50%">
+                            <!-- The button used to copy the text -->
+                            <button onclick="myFunction()">Copiar URL</button>
+                            <br />
+                            <br />
+                            <?php 
+                                $disparos_whats = \app\models\Historicodedisparos::find()->where([
+                                    'proposta_id' => $model->id,
+                                    'modo' => 'whats',
+                                    'etapa' => $model->etapa_andamento,
+                                    'status' => $model->opcoes
+                                ])->all();
+                                // echo '<br>Já foram feitos '.count($disparos_whats).' disparos de whatsapp dessa Etapa!<br>';
+                                $disparos_email = \app\models\Historicodedisparos::find()->where([
+                                    'proposta_id' => $model->id,
+                                    'modo' => 'email',
+                                    'etapa' => $model->etapa_andamento,
+                                ])->all();
+                                // echo '<br>Já foram feitos '.count($disparos_email).' disparos de email dessa Etapa!<br>';
+                                Modal::begin([
+                                    // 'header' => 'Disparar mensagem pelo Whats',
+                                    'toggleButton' => [
+                                        'label' => '<i class="fa fa-whatsapp"></i> Avisar pelo Whatsapp',
+                                        'class' => 'btn btn-success',
+                                        'style' => 'font-weight: bolder',
+                                        'disabled' => count($disparos_whats) > 0 ? true : false
+                                    ]
+                                ]);
+                                $msg_html2 = '<p>';
+                                $msg_html2.= '<br /><br />"Acompanhe seu processo: <a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
+                                $msg_html2.= '</p>';
+                                $msg_html2.= '</center>';
+                                $msg_htmlW = str_replace('botão', 'link', $msg_html);
+                                echo $msg_htmlW.$msg_html2;
+                                echo '<br>';
+                            ?>
+                            <button id="botao-whats" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Disparar</button>
+                            <?php Modal::end(); ?>
+                            <?php 
+                                Modal::begin([
+                                    // 'header' => 'Disparar mensagem pelo Email',
+                                    'toggleButton' => [
+                                        'label' => '<i class="fa fa-envelope"></i> Avisar pelo Email',
+                                        'class' => 'btn btn-primary',
+                                        'style' => 'font-weight: bolder',
+                                        'disabled' => count($disparos_email) > 0 ? true : false
+                                    ],
+                                    // 'bodyOptions' => [
+                                    //     'style' => 'background-color: red'
+                                    // ]
+                                ]);
+                                $msg_html3 = '<p>';
+                                $msg_html3.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
+                                $msg_html3.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
+                                $msg_html3.= '</p>';
+                                $msg_html3.= '<img src="https://cafeimobiliaria.com.br/img/logo_a_empresa.f21cb89d.png" width="100">';
+                                $msg_html3.= '</center>';
+                                echo $msg_html.$msg_html3;
+                                echo '<br>';
+                            ?>
+                            <a href="<?= Yii::$app->homeUrl.'proposta/atualizaremail?id='.$model->id ?>" class="btn btn-primary" style='font-weight: bolder; font-size: 20px'><i class="fa fa-envelope"></i> Avisar por email</a>
+                            <?php Modal::end(); ?>
+                            <?= '<br>'; ?>
+                            <?= '<br>Já foram feitos '.count($disparos_whats).' disparo(s) de whatsapp dessa Etapa!'; ?>
+                            <?= '<br>Já foram feitos '.count($disparos_email).' disparo(s) de email dessa Etapa!'; ?>
+                        </center>
+                    </div>
+                </div>
+            </div>
+            <?php /* 
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <?php $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/deyraka/yii2-material-dashboard/assets/'); ?>
+                    <?=
+                    CardProduct::widget(
+                        [
+                            "image" => $directoryAsset.'\img\sidebar-1.jpg',
+                            "hiddenIcon" => 'send',
+                            "hiddenText" => 'See Details',
+                            "hiddenTooltip" => 'Lets check Details',
+                            "url" => Url::to(['/site/about']),
+                            "title" => "Feel Excellent Panorama with Us",
+                            "description" => "The place is close to Manchester Beach and bus stop just 2 min by walk and near to 'Naviglio' where you can enjoy the main night life in Manchester.",
+                            "footerTextLeft" => "$8,000/night",
+                            "footerTextRight" => "Manchester",
+                            "footerTextType" => Cardstats::TYPE_INFO,
+                        ]
+                    )
+                    ?>
+                </div>
+            </div>
+            
+            <div class="col-lg-4" style="border: 1px solid lightgray; height: 200px;">
                 <label for="">Tela da Fase, no site:</label><br>
                 <img id="preview-site" src="<?=Yii::$app->homeUrl.'uploads/capturas-tela/credpago_'.$model->etapa_andamento.'.png';?>" style="width: 100%; height: auto"/>
                 <?php 
+                    echo '<center style="outline: 1px solid">';
                     for($i=1;$i<=$quant_etapas;$i++) {
                         Modal::begin([
                             'header' => '<h3 style="text-align: center">Visualizar etapa '.$i.' no Site</h3>',
                             'size' => 'modal-lg',
                             'toggleButton' => [
                                 'id' => $i,
-                                'label' => '<i class="fa fa-eye"></i> '.$i,
+                                'label' => '<strong>'.$i.' <i class="fa fa-eye"></i></strong>',
                                 'title' => 'Visualizar etapa '.$i,
                                 'alt' => 'Visualizar etapa '.$i,
-                                'class' => 'btn btn-success',
+                                'class' => 'btn-info',
                                 'style' => 'font-weight: bolder; position: relative; left: '.(($i*10)).'px;z-index:1000'
                             ]
                         ]);
                         echo '<img src="'.Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo."_$i.png".'" style="width: 100%"/>';
                         Modal::end();
                     }
+                    echo '</center>';
                 ?>
             </div>
-            <div class="col-md-8">
-                <div class="col-md-12" style="text-align: center">
-                    <?php if ($model->etapa_andamento - 1 == 1): ?>
-                    <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprop?resposta=0&etapa=3&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Não há pendências</a>
-                    <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=1&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '1' ? 'primary' : 'default')?>">Pendenciado</a>
-                    <?php 
-                        // Modal aqui
-                        if ($model->opcoes == '1'):
-                            Modal::begin([
-                                'header' => 'Definir Documentos',
-                                'size' => 'modal-md',
-                                'toggleButton' => [
-                                    'label' => '<i class="fa fa-check-square"></i> Escolher Docs',
-                                    'class' => 'btn btn-success',
-                                    'style' => 'font-weight: bolder',
-                                ]
-                            ]);
-                            $docs_escolha = [
-                                'CPF' => 'CPF',
-                                'RG (frente)' => 'RG (frente)',
-                                'RG (verso)' => 'RG (verso)',
-                                'Extrato bancário' => 'Extrato bancário',
-                                'Imposto de renda (completo)' => 'Imposto de renda (completo)',
-                                'Comprovante de endereço' => 'Comprovante de endereço',
-                                'Carteira de trabalho (registro do emprego)' => 'Carteira de trabalho (registro do emprego)',
-                                'Extrato INSS' => 'Extrato INSS',
-                            ];
-                            // $k = 1;
-                            // echo '<div class="col-md-12" style="text-align: left">';
-                            // foreach ($docs_escolha as $val) {
-                            //     $valor = 0;
-                            //     if (preg_match($pattern, $tags)) {
-                            //         $valor = 1;
-                            //     }
-                            //     echo '<div class="col-md-6" style="text-align: left">';
-                            //     echo CheckboxX::widget([
-                            //         'name' => 'documento['.$val.']',
-                            //         'value' => $valor,
-                            //         'initInputType' => CheckboxX::INPUT_CHECKBOX,
-                            //         'pluginOptions' => [
-                            //             'threeState'=>false
-                            //         ],
-                            //         'pluginEvents' => [
-                            //             'change' => 'function() {
-                            //                 console.log("checkbox changed");
-                            //                 $.ajax({
-                            //                     method: "POST",
-                            //                     url: "definedocs",
-                            //                     data: {
-                            //                         ch: $(this).prop(\'checked\'),
-                            //                         id: '.$model->id.',
-                            //                         vl: '.$val.'
-                            //                     },
-                            //                 });
-                            //             }'
-                            //         ],
-                            //         'labelSettings' => [
-                            //             'label' => '',
-                            //             'position' => CheckboxX::LABEL_LEFT
-                            //         ],
-                                    
-                            //     ]).' <span class="" style="position: relative;top: -6px;">'.$val.'</span><br>';
-                            //     echo '</div>';
-                            //     $k++;
-                            // }
-                            // echo '</div>';
-                            // echo '<label class="control-label">Tag Multiple</label>';
-                            $form = ActiveForm::begin([
-                                'options' => [
-                                ],
-                                'action' => [
-                                    'definedocs',
-                                    'id' => $model->id
-                                ]
-                            ]);
-                            $preselect = explode(',', $model->motivo_locacao);
-                            echo Select2::widget([
-                                'name' => 'motivo_locacao',
-                                'value' => $preselect, // initial value
-                                'data' => $docs_escolha,
-                                'maintainOrder' => true,
-                                'options' => [
-                                    'placeholder' => 'Selecione', 
-                                    'multiple' => true
-                                ],
-                                'pluginOptions' => [
-                                    'tags' => true,
-                                    'maximumInputLength' => 20
-                                ],
-                            ]);
-                            echo '<br>';
-                            echo Html::submitButton('Confirmar  <i class="fas fa-angle-double-right"></i>', [
-                                'class' => 'btn btn-primary btn-destaque', 
-                                'style'=>'font-weight: bolder'
-                            ]);
-                            ActiveForm::end();
-                            echo '<div class="clearfix"></div>';
-                            Modal::end();
-                        endif;
-                    ?>
-                    <?php if($model->tipo == "Credpago"): ?>
-                        <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=2&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '2' ? 'primary' : 'default')?>">Precisa de Co-responsável</a>
-                    <?php endif; ?>
-                    <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=3&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '3' ? 'primary' : 'default')?>">Reprovado</a>
-                    <?php else: ?>
-                    <?php 
-                        switch ($model->opcoes) {
-                            case '0': $resultado_analise_feita = 'Não há pendências'; break;
-                            case '1': $resultado_analise_feita = 'Precisa de fatura'; break;
-                            case '2': $resultado_analise_feita = 'Precisa de Co-responsável'; break;
-                            case '3': $resultado_analise_feita = 'Reprovado'; break;
-                            default: $resultado_analise_feita = 'A verificar'; break;
-                        }    
-                    ?>
-                    <label for=""><strong>Resultado da Análise: </strong><?=$resultado_analise_feita?></label>
-                    <?php endif; ?>
-                </div>
-                <br />
-                <br />
-                <br />
-                <div class="clearfix"></div>
-                <div class="col-md-12">
-                    <?php 
-                        $url = 'https://cafeimobiliaria.com.br/'.$linkcp;
-                        // $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
-                        $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
-                        $bitly->shorten($url);
-                    ?>
-                    
-                    <center>
-                        <label for=""><strong>Url original: </strong><?=$url?></label><br>
-                        <!-- The text field -->
-                        <input type="text" value="<?=$bitly->debug()?>" id="myInput" style="width: 50%">
-                        <!-- The button used to copy the text -->
-                        <button onclick="myFunction()">Copiar URL</button>
-                        <br />
-                        <br />
-                        <?php 
-                            $disparos_whats = \app\models\Historicodedisparos::find()->where([
-                                'proposta_id' => $model->id,
-                                'modo' => 'whats',
-                                'etapa' => $model->etapa_andamento,
-                                'status' => $model->opcoes
-                            ])->all();
-                            // echo '<br>Já foram feitos '.count($disparos_whats).' disparos de whatsapp dessa Etapa!<br>';
-                            $disparos_email = \app\models\Historicodedisparos::find()->where([
-                                'proposta_id' => $model->id,
-                                'modo' => 'email',
-                                'etapa' => $model->etapa_andamento,
-                            ])->all();
-                            // echo '<br>Já foram feitos '.count($disparos_email).' disparos de email dessa Etapa!<br>';
-                            Modal::begin([
-                                'header' => 'Disparar mensagem pelo Whats',
-                                'toggleButton' => [
-                                    'label' => '<i class="fa fa-whatsapp"></i> Avisar pelo Whatsapp',
-                                    'class' => 'btn btn-success',
-                                    'style' => 'font-weight: bolder',
-                                    'disabled' => count($disparos_whats) > 0 ? true : false
-                                ]
-                            ]);
-                            $msg_html2 = '<p>';
-                            $msg_html2.= '<br /><br />"Acompanhe seu processo: <a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
-                            $msg_html2.= '</p>';
-                            $msg_html2.= '</center>';
-                            $msg_htmlW = str_replace('botão', 'link', $msg_html);
-                            echo $msg_htmlW.$msg_html2;
-                            echo '<br>';
-                        ?>
-                        <button id="botao-whats" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Disparar</button>
-                        <?php Modal::end(); ?>
-                        <?php 
-                            Modal::begin([
-                                'header' => 'Disparar mensagem pelo Email',
-                                'toggleButton' => [
-                                    'label' => '<i class="fa fa-envelope"></i> Avisar pelo Email',
-                                    'class' => 'btn btn-primary',
-                                    'style' => 'font-weight: bolder',
-                                    'disabled' => count($disparos_email) > 0 ? true : false
-                                ],
-                                // 'bodyOptions' => [
-                                //     'style' => 'background-color: red'
-                                // ]
-                            ]);
-                            $msg_html3 = '<p>';
-                            $msg_html3.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
-                            $msg_html3.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
-                            $msg_html3.= '</p>';
-                            $msg_html3.= '<img src="https://cafeimobiliaria.com.br/img/logo_a_empresa.f21cb89d.png" width="100">';
-                            $msg_html3.= '</center>';
-                            echo $msg_html.$msg_html3;
-                            echo '<br>';
-                        ?>
-                        <a href="<?= Yii::$app->homeUrl.'proposta/atualizaremail?id='.$model->id ?>" class="btn btn-primary" style='font-weight: bolder; font-size: 20px'><i class="fa fa-envelope"></i> Avisar por email</a>
-                        <?php Modal::end(); ?>
-                        <?= '<br>'; ?>
-                        <?= '<br>Já foram feitos '.count($disparos_whats).' disparo(s) de whatsapp dessa Etapa!'; ?>
-                        <?= '<br>Já foram feitos '.count($disparos_email).' disparo(s) de email dessa Etapa!'; ?>
-                    </center>
-                </div>
-            </div>
+            */
+            ?>
+            
             
 
         </div>
@@ -829,3 +911,4 @@ $this->params['breadcrumbs'][] = 'Editar';
         ?>
     </div>
 </div>
+<?php //$this->endContent(); ?>

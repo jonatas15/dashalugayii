@@ -23,101 +23,61 @@ use yii\bootstrap\Modal;
 use kartik\grid\GridView;
 use yii\bootstrap\Alert;
 
+use deyraka\materialdashboard\widgets\CardStats;
+use deyraka\materialdashboard\widgets\CardProduct;
+use deyraka\materialdashboard\widgets\CardChart;
+use deyraka\materialdashboard\widgets\Card;
+use deyraka\materialdashboard\widgets\Progress;
+use yii\helpers\Url;
+
 // use rmrevin\yii\fontawesome\FA;
 
 $this->title = 'Aluga Digital';
+$visitas_grafico = Visita::find()->where([
+    'contrato'=>'Locação',
+    'YEAR(data_visita)' => "2022"
+])->all();
+$visitas_sim = 0;
+$visitas_nao = 0;
+foreach ($visitas_grafico as $key => $val) {
+    if ($val->convertido == 1) {
+        $visitas_sim += 1;
+    }else{
+        $visitas_nao += 1;
+    }
+}
+// $visitas_semana = Visita::find()->where([
+//     'contrato'=>'Locação',
+//     'YEAR(data_visita)' => "2022",
 
+// ])->orderBy([
+//     'data_visita' => SORT_DESC
+// ])->all();
+// $visitas_sim = 0;
+// $visitas_nao = 0;
+// foreach ($visitas_grafico as $key => $val) {
+//     if ($val->convertido == 1) {
+//         $visitas_sim += 1;
+//     }else{
+//         $visitas_nao += 1;
+//     }
+// }
+// echo '<br>'.$visitas_sim;
+// echo '<br>'.$visitas_nao;
 ?>
-<style type="text/css">
-    #acoisatoda{
-      /* background-color: #dcdcdc !important; */
-      padding: 30px;
-      width: 100%;
+<style>
+    .imagem-icone-imovel {
+        width: auto !important;
+        max-width: 100% !important;
+        height: 100px !important;
+        border-radius: 3px !important;
     }
-    #acoisatoda .col-md-2{
-        margin-top: 25px;
+    .ct-chart .ct-label {
+        color: white !important;
+        font-size: 11px !important;
+        font-weight: 900 !important;
     }
-    #acoisatoda .glyphicon, #acoisatoda .fa, #acoisatoda .fas{
-        color: gray !important;
-    }
-    /* #acoisatoda img {
-        filter: brightness(0.0) opacity(40%);
-    } */
-    /* #acoisatoda .btn, .btn-info {
-        color: black !important;
-        background-color: lightgray;
-        border: gray;
-    }
-    #acoisatoda .btn-info:hover {
-        background-color: darkgray;
-    } */
-    #acoisatoda .badge {
-        right: -2% !important;
-    }
-    /*Propostas*/
-    .btn-proposta{
-        width: 100%;
-        background-color: gray !important;
-        /*margin: 2%;*/
-    }
-    .btn-proposta img{
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        border: 1px solid #fff;
-        float: left;
-        background-color: white;
-    }
-    /*Agendas*/
-    .btn-agenda{
-        background-color: lightyellow !important;
-        padding: 5%;
-        margin-bottom: 5%;
-        width: 100%;
-        text-align: center;
-        box-shadow: 5px 5px lightgray;
-    }
-    #acoisatoda .titulo-item {
-        width: 100%;
-        background-color: cadetblue;
-        text-align: center;
-        text-transform: uppercase;
-        margin-top: 0px;
-        margin-bottom: 20px;
-        height: 50px;
-        padding: 15px;
-        color: lightblue;
-        font-weight: bold;
-    }
-    #acoisatoda .item {
-      border: 1px solid lightgray;
-      /* border-radius: 10px; */
-      /* box-shadow: gray 5px 5px; */
-      padding: 1%;
-      /* background: linear-gradient(180deg, rgba(248,248,255,1) 10%, rgba(220,220,220,1) 0%); */
-      /* margin: 1%; */
-      /* height: auto */
-      background-color: aliceblue !important;
-    }
-    #btn-copia {
-      border-radius: 0px !important;
-      float: left; width:100%;
-    }
-    .btn-title-add{
-        position: absolute;
-        right: 5%;
-        top: 2.3%;
-        /* font-size: 30px; */
-        /* padding: 10px; */
-        /* border-radius: 50%; */
-        /* margin-top: -25px; */
-        /* margin-bottom: 10px; */
-        /* width: 55px; */
-    }
-    .dashbord .icon-section i {
-        margin-top: -9px !important;
-        border: 4px solid white;
-    }
+    
 </style>
 <div class="site-index">
     <h5>Bem vindo, <?=Yii::$app->user->identity->nome?></h5>
@@ -139,177 +99,60 @@ $this->title = 'Aluga Digital';
     
     ?>
     <hr>
-    <div class="col-md-12" id="acoisatoda">
+    <div class="body-content">
     <?php if(!Yii::$app->user->isGuest): ?>
 
-        <div class="col-md-5">
-            <div class="item" style="background-color: white">
-                <h4 class="titulo-item">
-                    Pendências
-                </h4>
-                <?php /* ?>
-                <?php
-                    $Alerta = new Alerta();
-                    Modal::begin([
-                        'header' => '<h2>Novo Alerta</h2>',
-                        'size' => 'modal-lg',
-                        'options' => ['tabindex' => false ],
-                        'toggleButton' => [
-                            'label' => "<i class='fa fa-plus'></i>",
-                            'class' => 'float-right btn btn-info btn-title-add'
-                        ],
+        <!-- <div class="col-md-5"> -->
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <?= CardChart::widget([
+                        "idchart" => 'saleschart',
+                        "color" => CardChart::COLOR_WARNING,
+                        "url" => Url::to(['/site/contact']),
+                        "title" => "<strong style='font-weight:bold;font-size:15px'>Visitas da Semana</strong>",
+                        "description" => "Atualizações",
+                        "footerTextLeft" => "Pólo de Atividade",
+                        "footerTextRight" => "Santa Maria",
+                        "footerTextType" => CardChart::TYPE_INFO,
+                        "hiddenText" => "Mais Informações",
+                        "hiddenTooltip" => "Conferir o Módulo",
                     ]);
-                ?>
-                <?= $this->render('/alerta/_form', [
-                    'model' => $Alerta,
-                    'modo' => 'create'
-                ]); ?>
-                <?php Modal::end(); ?>
-                <?php */ ?>
-                <?php /*
-                <div class="col-md-12">
-                    <?php if (Yii::$app->user->can('administrador') || Yii::$app->user->can('locacao')): ?>
-                        <div class="col-md-6" style="text-align:center">
-                            <a href="<?=Yii::$app->homeUrl.'proposta'?>" class="btn btn-default" style="width: 135px;">
-                                <label class="badge" style="position: absolute;top: -6%;">
-                                    <?= number_format(app\models\SloProposta::find()->count(),0,",",".") ?>
-                                </label>
-                                <i class="fas fa-comments-dollar" style="font-size:70px; height:80px;"></i>
-                                <hr style="margin-top:5px;margin-bottom:5px">
-                                Registro de<br>Propostas
-                            </a>
-                        </div>
-
-                    <?php endif; ?>
-
-                    <div class="col-md-6" style="text-align:center">
-                        <a href="<?=Yii::$app->homeUrl.'sloagenda'?>" class="btn btn-default" style="width: 135px;">
-                            <?php if (Yii::$app->user->can('administrador')): ?>
-                                <label class="badge" style="position: absolute;top: -6%;">
-                                    <?= number_format(app\models\SloAgenda::find()->count(),0,",",".") ?>
-                                </label>
-                            <?php endif; ?>
-                            <img src="<?=Yii::$app->homeUrl.'icones/visita_blue.png'?>" alt="" height="80" style="-moz-transform: scaleX(-1);-o-transform: scaleX(-1);-webkit-transform: scaleX(-1);transform: scaleX(-1);">
-                            <hr style="margin-top:5px;margin-bottom:5px">
-                            Agenda de <br>Visitas
-                        </a>
-                    </div>
-                
+                    ?>
                 </div>
-                */?>
-                <?php /*
-                    $alertasdousuario = \app\models\SaAlertausuarios::findAll(['usuario_id'=>Yii::$app->user->identity->id]);
-                    $ids_alertas = [];
-                    foreach ($alertasdousuario as $key => $value) {
-                        $ids_alertas[$value['sa_alerta_id']] = $value['sa_alerta_id'];
-                    }
-                    $alertas = \app\models\SaAlerta::find()->where(['id'=>$ids_alertas])->orWhere(['or',
-                       ['usuario_id'=>Yii::$app->user->identity->id],
-                    ])->limit(5)->orderBy([
-                        'data_limite' => SORT_DESC
-                    ])->all();
-                    foreach ($alertas as $key => $alert) {
-                        // echo '<!-- Alerta -->'.
-                        // "<div class='col-md-8 dashbord dashbord-green'>
-                        //     <div class='icon-section'>
-                        //         <i class='fa fa-bell' aria-hidden='false'></i>
-                        //         <h3><strong>{$alert->titulo}</strong></h3>
-                        //         <p>{$alert->descricao}</p>
-                        //     </div>
-                        // </div>";
-                        $nome_pretendente = ($alert->pretendente?"<br><hr style='margin:10px;border-color:lightgray'><span style='color: cadetblue'>Proponente: <b>{$alert->slopretendente->sloInfospessoais->nome}</b></span>":'');
-                        $foto_usuario = $alert->usuario->foto ? $alert->usuario->foto : '1211811759.png';
-                        echo '<!-- Alerta -->'.
-                        "";
-                        $valido = 'Válido';
-                        $cormodal = 'green';
-                        if(date('Y-m-d',strtotime($alert->data_limite)) > date('Y-m-d')) {
-                            $cormodal = 'lightblue';
-                            $coritem = 'dashbord-lightblue';
-                            $valido = 'Válido';
-                            $estilotitulomodal = [
-                                'background-color' => 'lightblue',
-                                'color' => 'darkblue',
-                                'font-weight' => 'bold',
-                                'font-size' => '20px',
-                                'text-align'=> 'center'
-                            ];
-                        } else {
-                            $cormodal = 'bisque';
-                            $coritem = 'dashbord-red';
-                            $valido = 'Vencido';
-                            $estilotitulomodal = [
-                                'background-color' => 'bisque',
-                                'color' => 'darkred',
-                                'font-weight' => 'bold',
-                                'font-size' => '20px',
-                                'text-align'=> 'center'
-                            ];
-                        }
-                        Modal::begin([
-                            'header' => 'Prazo: '.$valido,//$alert->titulo,
-                            // 'size' => 'modal-lg',
-                            'bodyOptions' => [
-                                'style' => [
-                                    'background-color' => $cormodal,
-                                    'padding' => '10px'
-                                ]
-                            ],
-                            'headerOptions' => [
-                                'style' => $estilotitulomodal,
-                            ],
-                            'footerOptions' => [
-                                'style' => $estilotitulomodal,
-                            ],
-                            'toggleButton' => [
-                                'label' => "<div class='col-md-12'>
-                                    <div class='dashbord $coritem' style='margin-top:5px;margin-bottom:-5px; width: 100%;'>
-                                        <div class='icon-section'>
-                                        <img src='".Yii::$app->homeUrl.'usuarios/'.$foto_usuario."' class='float-right imagem-icone'/>
-                                        <h4 style='padding: 10px;text-align: left;'>
-                                            <span class='fa fa-bell' style='color: gray !important;margin:3px;'></span> ".date('d/m/Y', strtotime($alert->data_criacao))."
-                                            <strong>{$alert->titulo}</strong>
-                                            $nome_pretendente
-                                        </h4> 
-                                        </div>
-                                    </div>
-                                </div>",
-                                // 'class' => 'btn btn-success',
-                                'style' => 'margin: 0px; width: 100%;background: transparent;border:0px !important'
-                            ],
-                            'footer' => Html::a('Excluir', ['/alerta/delete', 'id' => $alert->id], [
-                                'class' => 'btn btn-danger',
-                                'data' => [
-                                    'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                                    'method' => 'post',
-                                ],
-                            ])
-                        ]);
-                        
-                        // $model2 = Alerta::findOne($alert->id);
-                        // echo $this->render('/alerta/view', [
-                        //     'model' => $model2,
-                        //     'ativo' => false
-                        // ]);
-                        // echo $alert->descricao;
-                        ?>
-                        <h2><strong><?= $alert->titulo ?></strong></h2>
-                        <h4>Validade: <strong><?= date('d/m/Y', strtotime($alert->data_criacao)) . ' - '.date('d/m/Y', strtotime($alert->data_limite)).' <br>' ?></strong></h4>
-                        <h4>Categoria: <?=$alert->categoria?></h4>
-                        <h4>Pretendente: <?=$alert->pretendente?$alert->slopretendente->sloInfospessoais->nome:'não informado'?></h4>
-                        <strong>Observações</strong><br>
-                        <p><?= $alert->descricao ?></p>
-                        <?php
-                        Modal::end();
-                    }   
-                    */         
-                ?>
-            <div class='clearfix'></div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <?= CardChart::widget([
+                        "idchart" => 'daychart',
+                        "color" => CardChart::COLOR_SUCCESS,
+                        "url" => Url::to(['/site/contact']),
+                        "title" => "<strong style='font-weight:bold;font-size:15px'>Histórico de Locações</strong>",
+                        "description" => "Relação desde 2018",
+                        "footerTextLeft" => "Polo de atividades",
+                        "footerTextRight" => "Santa Maria",
+                        "footerTextType" => CardChart::TYPE_INFO,
+                        "hiddenText" => "Mais Informações",
+                        "hiddenTooltip" => "Conferir o Módulo",
+                    ]);
+                    ?>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <?= CardChart::widget([
+                        "idchart" => 'yourchart',
+                        "color" => CardChart::COLOR_PRIMARY,
+                        "url" => Url::to(['/visita']),
+                        "title" => "<strong style='font-weight:bold;font-size:15px'>Relação de Visitas e Conversões</strong>",
+                        "description" => "Relação de 2022, Visitas não convertidas/Convertidas",
+                        "footerTextLeft" => "Polo de atividades",
+                        "footerTextRight" => "Santa Maria",
+                        "footerTextType" => CardChart::TYPE_INFO,
+                        "hiddenText" => "Mais Informações",
+                        "hiddenTooltip" => "Conferir o Módulo",
+                    ]);
+                    ?>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="item">
-                <h4 class="titulo-item">Negócios Fechados</h4>
+        <!-- </div> -->
+        <div class="col-md-12">
+            <h3><strong>Negócios Fechados</strong></h3>
                 <?php $visitas_convertidas = Visita::find()->where(['contrato'=>'Locação','convertido'=>1])->limit(3)->orderBy([
                     'data_visita' => SORT_DESC
                 ])->all(); ?>
@@ -337,102 +180,85 @@ $this->title = 'Aluga Digital';
                         }
                         
                         $foto_usuario = $visit->usuario->foto?$visit->usuario->foto:'1211811759.png';
-                        echo '<!-- Alerta -->'.
-                        "<div class='col-md-12'>
-                            <div class='dashbord dashbord-lightblue' style='margin-top: 1px;margin-bottom: 1px; width: 100%'>
-                                <div class='icon-section'>
-                                <img src='".($imagem_do_imovel?$imagem_do_imovel:Yii::$app->homeUrl.'icones/logo_site.png')."' class='float-left imagem-icone-imovel'/>
-                                <img src='".Yii::$app->homeUrl.'usuarios/'.$foto_usuario."' class='float-left imagem-icone' style='margin-left: -45px;margin-top: 40px;'/>
-                                <h4 style='padding: 10px;text-align: left;'>
-                                    <span class='fa fa-calendar' style='color: gray !important;margin:3px;'></span> ".date('d/m/Y', strtotime($visit->data_visita))."
-                                    <br><strong style='margin-left: 15px'>{$visit->idCorretor->nome} - PIN {$visit->codigo_imovel}</strong>
-                                    <br><strong style='margin-left: 15px'>{$valor_locacao}</strong>
-                                    <br><label class='badge' style='margin: 10px; background-color: green; padding:5px'>Alugado!</label>                         
-                                </h4> 
-                                </div>
-                            </div>
-                        </div>";
+                        // echo '<!-- Alerta -->'.
+                        // "<div class='col-md-12'>
+                        //     <div class='dashbord dashbord-lightblue' style='margin-top: 1px;margin-bottom: 1px; width: 100%'>
+                        //         <div class='icon-section'>
+                        //         <img src='".($imagem_do_imovel?$imagem_do_imovel:Yii::$app->homeUrl.'icones/logo_site.png')."' class='float-left imagem-icone-imovel'/>
+                        //         <img src='".Yii::$app->homeUrl.'usuarios/'.$foto_usuario."' class='float-left imagem-icone' style='margin-left: -45px;margin-top: 40px;'/>
+                        //         <h4 style='padding: 10px;text-align: left;'>
+                        //             <span class='fa fa-calendar' style='color: gray !important;margin:3px;'></span> ".date('d/m/Y', strtotime($visit->data_visita))."
+                        //             <br><strong style='margin-left: 15px'>{$visit->idCorretor->nome} - PIN {$visit->codigo_imovel}</strong>
+                        //             <br><strong style='margin-left: 15px'>{$valor_locacao}</strong>
+                        //             <br><label class='badge' style='margin: 10px; background-color: green; padding:5px'>Alugado!</label>                         
+                        //         </h4> 
+                        //         </div>
+                        //     </div>
+                        // </div>";
 
                         // echo '<pre>';
                         // print_r($this->context->get_imovel($visit->codigo_imovel));
                         // echo '</pre>';
+                        ?>
+                        <div class="col-lg-4">
+                            <?php
+                                Card::begin([  
+                                    'id' => 'card_'.$visit->idvisita, 
+                                    'color' => Card::COLOR_PRIMARY, 
+                                    'headerIcon' => "<img src='".Yii::$app->homeUrl.'usuarios/'.$foto_usuario."' class='float-left imagem-icone' style='width:100%;'/>", 
+                                    'collapsable' => false, 
+                                    'title' => '<strong>'.$visit->idCorretor->nome.'</strong>', 
+                                    'titleTextType' => Card::TYPE_PRIMARY, 
+                                    'showFooter' => true,
+                                    'footerContent' => 'Contrato fechado em '.date('d/m/Y', strtotime($visit->data_visita)),
+                                ])
+                            ?>
+                            <!-- START your <body> content of the Card below this line  -->
+                            <span class='col-md-6'><?="<img src='".($imagem_do_imovel?$imagem_do_imovel:Yii::$app->homeUrl.'icones/logo_site.png')."' class='float-left imagem-icone-imovel'/>"?></span>
+                            <span class='col-md-6'><i class="material-icons">key</i><h4> <strong style="font-weight: bolder;"><?="PIN {$visit->codigo_imovel}"?></strong></h4></span>
+                            <!-- END your <body> content of the Card above this line, right before "Card::end()"  -->                
+                            <?php Card::end(); ?>
+                        </div>
+                        <?php
                     }
                 ?>
             <div class='clearfix'></div>
-            </div>
         </div>
-        <div class="col-md-3"><div class="item">
-          <h4 class="titulo-item">Visitas de Locação</h4>
-          <?php
-            $visitas_grafico = Visita::find()->where(['contrato'=>'Locação'])->orderBy([
-                'data_visita' => SORT_DESC
-            ])->all();
-            $visitas_sim = 0;
-            $visitas_nao = 0;
-            foreach ($visitas_grafico as $key => $val) {
-                if ($val->convertido == 1) {
-                    $visitas_sim += 1;
-                }else{
-                    $visitas_nao += 1;
-                }
-            }
-            echo Highcharts::widget([
-                 'options' => [
-                   'scripts' => [
-                       'highcharts-pie',
-                   ],
-                   'plotOptions' => [ // it is important here is code for change depth and use pie as donut
-                      'pie' => [
-                          'allowPointSelect' => true,
-                          'cursor' => 'pointer',
-                          'innerSize' => 100,
-                          'depth' => 45,
-                          'showInLegend' => true,
-                      ]
-                  ],
-                  'type' => 'pie',
-                    'title' => [
-                        'text' => 'Relação de Visitas Convertidas'
-                    ],
-                    'subtitle' => [
-                        'text'=> 'Visitas',
-                        'align'=> 'center',
-                        'verticalAlign'=> 'middle',
-                        'style'=> [
-                            'fontSize' => '22px',
-                            'background-color' => 'red'
-                        ],
-                        'y' => 15
-                    ],
-                    'chart' => [
-                          'height' => 350,
-                          'zoomType' => 'x',
-                    ],
-                    'series' => [
-                      [
-                          'name' => 'Relação de Visitas Convertidas em Locação',
-                          'data' => [
-                            ['name'=>'Convertidas ','y'=>$visitas_sim,'color'=>'green'],
-                            ['name'=>'Não Convertidas ','y'=>$visitas_nao,'color'=>'lightgray'],
-                            // ['name'=>'Aguardando ','y'=>40,'color'=>'yellow'],
-                          ],
-                          'type' => 'pie',
-                          'showInLegend' => true,
-                          'dataLabels' => [
-                              'enabled' => false,
-                          ],
-                      ],
-                    ]
-                 ]
-              ]);
-           ?>
-        </div></div>
         
 
     </div>
     <div class="clearfix col-md-12"><br></div>
 
-
+    <div class="col-lg-12">
+        <?php
+            echo Progress::widget([
+                'title' => 'Desenvolvimento DO SISTEMA',
+                'value' => 75,
+                'color' => Progress::COLOR_INFO,
+                'isBarStrip' => true,
+                'isBarAnimated' => true,
+                'titleTextType' => Progress::TYPE_INFO
+            ]);
+            ?>
+    </div>
+    <div class="row">
+    <!-- <div class="col-lg-3 col-md-6 col-sm-6">
+        <?php //=
+        // CardStats::widget(
+        //     [
+        //         "color" => Cardstats::COLOR_PRIMARY,
+        //         "headerIcon" => "weekend",
+        //         "title" => "Today's sale",
+        //         "subtitle" => "184",
+        //         "footerIcon" => "warning",
+        //         "footerText" => "Check this out",
+        //         "footerUrl" => Url::to(['site/login']),
+        //         "footerTextType" => Cardstats::TYPE_INFO,
+        //     ]
+        // )
+        ?>
+    </div>
+</div> -->
     <div class="clearfix col-md-12">
     <hr style="padding: 0 1px;">
     </div>
@@ -536,24 +362,14 @@ $this->title = 'Aluga Digital';
                         'attribute' => 'imovel_info',
                         'header' => 'Imóvel'
                     ],
-                    // [
-                    //     'header'=>'Proponente Principal',
-                    //     'format'=>'raw',
-                    //     'value'=> function($data){
-                    //         if ($data->proponente) {
-                    //             $link = Yii::$app->homeUrl."proposta/update?id={$data->id}";
-                    //             return "<a href='{$link}'>".$data->proponente->sloInfospessoais->nome."</a>";
-                    //         }else{
-                    //             return Html::a('<i class="fas fa-external-link-square-alt"></i> Add Proponente</a>', [
-                    //                 'proposta/pretendente001',
-                    //                 'proposta_id' => $data->id,
-                    //                 'pretendente_id' => 'novo',
-                    //             ], [
-                    //                 'target'=>'_blank'
-                    //             ]);
-                    //         }
-                    //     }
-                    // ],
+                    [
+                        'header'=>'Proponente Principal',
+                        'format'=>'raw',
+                        'value'=> function($data){
+                            $link = Yii::$app->homeUrl."proposta/update?id={$data->id}";
+                            return "<a href='{$link}'>".$data->nome."&nbsp;&nbsp;<i class='fa fa-arrow-right'></i></a>";
+                        }
+                    ],
                     'tipo',
                     [
                         'header' =>'Início',
@@ -926,44 +742,99 @@ $auth->addChild($novo_tipo_usuario, $permissao);
 ?>
 
 <?php endif; ?>
-<?php
-/**
- * - Afazeres
-    ==============================================================================================
-    A fazer: _____________________________________________________________________________________
+<script>
+        //SCRIPT FOR LINE AND BAR CHART
+        var data = {
+            // A labels array that can contain any sort of values
+            labels: ['S', 'T', 'Q', 'Q', 'S', 'S'],
+            // Our series array that contains series objects or in this case series data arrays
+            series: [
+                [3, 2, 9, 5, 4, 3],
+            ]
+        };
+        var dataAnos = {
+            // A labels array that can contain any sort of values
+            labels: ['2018', '2019', '2020', '2021', '2022'],
+            // Our series array that contains series objects or in this case series data arrays
+            series: [
+                [5, 2, 4, 2, 4, 3],
+                [3, 2, 9, 5, 4, 5],
+            ]
+        };
+        // We are setting a few options for our chart and override the defaults
+        var options = {
+            // Don't draw the line chart points
+            showPoint: true,
+            // Disable line smoothing
+            lineSmooth: false,
+            // X-Axis specific configuration
+            axisX: {
+                // We can disable the grid for this axis
+                showGrid: true,
+                // and also don't show the label
+                showLabel: true
+            },
+            // Y-Axis specific configuration
+            axisY: {
+                // Lets offset the chart a bit from the labels
+                offset: 60,
+                // The label interpolation function enables you to modify the values
+                // used for the labels on each axis. Here we are converting the
+                // values into million pound.
+                labelInterpolationFnc: function(value) {
+                    // return 'Rp ' + value + 'jt';
+                    return value;
+                }
+            }
+        };
 
-        => No módulo:
-        - Cliente envia Dados - Mostrar alertas a partir da tela inicial
-            - e envio por whats e email dos alertas p/ Aluga Digital!
-            - com mais detalhes na proposta
-            
-        
-        => A posteriore:
-        - Integração: Superlógica
-        - Integração com sistema de assinatura eletrônica
+        // Create a new line chart object where as first parameter we pass in a selector
+        // that is resolving to our chart container element. The Second parameter
+        // is the actual data object.
+        // new Chartist.Bar('.ct-chart', data, options);
+        new Chartist.Bar('#saleschart', data, options);
+        new Chartist.Line('#daychart', dataAnos, options);
+        new Chartist.Pie('#yourchart', data, options);
+        // new Chartist.Bar('#herchart', data, options);
 
-    ==============================================================================================    
-    Feitos: ______________________________________________________________________________________
-        
-        ________________________________________________________________ Sistema/
-        - Precisa de fatura => pendenciado
-        - Ajuste no carregamento da Index-Locação 
-            (erros eventuais aconteciam após cache de login)
-        - Botão "não há pendências" vai automático pra fase 3.
-        - voltar a ativar botões whats e emails quando mudam as Opções na Etapa 2
-        - Ajustes visuais: melhorando Menu
-        - Registrar envio de Documentos no Histórico da Proposta
-        - Ajustes nas mensagens disparadas (textos)
-        - botão de clique que copia dados dados do cliente.
-        - Cliente enviando dados de Seguro-Fiança: tbm vai pro email de locação da Café!
-        - Gerar PDF com as Informações
-        - Ajustes visuais: melhorar tela Inicial de Locação
+        //SCRIPT FOR PIE CHART
+        var data2 = {
+            labels: ['Bananas', 'Apples', 'Grapes'],
+            series: [20, 15, 40]
+        };
 
-        ________________________________________________________________ /Sistema
+        var options2 = {
+        labelInterpolationFnc: function(value) {
+            return value[0]
+        }
+        };
 
-        ________________________________________________________________ site/
-        - Subir campo CEP p/cima dos de endereço
-        - campo telefone celular campo no site (icone do whats)
-        ________________________________________________________________ /site
- */
-?>
+        var responsiveOptions = [
+            ['screen and (min-width: 640px)', {
+                chartPadding: 30,
+                labelOffset: 100,
+                labelDirection: 'explode',
+                labelInterpolationFnc: function(value) {
+                return value;
+                }
+            }],
+            ['screen and (min-width: 1024px)', {
+                labelOffset: 80,
+                chartPadding: 20
+            }]
+        ];
+
+        new Chartist.Pie('#herchart', data2, options2, responsiveOptions);
+
+        new Chartist.Pie('#yourchart', {
+            series: [<?=$visitas_nao?>, <?=$visitas_sim?>],
+            labels: ['Não Convertidas', 'Convertidas']
+            }, {
+            donut: true,
+            donutWidth: 20,
+            donutSolid: true,
+            startAngle: 270,
+            showLabel: true,
+            showLegend: true,
+        });
+    </script>

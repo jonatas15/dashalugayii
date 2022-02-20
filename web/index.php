@@ -10,5 +10,6 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 $config = require __DIR__ . '/../config/web.php';
 
 error_reporting(0);
+ini_set('memory_limit', '-1');
 
 (new yii\web\Application($config))->run();

@@ -16,13 +16,13 @@ class MaterialDashboardAsset extends BaseMaterialAsset
 
     public $css = [
         'css/material-dashboard.css?v=2.1.1',
-        'css/demo.css',
-        'css/site.css',
+        // 'css/demo.css',
+        '/css/site.css',
     ];
 
     public $js = [
         'js/core/popper.min.js',
-        'js/core/jquery.min.js',
+        // 'js/core/jquery.min.js',
         'js/core/bootstrap-material-design.min.js',
         'js/plugins/arrive.min.js',
         'js/plugins/bootstrap-datetimepicker.min.js',
@@ -52,7 +52,5 @@ class MaterialDashboardAsset extends BaseMaterialAsset
         // \yii\materialicons\AssetBundle::class,
         /* yii\bootstrap4\BootstrapAsset,
         BootstrapAsset::class */
-        'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
     ];
 }

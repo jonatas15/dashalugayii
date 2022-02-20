@@ -4,9 +4,11 @@ use yii\helpers\Html;
 <nav class="navbar navbar-transparent navbar-expand-lg navbar-absolute fixed-top" role="navigation-demo">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-wrapper">
-            <a class="navbar-brand" href="#"><?=$this->title;?></a>
-        </div>
+        <!-- <div class="navbar-wrapper"> -->
+            <h1>
+                <a class="" href="#"><?=$this->title;?></a>
+            </h1>
+        <!-- </div> -->
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="sr-only">Toggle navigation</span>
@@ -16,7 +18,7 @@ use yii\helpers\Html;
         </button>
 
         <div class="collapse navbar-collapse justify-content-end">
-            <form class="navbar-form">
+            <!-- <form class="navbar-form">
               <span class="bmd-form-group"><div class="input-group no-border">
                 <input type="text" value="" class="form-control" placeholder="Search...">
                 <button type="submit" class="btn btn-white btn-round btn-just-icon">
@@ -24,7 +26,7 @@ use yii\helpers\Html;
                   <div class="ripple-container"></div>
                 </button>
               </div></span>
-            </form>
+            </form> -->
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="#pablo">
