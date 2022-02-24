@@ -1,5 +1,5 @@
 <?php
-
+// $this->beginContent('@app/views/layouts/main_old.php');
 use yii\helpers\Html;
 // use yii\widgets\ActiveForm;
 use kartik\form\ActiveForm;
@@ -10,6 +10,7 @@ use yii\bootstrap\Collapse;
 
 use kartik\number\NumberControl; 
 use yii\bootstrap\Modal;
+use yii\widgets\MaskedInput;
 //=====================================
 $dispOptions = ['class' => 'form-control kv-monospace'];
 $saveOptions = [
@@ -41,19 +42,22 @@ $maskedInputOptions = [
               <div class="col-md-2">
                 <img src="<?=Yii::$app->homeUrl.'icones/logo-g.png'?>" style="width:100%"/>
               </div>
-              <div class="col-md-4">
-                  <?= $form->field($model, 'codigo')->textInput(['maxlength' => true]) ?>
+              <div class="col-md-6">
+                <?= $form->field($model, 'codigo')->textInput(['maxlength' => true]) ?>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
+                <h3><strong><?=$model->tipo?></strong></h3>
+                </div>
+              <div class="col-md-4 hidden">
                   <?= $form->field($model, 'tipo')->dropDownList([ 
-                    'express' => 'Express', 
+                    // 'express' => 'Express', 
                     'personalizada' => 'Personalizada', 
                     'Credpago' => 'Credpago',
                     'Seguro Fiança' => 'Seguro-Fiança'
 
                   ], ['prompt' => '']) ?>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-3 hidden">
                   <div class="form-group field-visita-id_corretor has-success">
                     <?php 
                       // echo '<label class="control-label">Prazo para responder</label>';
@@ -72,7 +76,7 @@ $maskedInputOptions = [
                     <div class="help-block"></div>
                   </div>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-2 hidden">
                   <?php //= $form->field($model, 'etapa_andamento')->textInput(['maxlength' => true,'type'=>'number']) ?>
                   <?php 
                     // use kartik\slider\Slider;
@@ -115,6 +119,8 @@ $maskedInputOptions = [
           <div class="col-md-12">
             <h3>Informações do Imóvel - para o documento</h3>
             <hr>
+            <br />
+            <br />
             <div class="col-md-2">
               <?php 
                 
@@ -185,10 +191,11 @@ $maskedInputOptions = [
             <div class="col-md-2"><?= $form->field($model, 'complemento')->textInput(['maxlength' => true]) ?></div>
             <div class="col-md-2"><?= $form->field($model, 'numero')->textInput(['type' => 'number','step'=>"1",'min'=>"0"]) ?></div>
             <div class="col-md-4"><?= $form->field($model, 'bairro')->textInput(['maxlength' => true]) ?></div>
-            <div class="col-md-4"><?= $form->field($model, 'cidade')->textInput(['maxlength' => true]) ?></div>
-            <div class="col-md-3"><?= $form->field($model, 'estado')->textInput(['maxlength' => true]) ?></div>
-            <div class="col-md-3"><?= $form->field($model, 'cep')->textInput(['maxlength' => true]) ?></div>
+            <div class="col-md-2"><?= $form->field($model, 'cidade')->textInput(['maxlength' => true]) ?></div>
+            <div class="col-md-2"><?= $form->field($model, 'estado')->textInput(['maxlength' => true]) ?></div>
+            <div class="col-md-2"><?= $form->field($model, 'cep')->textInput(['maxlength' => true]) ?></div>
             <div class="col-md-2"><?= $form->field($model, 'dormitorios')->textInput(['type' => 'number','step'=>"1",'min'=>"0"]) ?></div>
+            <div class="col-md-12"><br /><br /></div>
             <div class="col-md-2">
               <?= $form->field($model, 'aluguel',['addon' => ['prepend' => ['content'=>'R$']]])->widget(
                   NumberControl::classname(), [
@@ -260,19 +267,19 @@ $maskedInputOptions = [
             '<div class="col-md-4">'.$form->field($model, 'atvc_nome_fantasia')->textInput(['maxlength' => true]).'</div>'.
             '<div class="col-md-2">'.$form->field($model, 'atvc_atividade')->textInput(['maxlength' => true]).'</div>'.
             '<div class="col-md-3">'.
-              '<div class="form-group field-visita-id_corretor has-success">'.
-                '<label class="control-label">Data da Constituição</label>'.
-                  DatePicker::widget([
-                    'language'=>'pt',
-                    'name' => 'SloProposta[atvc_data_constituicao]',
-                    'type' => DatePicker::TYPE_COMPONENT_PREPEND,
-                    'value' => $model->isNewRecord ? '':date('d-m-Y', strtotime($model->atvc_data_constituicao)),
-                    'pluginOptions' => [
-                        'autoclose'=>true,
-                        'format' => 'dd-mm-yyyy'
+                  $form->field($model, 'atvc_data_constituicao')->widget(MaskedInput::className(), [
+                    'clientOptions' => [
+                        'alias' =>  'dd/mm/yyyy',
+                        'placeholder' => 'dd/mm/aaaa',
+                    ],
+                    'options'=>[
+                        // 'onfocus'=> '$(this).key',
+                        // 'pattern'=>"[0-9]*",
+                        'inputmode'=>"numeric",
+                        'class'=>"form-control",
+                        'value'=> $model->data_nascimento !='' ? date('d/m/Y',strtotime($model->data_nascimento)):'',
                     ]
-                  ]).'<div class="help-block"></div>'.
-              '</div>'.
+                  ]).
             '</div>'.
             '<div class="col-md-4">'.$form->field($model, 'atvc_contato')->textInput(['maxlength' => true]) .'</div>'.
             '<div class="col-md-2">'.$form->field($model, 'atvc_telefone')->textInput(['maxlength' => true]).'</div>';
@@ -335,3 +342,19 @@ $maskedInputOptions = [
 <div class="clearfix"></div>
 <br />
 <br />
+<?php //$this->endContent(); ?>
+<style>
+  .input-group-addon, .input-group-btn {
+    width: 30%;
+    /* background-color: #9c27b0 !important; */
+    border-radius: 0px !important;
+    /* border: 2px solid #9c27b0 !important; */
+    border-top: 0px !important;
+    padding-top: 8% !important;
+    color: #9c27b0 !important;
+  }
+  .bmd-label-static {
+    font-size: 13px !important;
+    top: -15px !important;
+  }
+</style>

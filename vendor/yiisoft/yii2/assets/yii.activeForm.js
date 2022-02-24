@@ -218,6 +218,7 @@
                     attributes: attributes,
                     submitting: false,
                     validated: false,
+                    validate_only: false, // validate without auto submitting
                     options: getFormOptions($form)
                 });
 
@@ -329,7 +330,10 @@
                 this.$form = $form;
                 var $input = findInput($form, this);
 
-                if ($input.is(':disabled')) {
+                var disabled = $input.toArray().reduce(function(result, next) {
+                    return result && $(next).is(':disabled');
+                }, true);
+                if (disabled) {
                     return true;
                 }
                 // validate markup for select input
@@ -751,12 +755,14 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                if (data.submitObject) {
-                    applyButtonOptions($form, data.submitObject);
-                }
-                $form.submit();
-                if (data.submitObject) {
-                    restoreButtonOptions($form);
+                if (!data.validate_only) {
+                    if (data.submitObject) {
+                        applyButtonOptions($form, data.submitObject);
+                    }
+                    $form.submit();
+                    if (data.submitObject) {
+                        restoreButtonOptions($form);
+                    }
                 }
             }
         } else {

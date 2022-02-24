@@ -1,6 +1,18 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
+2.1.18 August 09, 2021
+----------------------
+
+- Enh #458: Added CIDR support for allowedIPs (rhertogh)
+
+
+2.1.17 May 05, 2021
+-------------------
+
+- Enh #454: Add `yii\debug\panels\DbPanel::$dbEventNames` that allows specifying event names used to get profile logs for db panel (atiline)
+
+
 2.1.16 December 23, 2020
 ------------------------
 

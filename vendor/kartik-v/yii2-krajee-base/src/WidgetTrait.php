@@ -3,12 +3,13 @@
 /**
  * @package   yii2-krajee-base
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2019
- * @version   2.0.5
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2022
+ * @version   3.0.2
  */
 
 namespace kartik\base;
 
+use Exception;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -26,8 +27,6 @@ use yii\web\View;
  */
 trait WidgetTrait
 {
-    use BootstrapTrait;
-
     /**
      * @var string the module identifier if this widget is part of a module. If not set, the module identifier will
      * be auto derived based on the \yii\base\Module::getInstance method. This can be useful, if you are setting
@@ -45,7 +44,7 @@ trait WidgetTrait
 
     /**
      * @var boolean enable pop state fix for pjax container on press of browser back & forward buttons.
-     * - DEPRECATED since v2.0.5 and replaced with [[pjaxDuplicationFix]]
+     * - DEPRECATED since v3.0.2 and replaced with [[pjaxDuplicationFix]]
      */
     public $enablePopStateFix = false;
 
@@ -77,7 +76,7 @@ trait WidgetTrait
     public $pluginOptions = [];
 
     /**
-     * @var array widget plugin options.
+     * @var array default plugin options for the widget
      */
     public $defaultPluginOptions = [];
 
@@ -124,7 +123,6 @@ trait WidgetTrait
      */
     protected function setDataVar($name)
     {
-        /** @noinspection PhpUndefinedFieldInspection */
         $this->_dataVar = "data-krajee-{$name}";
     }
 
@@ -197,7 +195,8 @@ trait WidgetTrait
     /**
      * Registers plugin options by storing within a uniquely generated javascript variable.
      *
-     * @param string $name the plugin name
+     * @param  string  $name  the plugin name
+     * @throws Exception
      */
     protected function registerPluginOptions($name)
     {
@@ -209,17 +208,19 @@ trait WidgetTrait
     /**
      * Returns the plugin registration script.
      *
-     * @param string $name the name of the plugin
-     * @param string $element the plugin target element
-     * @param string $callback the javascript callback function to be called after plugin loads
-     * @param string $callbackCon the javascript callback function to be passed to the plugin constructor
+     * @param  string  $name  the name of the plugin
+     * @param  string  $element  the plugin target element
+     * @param  string  $callback  the javascript callback function to be called after plugin loads
+     * @param  string  $callbackCon  the javascript callback function to be passed to the plugin constructor
      *
      * @return string the generated plugin script
+     * @throws Exception
      */
     protected function getPluginScript($name, $element = null, $callback = null, $callbackCon = null)
     {
-        $id = $element ? $element : "jQuery('#" . $this->options['id'] . "')";
+        $id = $element ?: "jQuery('#{$this->options['id']}')";
         $script = '';
+        /** @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection */
         if ($this->pluginOptions !== false) {
             $this->registerPluginOptions($name);
             $script = "{$id}.{$name}({$this->_hashVar})";
@@ -244,10 +245,11 @@ trait WidgetTrait
     /**
      * Registers a specific plugin and the related events
      *
-     * @param string $name the name of the plugin
-     * @param string $element the plugin target element
-     * @param string $callback the javascript callback function to be called after plugin loads
-     * @param string $callbackCon the javascript callback function to be passed to the plugin constructor
+     * @param  string  $name  the name of the plugin
+     * @param  string  $element  the plugin target element
+     * @param  string  $callback  the javascript callback function to be called after plugin loads
+     * @param  string  $callbackCon  the javascript callback function to be passed to the plugin constructor
+     * @throws Exception
      */
     protected function registerPlugin($name, $element = null, $callback = null, $callbackCon = null)
     {
@@ -257,7 +259,8 @@ trait WidgetTrait
 
     /**
      * Fix for weird PJAX container duplication behavior on pressing browser back and forward buttons.
-     * @param View $view
+     * @param  View  $view
+     * @throws Exception
      */
     protected function fixPjaxDuplication($view)
     {
@@ -268,12 +271,12 @@ trait WidgetTrait
             $view->registerJs('jQuery&&jQuery.pjax&&(jQuery.pjax.defaults.maxCacheLength=0);');
         }
     }
-    
+
     /**
      * Registers a JS code block for the widget.
      *
-     * @param string $js the JS code block to be registered
-     * @param integer $pos the position at which the JS script tag should be inserted in a page. The possible values
+     * @param  string  $js  the JS code block to be registered
+     * @param  integer  $pos  the position at which the JS script tag should be inserted in a page. The possible values
      * are:
      * - [[View::POS_HEAD]]: in the head section
      * - [[View::POS_BEGIN]]: at the beginning of the body section
@@ -282,8 +285,9 @@ trait WidgetTrait
      *   automatically register the jQuery js file.
      * - [[View::POS_READY]]: enclosed within jQuery(document).ready(). This is the default value. Note that by using
      *   this position, the method will automatically register the jQuery js file.
-     * @param string $key the key that identifies the JS code block. If null, it will use `$js` as the key. If two JS
+     * @param  string  $key  the key that identifies the JS code block. If null, it will use `$js` as the key. If two JS
      * code blocks are registered with the same key, the latter will overwrite the former.
+     * @throws Exception
      */
     public function registerWidgetJs($js, $pos = View::POS_READY, $key = null)
     {

@@ -31,7 +31,7 @@ class MaterialDashboardAsset extends BaseMaterialAsset
         'js/plugins/bootstrap-tagsinput.js',
         'js/plugins/chartist.min.js',
         'js/plugins/fullcalendar.min.js',
-        'js/plugins/jasny-bootstrap.min.js',
+        // 'js/plugins/jasny-bootstrap.min.js',
         'js/plugins/jquery.bootstrap-wizard.js',
         'js/plugins/jquery.dataTables.min.js',
         'js/plugins/jquery.tagsinput.js',

@@ -29,7 +29,7 @@ string|array `$fileName` is a name for file name to export or import. Multiple f
 
 string `$savePath` is a directory to save the file or you can blank this to set the file as attachment.  
 
-string `$format` for excel to export. Valid value are 'Excel5', 'Excel2007', 'Excel2003XML', '00Calc', 'Gnumeric'.  
+string `$format` for excel to export. Valid value are 'Xls','Xlsx','Xml','Ods','Slk','Gnumeric','Csv', and 'Html'.  
 
 boolean `$setFirstTitle` to set the title column on the first line. The columns will have a header on the first line.  
 
@@ -80,13 +80,13 @@ Exporting data into an excel file.
 	'models' => $allModels,
 	'mode' => 'export', //default value as 'export'
 	'columns' => ['column1','column2','column3'], //without header working, because the header will be get label from attribute label. 
-	'header' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3'], 
+	'headers' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3'], 
 ]);
 
 \moonland\phpexcel\Excel::export([
 	'models' => $allModels, 
 	'columns' => ['column1','column2','column3'], //without header working, because the header will be get label from attribute label. 
-	'header' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3'],
+	'headers' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3'],
 ]);
 
 // export data with multiple worksheet.
@@ -105,7 +105,7 @@ Exporting data into an excel file.
 		'sheet3' => ['column1','column2','column3']
 	],
 	//without header working, because the header will be get label from attribute label. 
-	'header' => [
+	'headers' => [
 		'sheet1' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3'], 
 		'sheet2' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3'], 
 		'sheet3' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3']
@@ -124,7 +124,7 @@ Exporting data into an excel file.
 		'sheet3' => ['column1','column2','column3']
 	], 
 	//without header working, because the header will be get label from attribute label. 
-	'header' => [
+	'headers' => [
 		'sheet1' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3'],
 		'sheet2' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3'],
 		'sheet3' => ['column1' => 'Header Column 1','column2' => 'Header Column 2', 'column3' => 'Header Column 3']

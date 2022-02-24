@@ -46,6 +46,11 @@ use yii\db\Transaction;
  * * `configFile` *required* - path to the application config file. The file
  *   should be configured for the test environment and return a configuration
  *   array.
+ * * `applicationClass` - Fully qualified class name for the application. There are
+ *   several ways to define the application class. Either via a `class` key in the Yii
+ *   config, via specifying this codeception module configuration value or let codeception
+ *   use its default value `yii\web\Application`. In a standard Yii application, this
+ *   value should be either `yii\console\Application`, `yii\web\Application` or unset.
  * * `entryUrl` - initial application url (default: http://localhost/index-test.php).
  * * `entryScript` - front script title (like: index-test.php). If not set it's
  *   taken from `entryUrl`.
@@ -89,7 +94,7 @@ use yii\db\Transaction;
  *
  * By default all available methods are loaded, but you can also use the `part`
  * option to select only the needed actions and to avoid conflicts. The
- * avilable parts are:
+ * available parts are:
  *
  * * `init` - use the module only for initialization (for acceptance tests).
  * * `orm` - include only `haveRecord/grabRecord/seeRecord/dontSeeRecord` actions.
@@ -178,6 +183,7 @@ class Yii2 extends Framework implements ActiveRecord, MultiSession, PartedModule
         'recreateComponents' => [],
         'recreateApplication' => false,
         'closeSessionOnRecreateApplication' => true,
+        'applicationClass' => null,
     ];
 
     protected $requiredFields = ['configFile'];
@@ -417,7 +423,7 @@ class Yii2 extends Framework implements ActiveRecord, MultiSession, PartedModule
      * Requires the `user` component to be enabled and configured.
      *
      * @param $user
-     * @throws ModuleException
+     * @throws \Codeception\Exception\ModuleException
      */
     public function amLoggedInAs($user)
     {
@@ -515,7 +521,7 @@ class Yii2 extends Framework implements ActiveRecord, MultiSession, PartedModule
      *
      * @param $name
      * @return mixed
-     * @throws ModuleException if the fixture is not found
+     * @throws \Codeception\Exception\ModuleException if the fixture is not found
      * @part fixtures
      */
     public function grabFixture($name, $index = null)
@@ -708,7 +714,7 @@ class Yii2 extends Framework implements ActiveRecord, MultiSession, PartedModule
      *
      * @param $component
      * @return mixed
-     * @throws ModuleException
+     * @throws \Codeception\Exception\ModuleException
      * @deprecated in your tests you can use \Yii::$app directly.
      */
     public function grabComponent($component)
@@ -733,7 +739,7 @@ class Yii2 extends Framework implements ActiveRecord, MultiSession, PartedModule
      * ```
      *
      * @param int $num
-     * @throws ModuleException
+     * @throws \Codeception\Exception\ModuleException
      * @part email
      */
     public function seeEmailIsSent($num = null)
@@ -769,7 +775,7 @@ class Yii2 extends Framework implements ActiveRecord, MultiSession, PartedModule
      *
      * @part email
      * @return array
-     * @throws ModuleException
+     * @throws \Codeception\Exception\ModuleException
      */
     public function grabSentEmails()
     {
@@ -820,7 +826,7 @@ class Yii2 extends Framework implements ActiveRecord, MultiSession, PartedModule
     /**
      * Sets a cookie and, if validation is enabled, signs it.
      * @param string $name The name of the cookie
-     * @param string $value The value of the cookie
+     * @param string $val The value of the cookie
      * @param array $params Additional cookie params like `domain`, `path`, `expires` and `secure`.
      */
     public function setCookie($name, $val, array $params = [])

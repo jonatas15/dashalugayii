@@ -1,0 +1,8 @@
+COMANDOS:
+
+=> Café, Servidor:
+    ssh root@45.55.100.245 -p8900
+
+=> Acessos MySql
+    mycli -u root
+

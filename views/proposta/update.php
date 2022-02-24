@@ -19,6 +19,11 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model app\models\SloProposta */
 ?>
+<style>
+    .nav-tabs {
+        font-size: 15px !important;
+    }
+</style>
 <?php
     echo $this->render('/site/avisos', [
         'idreferencia' => $model->id,
@@ -872,19 +877,22 @@ $this->params['breadcrumbs'][] = 'Editar';
                 'items' => [
                     [
                         'label' => 'Registro',
-                        'content' => $this->render('_form', [
-                            'model' => $model,
-                        ]),
-                        'active' =>true
+                        'content' => '<div style="background-color: white !important">'.
+                                $this->render('_form', [
+                                    'model' => $model,
+                                ]).
+                            '</div>',
+                        'active' =>false
                     ],
                     [
                         'label' => 'Registro: Pretendente',
-                        'content' => '', 
-                        // $this->render('proponente', [
-                        //     'model' => $model->proponente,
-                        //     'id' => $model->nome,
-                        // ]),
-                        // 'active' =>true 
+                        'content' => '<div style="background-color: white !important">'.
+                        $this->render('proponente', [
+                            'model' => $model,
+                            'id' => $id,
+                        ]).
+                        '</div>',
+                        'active' =>true 
                     ],
                     // 'nome',
                     [

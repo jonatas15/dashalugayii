@@ -3,15 +3,16 @@
 /**
  * @package   yii2-krajee-base
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2019
- * @version   2.0.5
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2022
+ * @version   3.0.2
  */
 
 namespace kartik\base;
 
 /**
- * BootstrapInterface includes bootstrap constants and any common method signatures
- *
+ * BootstrapInterface includes all Bootstrap library specific constants implemented by all Krajee extension
+ * classes. These constants are used in configuration of Bootstrap version specific configurations as set via
+ * [[BootstrapTrait::$bsCssMap]].
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  */
@@ -43,9 +44,19 @@ interface BootstrapInterface
     const SIZE_LARGE = 'lg';
 
     /**
-     * @var string bootstrap **large** size modifier
+     * @var string bootstrap **extra large** size modifier
      */
     const SIZE_X_LARGE = 'xl';
+
+    /**
+     * @var string bootstrap **extra extra large** size modifier
+     */
+    const SIZE_XX_LARGE = 'xxl';
+
+    /**
+     * @var string Bootstrap panel
+     */
+    const BS_SR_ONLY = 'sr-only';
 
     /**
      * @var string Bootstrap panel
@@ -75,7 +86,17 @@ interface BootstrapInterface
     /**
      * @var string Bootstrap panel default contextual color
      */
+    const BS_PANEL_DARK = 'panel-dark';
+
+    /**
+     * @var string Bootstrap panel default contextual color
+     */
     const BS_PANEL_DEFAULT = 'panel-default';
+
+    /**
+     * @var string Bootstrap panel secondary contextual color
+     */
+    const BS_PANEL_SECONDARY = 'panel-secondary';
 
     /**
      * @var string Bootstrap panel primary contextual color
@@ -111,6 +132,16 @@ interface BootstrapInterface
      * @var string Bootstrap label
      */
     const BS_LABEL = 'label';
+
+    /**
+     * @var string Bootstrap label default contextual color
+     */
+    const BS_LABEL_LIGHT = 'label-light';
+
+    /**
+     * @var string Bootstrap label default contextual color
+     */
+    const BS_LABEL_DARK = 'label-dark';
 
     /**
      * @var string Bootstrap label default contextual color
