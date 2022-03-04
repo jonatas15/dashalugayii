@@ -52,7 +52,7 @@ class PropostaSearch extends SloProposta
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'data_inicio' => SORT_DESC 
+                    'data_inicio' => SORT_ASC 
                 ]
             ],
         ]);

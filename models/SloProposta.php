@@ -248,6 +248,11 @@ class SloProposta extends \yii\db\ActiveRecord
             return false;
         }
     }
+    //Mais tabelas
+    public function getMaisarquivos()
+    {
+        return $this->hasOne(SloExfiles::className(), ['proposta_id' => 'id']);
+    }
     //Rest API
     public function fields() {
         return [

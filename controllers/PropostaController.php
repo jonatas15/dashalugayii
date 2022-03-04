@@ -254,7 +254,7 @@ class PropostaController extends Controller
 
     //Limpa caracteres especiais
 
-    protected function clean($string) {
+    public function clean($string) {
        $string = str_replace(' ', '', $string); // Replaces all spaces with hyphens.
        $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
 
@@ -1103,18 +1103,22 @@ class PropostaController extends Controller
         // echo $tabela;
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $valor = $_REQUEST[$campo];
-        switch ($tabela) {
-            case 'SloInfospessoais':
-                $model = SloInfospessoais::findOne($id);
-            break;
-            case 'SloContratodocumento':
-                $model = SloContratodocumento::findOne($id);
-            break;
-        }
+        // switch ($tabela) {
+        //     case 'SloInfospessoais':
+        //         $model = SloInfospessoais::findOne($id);
+        //     break;
+        //     case 'SloContratodocumento':
+        //         $model = SloContratodocumento::findOne($id);
+        //     break;
+        // }
+        $model = SloProposta::findOne($id);
         switch ($campo) {
             case 'data': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'data_nascimento': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'data_expedicao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
+            case 'documento_data_emissao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
+            case 'data_admissao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
+            case 'conj_data_nascimento': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'cpf': $model->$campo = $this->clean($valor); break;
             case 'conj_cpf': $model->$campo = $this->clean($valor); break;
             case 'cep': $model->$campo = $this->clean($valor); break;

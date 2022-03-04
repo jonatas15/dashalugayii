@@ -26,6 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 class DefaultController extends ActiveController
 {
+    public $frente;
+    public $verso;
+    public $conj_frente;
+    public $conj_verso;
     /**
      * Renders the index view for the module
      * @return string
@@ -33,19 +37,46 @@ class DefaultController extends ActiveController
     public $modelClass = 'app\models\SloProposta';
     public function actions () {
         
-        $frente = \yii\web\UploadedFile::getInstanceByName('file_frente');
-        $verso = \yii\web\UploadedFile::getInstanceByName('file_verso');
+        $this->frente = \yii\web\UploadedFile::getInstanceByName('file_frente');
+        $this->verso = \yii\web\UploadedFile::getInstanceByName('file_verso');
+        $this->conj_frente = \yii\web\UploadedFile::getInstanceByName('file_conj_frente');
+        $this->conj_verso = \yii\web\UploadedFile::getInstanceByName('file_conj_verso');
+
+        // $aleatorio = rand(10000,99999).'_arquivo_';
+        $pasta = "uploads/";
+
+        // function uploadimagem($file) {
+        //     $aleatorio = rand(10000,99999).'_arquivo_';
+        //     $pasta = "uploads/";
+        //     // $uploadfile = $pasta . $aleatorio . basename($file->name);
+        //     // if (move_uploaded_file($file->tmp_name, $uploadfile)) {
+        //     //     return $uploadfile;
+        //     // }
+        //     $file->saveAs($pasta . $aleatorio . $file->baseName . '.' . $file->extension);
+        // }
+
+        // uploadimagem($frente);
+        $request_numero = $_REQUEST['cpf'];
+
+        $this->frente->saveAs($pasta ."_frente_{$request_numero}_" . $this->frente->baseName . '.' . $this->frente->extension);
+        $this->verso->saveAs($pasta ."_verso_{$request_numero}_" . $this->verso->baseName . '.' . $this->verso->extension);
+        if (!empty($this->conj_frente)) {
+            $this->conj_frente->saveAs($pasta ."_conj_frente_{$request_numero}_" . $this->conj_frente->baseName . '.' . $this->conj_frente->extension);
+        }
+        if (!empty($this->conj_verso)) {
+            $this->conj_verso->saveAs($pasta ."_conj_verso_{$request_numero}_" . $this->conj_verso->baseName . '.' . $this->conj_verso->extension);
+        }
         
-        // echo '<pre>';
-        // print_r($frente);
-        // echo '</pre>';
+        echo '<pre>';
+        print_r($request_numero);
+        echo '</pre>';
         // echo "\n";
         // echo '<pre>';
-        // print_r($frente);
+        // print_r($this->frente);
         // echo '</pre>';
         
         $actions = parent::actions();
-        $modelClass->frente = 'pasta/'.$frente->baseName.'.'.$frente->extension;
+        // $modelClass->frente = 'pasta/'.$frente->baseName.'.'.$frente->extension;
 
         if ($action === 'create') {
             echo 'estamos criando';
