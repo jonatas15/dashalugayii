@@ -11,29 +11,29 @@ use yii\helpers\Html;
     Tip 2: you can also add an image using data-image tag
 -->
     <div class="logo">
-        <a href="#" class="simple-text logo-normal">
-            Material Dashboard 
+        <a href="/" class="simple-text logo-normal">
+            <img src="<?=Yii::$app->homeUrl.'icones/logo_site.png'?>" alt="" style="width:90%"> 
         </a>
     </div>
     <div class="sidebar-wrapper">
         <?= Menu::widget([
             'items' => [
                 ['label' => 'Dashboard', 'icon' => 'dashboard', 'url' => ['/']],
-                ['label' => 'About', 'icon' => 'table_chart', 'url' => ['site/about']],
-                ['label' => 'Contact', 'icon' => 'web', 'url' => ['site/contact']],
-                ['label' => 'Javascript', 'icon' => 'code', 'url' => ['/javascript']],
-                ['label' => 'Notifications', 'icon' => 'notifications', 'url' => ['/notifications']],
-                ['label' => 'Tabs', 'icon' => 'tab', 'url' => ['/tabs']],
-                ['label' => 'Typography', 'icon' => 'text_format', 'url' => ['/typography']],
-                ['label' => 'Pages', 'icon' => 'text_format', 'items' => [
-                    ['label' => 'Login', 'icon' => 'text_format', 'url' => ['/site/login']],
-                    ['label' => 'Error', 'icon' => 'text_format', 'url' => ['/error']],
-                    ['label' => 'Registration', 'icon' => 'text_format', 'items' => [
-                        ['label' => 'Login', 'icon' => 'text_format', 'url' => ['/site/login']],
-                        ['label' => 'Error', 'icon' => 'text_format', 'url' => ['/error']],
-                        ['label' => 'Registration', 'icon' => 'text_format', 'url' => ['/registration']],
-                    ]],
-                ]],
+                ['label' => 'Visitas', 'icon' => 'table_chart', 'url' => ['/visita']],
+                // ['label' => 'Contact', 'icon' => 'web', 'url' => ['site/contact']],
+                // ['label' => 'Javascript', 'icon' => 'code', 'url' => ['/javascript']],
+                // ['label' => 'Notifications', 'icon' => 'notifications', 'url' => ['/notifications']],
+                // ['label' => 'Tabs', 'icon' => 'tab', 'url' => ['/tabs']],
+                // ['label' => 'Typography', 'icon' => 'text_format', 'url' => ['/typography']],
+                // ['label' => 'Pages', 'icon' => 'text_format', 'items' => [
+                //     ['label' => 'Login', 'icon' => 'text_format', 'url' => ['/site/login']],
+                //     ['label' => 'Error', 'icon' => 'text_format', 'url' => ['/error']],
+                //     ['label' => 'Registration', 'icon' => 'text_format', 'items' => [
+                //         ['label' => 'Login', 'icon' => 'text_format', 'url' => ['/site/login']],
+                //         ['label' => 'Error', 'icon' => 'text_format', 'url' => ['/error']],
+                //         ['label' => 'Registration', 'icon' => 'text_format', 'url' => ['/registration']],
+                //     ]],
+                // ]],
             ]
         ]); ?>    
     </div>

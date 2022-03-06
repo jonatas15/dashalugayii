@@ -288,10 +288,13 @@ use yii\widgets\MaskedInput;
 
             $prefixo_nome_arquivo = $this->context->clean($model->cpf);
             
-            if (count($docmto) > 0){
+            if (count($docmto) > 0) {
+                echo '<div class="col-md-12"><hr>
+                <h3><center><strong>Arquivos da Documentação:</strong></center></h3>
+                </div>';
                 $frente_doc = Yii::$app->homeUrl.'/uploads/_frente_'.$prefixo_nome_arquivo.'_'.$docmto->frente;
                 $verso_doc = Yii::$app->homeUrl.'/uploads/_verso_'.$prefixo_nome_arquivo.'_'.$docmto->verso;
-                echo '<h4><strong>Arquivos da Documentação</strong></h4> <hr>';
+                // echo '<h4><strong>Arquivos da Documentação</strong></h4> <hr>';
                 
                 echo '<div class="col-md-3">';
                     Modal::begin([
@@ -386,31 +389,34 @@ use yii\widgets\MaskedInput;
             echo '<div class="clearfix"></div><br><br>';
             //Seção 6 --------------------------------------------------------------------
             if (count($arques) > 0){
-                echo '<h4><strong>Mais Documentos</strong></h4> <hr>';
+                echo '<div class="col-md-12"><hr>
+                <h3><center><strong>Arquivos da Documentação:</strong></center></h3>
+                </div>';
+                // echo '<h4><strong>Mais Documentos</strong></h4> <hr>';
                 
                 foreach ($arques as $key => $value) {
-                    if (!in_array($key,['id','pretendente_id']) and $value != null) {
-                        echo '<div class="col-md-3">';
-                        Modal::begin([
-                            'header' => '<h3>'.$arques->getAttributeLabel($key).'</h3>',
-                            'toggleButton' => [
-                                'label' => (pathinfo($value, PATHINFO_EXTENSION) == 'pdf' ? '<i class="fas fa-file-pdf" style="font-size: 118px"></i>'.'<hr>'."<strong>".$arques->getAttributeLabel($key)."</strong>" : '<img src="/'.$value.'" style="width: auto;max-height: 120px;"><hr>'."<strong>".$arques->getAttributeLabel($key)."</strong>"),
-                                'class' => 'btn',
-                                'style' => 'margin-bottom: 12px; width: 100%'
-                            ],
-                        ]);
-                        if (pathinfo($value, PATHINFO_EXTENSION) == 'pdf'){
-                            echo '<div>
-                                    <object data="/'.$value.'" type="application/pdf" width="550" height="500">
-                                        alt : <a href="/'.$value.'">test.pdf</a>
-                                    </object>
-                                </div>';
-                        } else {
-                            echo '<img src="/'.$value.'" style="width: 100%">';
-                        }
+                    // echo $value;
 
-                        Modal::end();
-                        echo '</div>';
+                    if (!in_array($key,['id','proposta_id']) and $value != null) {
+                        $nome_arq = "_file_{$key}_{$model->id}_";
+                        // echo '<div class="col-md-12">';
+                        // echo (pathinfo(Yii::$app->homeUrl.'uploads/'.$nome_arq.$value, PATHINFO_EXTENSION) == 'pdf' ? '<i class="fas fa-file-pdf" style="font-size: 118px"></i>'.'<hr>'."<strong>".$arques->getAttributeLabel($key)."</strong>" : '<img src="'.Yii::$app->homeUrl.'uploads/'.$nome_arq.$value.'" style="width: auto;max-height: 300px;"><hr>'."<strong>".$arques->getAttributeLabel($key)."</strong>");
+                        if (pathinfo(Yii::$app->homeUrl.'uploads/'.$nome_arq.$value, PATHINFO_EXTENSION) == 'pdf'){
+                            echo '<div class="col-md-6">';
+                            echo "<h3><strong>".$arques->getAttributeLabel($key)."</strong></h3>"."<hr>";
+                            echo '<div>
+                                <object data="'.Yii::$app->homeUrl.'uploads/'.$nome_arq.$value.'" type="application/pdf" width="550" height="500">
+                                alt : <a href="'.Yii::$app->homeUrl.'uploads/'.$nome_arq.$value.'">test.pdf</a>
+                                </object>
+                            </div>';
+                            echo '</div>';
+                        } else {
+                            echo '<div class="col-md-3">';
+                            echo "<h3><strong>".$arques->getAttributeLabel($key)."</strong></h3>"."<hr>";
+                            echo '<img src="'.Yii::$app->homeUrl.'uploads/'.$nome_arq.$value.'" style="width: auto;max-height: 300px;">';
+                            echo '</div>';
+                        }
+                        // echo '</div>';
                     }
                 }
             }

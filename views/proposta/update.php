@@ -6,7 +6,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Tabs;
 use app\models\Bitly;
 use yii\bootstrap\Modal;
-// use kartik\checkbox\CheckboxX;
+use kartik\checkbox\CheckboxX;
 use kartik\select2\Select2;
 use kartik\form\ActiveForm;
 
@@ -448,7 +448,7 @@ $this->params['breadcrumbs'][] = 'Editar';
             <br />
             <div class="clearfix"></div>
             <div class="row">
-	            <div class="col-md-4">
+	            <div class="col-md-4" style="">
                     <?php
                         Card::begin([  
                             'id' => 'card1', 
@@ -458,8 +458,11 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'title' => '<strong style="font-size: 15px">Tela da Fase, no site:</strong>', 
                             'titleTextType' => Card::TYPE_INFO, 
                             'showFooter' => true,
+                            'options' => [
+                                'style' => 'z-index: 1049 !important;',
+                            ],
                             'footerContent' => 'Clique nos botões pra ver as diferentes fases desse processo',
-                        ])
+                        ]);
                     ?>
                     <img id="preview-site" src="<?=Yii::$app->homeUrl.'uploads/capturas-tela/credpago_'.$model->etapa_andamento.'.png';?>" style="width: 100%; height: auto"/>
                     <?php 
@@ -475,7 +478,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     'title' => 'Visualizar etapa '.$i,
                                     'alt' => 'Visualizar etapa '.$i,
                                     'class' => 'btn btn-info',
-                                    'style' => 'padding: 0 !important;font-size: 13px; font-weight: bolder; position: relative; left: '.(($i*5)).'px;z-index:1000; border-radius: 50%;width:40px;height:40px'
+                                    'style' => 'padding: 0 !important;font-size: 13px; font-weight: bolder; position: relative; left: '.(($i*5)).'px; border-radius: 50%;width:40px;height:40px'
                                 ]
                             ]);
                             echo '<h3 style="text-align: center">Visualizar etapa '.$i.' no Site</h3>';
@@ -744,7 +747,7 @@ $this->params['breadcrumbs'][] = 'Editar';
     </div>
     <br />
     <br />
-    <hr>
+    <!-- <hr> -->
     <div class="clearfix"></div>
     <?php 
         $msg_whats.= $bitly->debug()."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
@@ -826,7 +829,7 @@ $this->params['breadcrumbs'][] = 'Editar';
             
         ");
     ?>
-    <div class="col-md-8">
+    <!-- <div class="col-md-8">
         <div class="item-interno-proposta">
             <?php
             /*
@@ -849,20 +852,20 @@ $this->params['breadcrumbs'][] = 'Editar';
                 // echo $retorno;
                 // echo '<div class="clearfix"></div>';
             // }
-            $this->registerJs('$("#btn-copia").on("click", function() {
-                var copyText = document.getElementById("myInput");
-                copyText.select();
-                copyText.setSelectionRange(0, 99999);
+            // $this->registerJs('$("#btn-copia").on("click", function() {
+            //     var copyText = document.getElementById("myInput");
+            //     copyText.select();
+            //     copyText.setSelectionRange(0, 99999);
 
-                document.execCommand("copy");
-                console.log("Copied the text: " + copyText.value);
-                $(this).addClass("btn btn-danger").text("Link Copiado!");
-              });');
+            //     document.execCommand("copy");
+            //     console.log("Copied the text: " + copyText.value);
+            //     $(this).addClass("btn btn-danger").text("Link Copiado!");
+            //   });');
             ?>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="item-interno-proposta">
+    </div> -->
+    <div class="col-md-12">
+        <div class="item-interno-proposta" style="text-align: center !important;">
             <h4>Gerar PDF com essas Informações</h4>
             <br>
             <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Gerar Documento PDF</a>
@@ -876,13 +879,14 @@ $this->params['breadcrumbs'][] = 'Editar';
             echo Tabs::widget([
                 'items' => [
                     [
-                        'label' => 'Registro',
-                        'content' => '<div style="background-color: white !important">'.
-                                $this->render('_form', [
-                                    'model' => $model,
-                                ]).
-                            '</div>',
-                        'active' =>false
+                        'label' => 'Registro do Imóvel',
+                        'content' => '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
+                        // '<div style="background-color: white !important">'.
+                        //         $this->render('_form', [
+                        //             'model' => $model,
+                        //         ]).
+                        //     '</div>',
+                        // 'active' =>false
                     ],
                     [
                         'label' => 'Registro: Pretendente',
@@ -897,11 +901,10 @@ $this->params['breadcrumbs'][] = 'Editar';
                     // 'nome',
                     [
                         'label' => 'Histórico',
-                        'content' => '' 
-                        // $this->render('timeline', [
-                        //     'model' => $model,
-                        //     'pretendente_id' => $model->id,
-                        // ]),
+                        'content' => $this->render('timeline', [
+                            'model' => $model,
+                            'pretendente_id' => $model->id,
+                        ]),
                     ],
                     // [
                     //     'label' => 'Resumo',

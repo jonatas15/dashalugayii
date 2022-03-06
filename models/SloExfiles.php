@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "slo_exfiles".
  *
  * @property integer $id
- * @property integer $pretendente_id
+ * @property integer $proposta_id
  * @property string $cpf
  * @property string $rg_frente
  * @property string $rg_verso
@@ -34,8 +34,8 @@ class SloExfiles extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['pretendente_id'], 'required'],
-            [['pretendente_id'], 'integer'],
+            [['proposta_id'], 'required'],
+            [['proposta_id'], 'integer'],
             [['cpf', 'rg_frente', 'rg_verso', 'extrato_bancario', 'imposto_de_renda', 'comprovante_de_endereco', 'carteira_de_trabalho', 'extrato_inss'], 'string'],
         ];
     }
@@ -47,7 +47,7 @@ class SloExfiles extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'pretendente_id' => 'Pretendente ID',
+            'proposta_id' => 'Pretendente ID',
             'cpf' => 'Cpf',
             'rg_frente' => 'Rg Frente',
             'rg_verso' => 'Rg Verso',
@@ -56,6 +56,13 @@ class SloExfiles extends \yii\db\ActiveRecord
             'comprovante_de_endereco' => 'Comprovante De Endereco',
             'carteira_de_trabalho' => 'Carteira De Trabalho',
             'extrato_inss' => 'Extrato Inss',
+        ];
+    }
+    // Para a API
+    public function fields() {
+        return [
+            'id',
+            'proposta_id'
         ];
     }
 }

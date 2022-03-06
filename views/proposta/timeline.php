@@ -135,9 +135,10 @@
     }
     }
 </style>
-<div class="row">
+<div class="row" style="background-color: white !important;">
     <div class="col-md-6 col-lg-6">
-        <h4>Histórico de Disparos de Mensagens</h4>
+        <br>
+        <h3>Histórico de Disparos de Mensagens</h3>
         <hr>
         <div id="tracking-pre"></div>
             <div id="tracking">
@@ -171,7 +172,8 @@
         </div>
     </div>
     <div class="col-md-6 col-lg-6">
-        <h4>Histórico de Atividades</h4>
+        <br>
+        <h3>Histórico de Atividades</h3>
         <hr>
         <div id="tracking-pre"></div>
             <div id="tracking">

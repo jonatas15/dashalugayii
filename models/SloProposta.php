@@ -251,7 +251,9 @@ class SloProposta extends \yii\db\ActiveRecord
     //Mais tabelas
     public function getMaisarquivos()
     {
-        return $this->hasOne(SloExfiles::className(), ['proposta_id' => 'id']);
+        return $this->hasOne(SloExfiles::className(), ['proposta_id' => 'id'])->orderBy([
+            'id' => SORT_DESC,
+        ]);
     }
     //Rest API
     public function fields() {

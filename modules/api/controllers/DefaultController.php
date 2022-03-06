@@ -57,9 +57,12 @@ class DefaultController extends ActiveController
 
         // uploadimagem($frente);
         $request_numero = $_REQUEST['cpf'];
-
-        $this->frente->saveAs($pasta ."_frente_{$request_numero}_" . $this->frente->baseName . '.' . $this->frente->extension);
-        $this->verso->saveAs($pasta ."_verso_{$request_numero}_" . $this->verso->baseName . '.' . $this->verso->extension);
+        if (!empty($this->frente)) {
+            $this->frente->saveAs($pasta ."_frente_{$request_numero}_" . $this->frente->baseName . '.' . $this->frente->extension);
+        }
+        if (!empty($this->verso)) {
+            $this->verso->saveAs($pasta ."_verso_{$request_numero}_" . $this->verso->baseName . '.' . $this->verso->extension);
+        }
         if (!empty($this->conj_frente)) {
             $this->conj_frente->saveAs($pasta ."_conj_frente_{$request_numero}_" . $this->conj_frente->baseName . '.' . $this->conj_frente->extension);
         }
@@ -67,9 +70,9 @@ class DefaultController extends ActiveController
             $this->conj_verso->saveAs($pasta ."_conj_verso_{$request_numero}_" . $this->conj_verso->baseName . '.' . $this->conj_verso->extension);
         }
         
-        echo '<pre>';
-        print_r($request_numero);
-        echo '</pre>';
+        // echo '<pre>';
+        // print_r($request_numero);
+        // echo '</pre>';
         // echo "\n";
         // echo '<pre>';
         // print_r($this->frente);

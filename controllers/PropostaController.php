@@ -710,7 +710,7 @@ class PropostaController extends Controller
             case '2': $texto_status = 'Precisa de Co-responsável'; break;
             case '3': $texto_status = 'Reprovado'; break;
         }
-        $url = 'https://cafeimobiliaria.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').$complementando;
+        $url = 'https://alugadigital.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').$complementando;
         
         //Gera a URL encurtada!
         $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
@@ -836,7 +836,7 @@ class PropostaController extends Controller
         $msg.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
         $msg.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
         $msg.= '</p>';
-        $msg.= '<img src="https://cafeimobiliaria.com.br/img/logo_a_empresa.f21cb89d.png" width="100">';
+        $msg.= '<img src="https://alugadigital.com.br/img/logo_a_empresa.f21cb89d.png" width="100">';
         $msg.= '</center>';
             
         $assunto = $titulo_email;    
@@ -851,14 +851,14 @@ class PropostaController extends Controller
             'assinatura' => 'AlugaDigital <atendimento@alugadigital.com>'
         ];
 
-        if(Mail::send($model->proponente->sloInfospessoais->email, $assunto, $msg, $mododisparo)){
+        if(Mail::send($model->email, $assunto, $msg, $mododisparo)){
             $alerta_enviado .= "Sucesso: Atualização enviada para {$usuario->nome} - {$usuario->email} <br>";//'enviou!';                            
-            // echo $model->proponente->sloInfospessoais->email;
+            // echo $model->email;
             // exit();
             $disparo = new Historicodedisparos();
             $disparo->data = date('Y-m-d h:i:s');
             $disparo->proposta_id = $model->id;
-            $disparo->mensagem = utf8_encode($msg.'<p>Mensagem enviada para '.$model->proponente->sloInfospessoais->email.'</p>');
+            $disparo->mensagem = utf8_encode($msg.'<p>Mensagem enviada para '.$model->email.'</p>');
             $disparo->usuario_id = Yii::$app->user->identity->id;
             $disparo->etapa = $model->etapa_andamento;
             $disparo->modo = 'email';
@@ -870,7 +870,7 @@ class PropostaController extends Controller
             exit();
         }
 
-        Yii::$app->session->setFlash('info', 'Email enviado para '.$model->proponente->sloInfospessoais->email);
+        Yii::$app->session->setFlash('info', 'Email enviado para '.$model->email);
         return $this->redirect(Yii::$app->request->referrer);
     }
 
@@ -895,7 +895,7 @@ class PropostaController extends Controller
             // }
             // if ($model->etapa_andamento) {
             //     $nome = 'Nosso Cliente';
-            //     $nome_gravado = explode(" ", $model->proponente->sloInfospessoais->nome);
+            //     $nome_gravado = explode(" ", $model->nome);
             //     $nome = $nome_gravado[0];
             //     $complementando .= '/'.$nome;
             // }
@@ -905,7 +905,7 @@ class PropostaController extends Controller
             // if ($model->etapa_andamento < 1) {
             //     $model->etapa_andamento = 1;
             // }
-            $url = 'https://cafeimobiliaria.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').'/'.$complementando;
+            $url = 'https://alugadigital.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').'/'.$complementando;
             
             //Gera a URL encurtada!
             $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
@@ -922,14 +922,14 @@ class PropostaController extends Controller
             $msg.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="background-color: blue; color: white; font-weight: bolder;padding: 10px; border: 1px solid blue; border-radius: 5px; cursor: pointer">Clique aqui para acompanhar</button></a>';
             $msg.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
             $msg.= '</p>';
-            $msg.= '<img src="https://cafeimobiliaria.com.br/img/logo_a_empresa.f21cb89d.png">';
+            $msg.= '<img src="https://alugadigital.com.br/img/logo_a_empresa.f21cb89d.png">';
             $msg.= '</center>';
 
             // echo $assunto;
             // echo '<br>';
             // echo $msg;
             // exit();
-            // if(Mail::send($model->proponente->sloInfospessoais->email, $assunto, $msg)){
+            // if(Mail::send($model->email, $assunto, $msg)){
             //     $alerta_enviado .= "Sucesso: Atualização enviada para {$usuario->nome} - {$usuario->email} <br>";//'enviou!';                            
             // } else {
             //     $alerta_enviado .= "Erro: Atualização não enviada para {$usuario->nome} - {$usuario->email} <br>";//'não enviou!';                            
@@ -955,7 +955,7 @@ class PropostaController extends Controller
         
         $disparo->data = date('Y-m-d h:i:s');
         $disparo->proposta_id = $proposta_id;
-        $disparo->mensagem = utf8_encode($mensagem.'<p>Mensagem enviada para '.$disparo->proposta->proponente->sloInfospessoais->celular.'</p>');
+        $disparo->mensagem = utf8_encode($mensagem.'<p>Mensagem enviada para '.$disparo->proposta->celular.'</p>');
         $disparo->usuario_id = $usuario_id;
         $disparo->etapa = $etapa;
         $disparo->modo = 'whats';
@@ -982,7 +982,7 @@ class PropostaController extends Controller
         // }
         // if ($model->etapa_andamento) {
         //     $nome = 'Nosso Cliente';
-        //     $nome_gravado = explode(" ", $model->proponente->sloInfospessoais->nome);
+        //     $nome_gravado = explode(" ", $model->nome);
         //     $nome = $nome_gravado[0];
         //     $complementando .= '/'.$nome;
         // }
@@ -996,7 +996,7 @@ class PropostaController extends Controller
             case '2': $texto_status = 'Precisa de Co-responsável'; break;
             case '3': $texto_status = 'Reprovado'; break;
         }
-        $url = 'https://cafeimobiliaria.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').$complementando;
+        $url = 'https://alugadigital.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').$complementando;
         
         //Gera a URL encurtada!
         $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
@@ -1016,7 +1016,7 @@ class PropostaController extends Controller
         // echo $msg;
         // exit();
 
-        // if(Mail::send($model->proponente->sloInfospessoais->email, $assunto, $msg)){
+        // if(Mail::send($model->email, $assunto, $msg)){
         //     $alerta_enviado .= "Sucesso: Atualização enviada para {$usuario->nome} - {$usuario->email} <br>";//'enviou!';                            
         // } else {
         //     $alerta_enviado .= "Erro: Atualização não enviada para {$usuario->nome} - {$usuario->email} <br>";//'não enviou!';                            
@@ -1077,7 +1077,7 @@ class PropostaController extends Controller
             // echo $prop->id;
             $propostas[$prop->id] = [
                 "id" => $prop->id,
-                "nome" => $prop->proponente->sloInfospessoais->nome,
+                "nome" => $prop->nome,
                 "etapa_andamento" => $prop->etapa_andamento - 1,
                 "status" => $prop->opcoes,
                 "pretendente_id" => $prop->proponente->id,
@@ -1166,37 +1166,37 @@ class PropostaController extends Controller
 
         $content .= '<div style="width: 100%">';
         $content .= '<div style="width: 48%; float: left; padding: 1%;">';
-            $content .= $this->campopdf('Nome', $proposta->proponente->sloInfospessoais->nome);
-            $content .= $this->campopdf('Data de Nascimento', date('d/m/Y', strtotime($proposta->proponente->sloInfospessoais->data_nascimento)));
-            $content .= $this->campopdf('Celular (whats)', $this->format_telefone($proposta->proponente->sloInfospessoais->celular));
-            $content .= $this->campopdf('CPF', $this->format_doc($proposta->proponente->sloInfospessoais->cpf,'cpf'));
-            $content .= $this->campopdf('Email', $proposta->proponente->sloInfospessoais->email);
+            $content .= $this->campopdf('Nome', $proposta->nome);
+            $content .= $this->campopdf('Data de Nascimento', date('d/m/Y', strtotime($proposta->data_nascimento)));
+            $content .= $this->campopdf('Celular (whats)', $this->format_telefone($proposta->telefone_celular));
+            $content .= $this->campopdf('CPF', $this->format_doc($proposta->cpf,'cpf'));
+            $content .= $this->campopdf('Email', $proposta->email);
         $content .= '</div>';
         $content .= '<div style="width: 48%; float: left; padding: 1%;">';
-            $content .= $this->campopdf('Tipo de Documento', $proposta->proponente->sloContratodocumentos->tipo_documento);
-            $content .= $this->campopdf('Nº do Documento', $proposta->proponente->sloContratodocumentos->numero);
-            $content .= $this->campopdf('Órgão Emissor', $proposta->proponente->sloContratodocumentos->orgao_expedidor);
-            $content .= $this->campopdf('Data de Expedição', date('d/m/Y', strtotime($proposta->proponente->sloContratodocumentos->data_expedicao)));
-            $content .= $this->campopdf('Telefone Residencial', $this->format_telefone($proposta->proponente->sloContratodocumentos->fone_residencial));
+            $content .= $this->campopdf('Tipo de Documento', $proposta->documento_tipo);
+            $content .= $this->campopdf('Nº do Documento', $proposta->documento_numero);
+            $content .= $this->campopdf('Órgão Emissor', $proposta->documento_orgao_emissor);
+            $content .= $this->campopdf('Data de Expedição', date('d/m/Y', strtotime($proposta->documento_data_emissao)));
+            $content .= $this->campopdf('Telefone Residencial', $this->format_telefone($proposta->telefone_residencial));
         $content .= '</div>';
         $content .= '<div style="width: 48%; float: left; padding: 1%;">';
-            $content .= $this->campopdf('Nacionalidade', $proposta->proponente->sloContratodocumentos->nacionalidade);
-            $content .= $this->campopdf('Profissão', $proposta->proponente->sloContratodocumentos->profissao);
-            $content .= $this->campopdf('Estado Civil', $proposta->proponente->sloContratodocumentos->estado_civil);
-            $content .= $this->campopdf('Vínculo Empregatício', $proposta->proponente->sloContratodocumentos->vinculo_empregaticio);
+            $content .= $this->campopdf('Nacionalidade', $proposta->nacionalidade);
+            $content .= $this->campopdf('Profissão', $proposta->profissao);
+            $content .= $this->campopdf('Estado Civil', $proposta->estado_civil);
+            $content .= $this->campopdf('Vínculo Empregatício', $proposta->vinculo_empregaticio);
         $content .= '</div>';
         $content .= '<div style="width: 48%; float: left; padding: 1%;">';
-            $content .= $this->campopdf('Renda', 'R$ '.number_format($proposta->proponente->sloContratodocumentos->renda, 2, ',', '.'));
-            $content .= $this->campopdf('Endereço', "{$proposta->proponente->sloContratodocumentos->endereco} - {$proposta->proponente->sloContratodocumentos->end_numero}, {$proposta->proponente->sloContratodocumentos->end_bairro}<br>{$proposta->proponente->sloContratodocumentos->end_cidade} - {$proposta->proponente->sloContratodocumentos->end_estado}");
-            $content .= $this->campopdf('CEP', $proposta->proponente->sloContratodocumentos->end_cep);
+            $content .= $this->campopdf('Renda', 'R$ '.number_format($proposta->renda, 2, ',', '.'));
+            $content .= $this->campopdf('Endereço', "{$proposta->endereco} - {$proposta->numero}, {$proposta->bairro}<br>{$proposta->cidade} - {$proposta->estado}");
+            $content .= $this->campopdf('CEP', $proposta->cep);
         $content .= '</div>';
-        if ($proposta->proponente->sloContratodocumentos->estado_civil == 'Casado') {
+        if ($proposta->estado_civil == 'Casado') {
             $content .= '<hr>';
-            $content .= '<h4>Cônjuge: '.$proposta->proponente->sloContratodocumentos->conjuge->conj_nome.'</h4>';
+            $content .= '<h4>Cônjuge: '.$proposta->conj_nome.'</h4>';
             $content .= '<div style="width: 30%; float: left; padding: 1%;">';
             
             $i = 1;
-                foreach ($proposta->proponente->sloContratodocumentos->conjuge as $key => $value) {
+                foreach ($proposta as $key => $value) {
                     if (!in_array($key,$this->arr_campos_retirados_docs_conj)):
                         switch ($key) {
                             case 'conj_cpf': $valor = $this->format_doc($value,'cpf'); break;
@@ -1209,7 +1209,7 @@ class PropostaController extends Controller
                             case 'renda': $valor = 'R$ '.number_format($value, 2, ',', '.'); break;
                             default: $valor = $value; break;
                         }
-                        $content .= $this->campopdf($proposta->proponente->sloContratodocumentos->getAttributeLabel($key), $valor);
+                        $content .= $this->campopdf($proposta->getAttributeLabel($key), $valor);
                         if ($i%5 == 0) {
                             $content .= '</div>';
                             $content .= '<div style="width: 30%; float: left; padding: 1%;">';
@@ -1217,11 +1217,12 @@ class PropostaController extends Controller
                         $i++;
                     endif;
                 }
-                // $content .= $this->campopdf('Nome', $proposta->proponente->sloContratodocumentos->conjuge->conj_nome);
-                // $content .= $this->campopdf('Nome', $proposta->proponente->sloContratodocumentos->conjuge->numero_documento);
+                // $content .= $this->campopdf('Nome', $proposta->conjuge->conj_nome);
+                // $content .= $this->campopdf('Nome', $proposta->conjuge->numero_documento);
             $content .= '</div>';
         }
         $content .= '</div>';
+        /*
         if ($proposta->codigo_imovel) :
             $content .= '<pagebreak />';
             $content .= '<br>';
@@ -1257,43 +1258,51 @@ class PropostaController extends Controller
             $content .= '</div>';
             $content .= '</div>';
         endif;
-        if ($proposta->proponente->sloContratodocumentos->frente_documento) :
+        */
+        if ($proposta->frente) :
+            
+            $prefixo_nome_arquivo = $this->clean($proposta->cpf);
+            $frente_doc = Yii::$app->homeUrl.'/uploads/_frente_'.$prefixo_nome_arquivo.'_'.$proposta->frente;
+            $verso_doc = Yii::$app->homeUrl.'/uploads/_verso_'.$prefixo_nome_arquivo.'_'.$proposta->verso;
+            $conj_frente_doc = Yii::$app->homeUrl.'/uploads/_conj_frente_'.$prefixo_nome_arquivo.'_'.$proposta->conj_frente;
+            $conj_verso_doc = Yii::$app->homeUrl.'/uploads/_conj_verso_'.$prefixo_nome_arquivo.'_'.$proposta->conj_verso;
+
             $content .= '<pagebreak />';
             $localfolder = Yii::$app->homeUrl;
             $content .= '<br>';
             $content .= '<br>';
             $content .= '<div style="width: 100%; top:100px">';
-            if (pathinfo($proposta->proponente->sloContratodocumentos->frente_documento, PATHINFO_EXTENSION) != 'pdf') {
+            if (pathinfo($frente_doc, PATHINFO_EXTENSION) != 'pdf') {
                 $content .= '<div style="width: 47%; float: left; padding: 1%;">';
                 // $content .= '<hr>';
                 $content .= '<strong>Frente do Documento</strong>';
-                $content .= "<img src='/".$proposta->proponente->sloContratodocumentos->frente_documento."'/>";
+                $content .= "<img src='".$frente_doc."'/>";
                 $content .= '<br>';
                 $content .= '</div>';
             }
-            if (pathinfo($proposta->proponente->sloContratodocumentos->verso_documento, PATHINFO_EXTENSION) != 'pdf') {
+            if (pathinfo($verso_doc, PATHINFO_EXTENSION) != 'pdf') {
                 $content .= '<div style="width: 47%; float: left; padding: 1%;">';
                 // $content .= '<hr>';
                 $content .= '<strong>Verso do Documento</strong>';
-                $content .= "<img src='/".$proposta->proponente->sloContratodocumentos->verso_documento."'/>";
+                $content .= "<img src='".$verso_doc."'/>";
                 $content .= '<br>';
                 $content .= '</div>';
             }
-            if ($proposta->proponente->sloContratodocumentos->estado_civil == 'Casado') {
+            if ($proposta->estado_civil == 'Casado') {
                 $content .= '<hr>';
-                if (pathinfo($proposta->proponente->sloContratodocumentos->conjuge->frente_documento, PATHINFO_EXTENSION) != 'pdf') {
+                if (pathinfo($conj_frente_doc, PATHINFO_EXTENSION) != 'pdf') {
                     $content .= '<div style="width: 47%; float: left; padding: 1%;">';
                     // $content .= '<hr>';
                     $content .= '<strong>Cônjuge: Frente do Documento</strong>';
-                    $content .= "<img src='/".$proposta->proponente->sloContratodocumentos->conjuge->frente_documento."'/>";
+                    $content .= "<img src='".$conj_frente_doc."'/>";
                     $content .= '<br>';
                     $content .= '</div>';
                 }
-                if (pathinfo($proposta->proponente->sloContratodocumentos->conjuge->verso_documento, PATHINFO_EXTENSION) != 'pdf') {
+                if (pathinfo($conj_verso_doc, PATHINFO_EXTENSION) != 'pdf') {
                     $content .= '<div style="width: 47%; float: left; padding: 1%;">';
                     // $content .= '<hr>';
                     $content .= '<strong>Cônjuge: Verso do Documento</strong>';
-                    $content .= "<img src='/".$proposta->proponente->sloContratodocumentos->conjuge->verso_documento."'/>";
+                    $content .= "<img src='".$conj_verso_doc."'/>";
                     $content .= '<br>';
                     $content .= '</div>';
                 }
@@ -1302,7 +1311,7 @@ class PropostaController extends Controller
         endif;
         $content .= '</div>';
         
-        $arques = $proposta->proponente->maisarquivos;
+        $arques = $proposta->maisarquivos;
         if (count($arques) > 0){
             $content .= '<pagebreak />';
             $content .= '<br>';
@@ -1311,13 +1320,14 @@ class PropostaController extends Controller
             $content .= '<h4><strong>Mais Documentos</strong></h4> <hr>';
             
             foreach ($arques as $key => $value) {
-                if (!in_array($key,['id','pretendente_id']) and $value != null) {
-                    $content .=  '<div style="width: 47%; float: left; padding: 1%;">';
-                    $content .= '<strong>'.$arques->getAttributeLabel($key).'</strong>';
+                if (!in_array($key,['id','proposta_id']) and $value != null) {
+                    $nome_arq = "_file_{$key}_{$proposta->id}_";
+                    $content .=  '<div style="width: 47%; float: left; padding: 1%;border:1px solid">';
+                    $content .= '<h4>'.$arques->getAttributeLabel($key).'</h4>';
                     if (pathinfo($value, PATHINFO_EXTENSION) == 'pdf' or pathinfo($value, PATHINFO_EXTENSION) == 'docx'){
-                        $content .=  'Conferir no Sistema - Arquivo em PDF ou DOC';
+                        $content .=  '<hr></br>Conferir no Sistema - Arquivo em PDF ou DOC';
                     } else {
-                        $content .=  '<img src="/'.$value.'" style="width: 100%">';
+                        $content .=  '<img src="'.Yii::$app->homeUrl.'uploads/'.$nome_arq.$value.'" style="width: 70%">';
                     }
 
                     $content .=  '</div>';

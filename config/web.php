@@ -62,6 +62,11 @@ $config = [
                     'class' => 'yii\rest\UrlRule',
                     'pluralize' => false,
                     'controller' => 'api\mensagem'
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'pluralize' => false,
+                    'controller' => 'api\antares'
                 ]
             ],
         ],
