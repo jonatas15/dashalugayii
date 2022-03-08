@@ -71,6 +71,7 @@ foreach ($visitas_grafico as $key => $val) {
         max-width: 100% !important;
         height: 100px !important;
         border-radius: 3px !important;
+        background-color: black;
     }
     .ct-chart .ct-label {
         color: white !important;
