@@ -78,7 +78,6 @@ foreach ($visitas_grafico as $key => $val) {
         font-size: 11px !important;
         font-weight: 900 !important;
     }
-    
 </style>
 <div class="site-index">
     <h5>Bem vindo, <?=Yii::$app->user->identity->nome?></h5>
@@ -86,14 +85,14 @@ foreach ($visitas_grafico as $key => $val) {
     
     /**
      * 
-    ->where([
-        'atividade' => 'Atualização do Cliente'
-    ])
+        ->where([
+            'atividade' => 'Atualização do Cliente'
+        ])
     
-    echo '<pre>';
-    print_r($javisto);
-    echo '</pre>';
-     */
+        echo '<pre>';
+        print_r($javisto);
+        echo '</pre>';
+    */
     echo $this->render('avisos',[
         'idreferencia' => ''
     ]);

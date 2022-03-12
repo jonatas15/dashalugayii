@@ -32,9 +32,10 @@ use Yii;
  * @property string|null $cidade
  * @property string|null $estado
  * @property int|null $proposta_id
- *
- * @property Base[] $bases
- * @property Extrato[] $extratos
+ * @property float|null $iptu
+ * @property float|null $condominio
+ * @property resource|null $foto_rg
+ * @property resource|null $foto_cpf
  */
 class Proprietario extends \yii\db\ActiveRecord
 {
@@ -54,8 +55,9 @@ class Proprietario extends \yii\db\ActiveRecord
         return [
             [['nome'], 'required'],
             [['inicio_locacao', 'data_nascimento'], 'safe'],
-            [['mais_informacoes', 'sexo'], 'string'],
+            [['mais_informacoes', 'sexo', 'foto_rg', 'foto_cpf'], 'string'],
             [['usuario_id', 'proposta_id'], 'integer'],
+            [['iptu', 'condominio'], 'number'],
             [['nome'], 'string', 'max' => 145],
             [['conta_deposito', 'nacionalidade'], 'string', 'max' => 45],
             [['codigo_imovel', 'cep'], 'string', 'max' => 10],
@@ -99,26 +101,10 @@ class Proprietario extends \yii\db\ActiveRecord
             'cidade' => 'Cidade',
             'estado' => 'Estado',
             'proposta_id' => 'Proposta ID',
+            'iptu' => 'Iptu',
+            'condominio' => 'Condominio',
+            'foto_rg' => 'Foto Rg',
+            'foto_cpf' => 'Foto Cpf',
         ];
-    }
-
-    /**
-     * Gets query for [[Bases]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBases()
-    {
-        return $this->hasMany(Base::className(), ['proprietario_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Extratos]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExtratos()
-    {
-        return $this->hasMany(Extrato::className(), ['proprietario_id' => 'id']);
     }
 }

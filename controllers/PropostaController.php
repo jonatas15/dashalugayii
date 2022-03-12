@@ -1134,6 +1134,15 @@ class PropostaController extends Controller
         // return $this->redirect(Yii::$app->request->referrer);
         return ['output'=>$valor, 'message'=>''];
     }
+
+    public function actionImovelinfo(){
+        $id = $_REQUEST['id'];
+        $campo = $_REQUEST['campo'];
+        $model = SloProposta::findOne($id);
+        $model->imovel_info = $campo;
+        $model->save();
+    }
+
     public function actionDefinedocs($id) {
         $model = $this->findModel($id);
         $vetores = $_REQUEST['motivo_locacao'];

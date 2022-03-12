@@ -68,6 +68,14 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'proposta_id') ?>
 
+    <?php // echo $form->field($model, 'iptu') ?>
+
+    <?php // echo $form->field($model, 'condominio') ?>
+
+    <?php // echo $form->field($model, 'foto_rg') ?>
+
+    <?php // echo $form->field($model, 'foto_cpf') ?>
+
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>

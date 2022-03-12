@@ -452,11 +452,11 @@ $this->params['breadcrumbs'][] = 'Editar';
                     <?php
                         Card::begin([  
                             'id' => 'card1', 
-                            'color' => Card::COLOR_INFO, 
-                            'headerIcon' => 'info', 
+                            'color' => Card::COLOR_PRIMARY, 
+                            'headerIcon' => 'search', 
                             'collapsable' => false, 
                             'title' => '<strong style="font-size: 15px">Tela da Fase, no site:</strong>', 
-                            'titleTextType' => Card::TYPE_INFO, 
+                            'titleTextType' => Card::TYPE_PRIMARY, 
                             'showFooter' => true,
                             'options' => [
                                 'style' => 'z-index: 1049 !important;',
@@ -620,6 +620,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                         ?>
                         
                         <center>
+                            <br>
                             <label for=""><strong>Url original: </strong><?=$url?></label><br>
                             <!-- The text field -->
                             <input type="text" value="<?=$bitly->debug()?>" id="myInput" style="width: 50%">
@@ -688,6 +689,12 @@ $this->params['breadcrumbs'][] = 'Editar';
                             <?= '<br>Já foram feitos '.count($disparos_whats).' disparo(s) de whatsapp dessa Etapa!'; ?>
                             <?= '<br>Já foram feitos '.count($disparos_email).' disparo(s) de email dessa Etapa!'; ?>
                         </center>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="item-interno-proposta" style="text-align: center !important;">
+                            <h4><strong>Gerar PDF com essas Informações</strong></h4>
+                            <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Gerar Documento PDF</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -864,13 +871,7 @@ $this->params['breadcrumbs'][] = 'Editar';
             ?>
         </div>
     </div> -->
-    <div class="col-md-12">
-        <div class="item-interno-proposta" style="text-align: center !important;">
-            <h4>Gerar PDF com essas Informações</h4>
-            <br>
-            <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Gerar Documento PDF</a>
-        </div>
-    </div>
+    
 
     <div class="clearfix"></div>
     <br>
@@ -880,13 +881,14 @@ $this->params['breadcrumbs'][] = 'Editar';
                 'items' => [
                     [
                         'label' => 'Registro do Imóvel',
-                        'content' => '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
-                        // '<div style="background-color: white !important">'.
-                        //         $this->render('_form', [
-                        //             'model' => $model,
-                        //         ]).
-                        //     '</div>',
-                        // 'active' =>false
+                        'content' => 
+                        // '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
+                        '<div style="background-color: white !important">'.
+                                $this->render('_imovel', [
+                                    'model' => $model,
+                                ]).
+                            '</div>',
+                        'active' => true
                     ],
                     [
                         'label' => 'Registro: Pretendente',
@@ -896,7 +898,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'id' => $id,
                         ]).
                         '</div>',
-                        'active' =>true 
+                        'active' => false 
                     ],
                     // 'nome',
                     [

@@ -54,6 +54,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'cidade',
             'estado',
             'proposta_id',
+            'iptu',
+            'condominio',
+            'foto_rg',
+            'foto_cpf',
         ],
     ]) ?>
 

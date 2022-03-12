@@ -3,6 +3,7 @@
 use yii\bootstrap\Modal;
 use kartik\editable\Editable;
 use yii\widgets\MaskedInput;
+use deyraka\materialdashboard\widgets\Card;
 
     $pessoa = $model;
     $docmto = $model;
@@ -170,6 +171,16 @@ use yii\widgets\MaskedInput;
                 case 'credpago': array_push($arr_campos_retirados,'idsapo');
             }
             //Seção 1 --------------------------------------------------------------------
+            Card::begin([  
+                'id' => 'dados_do_proponente_principal', 
+                'color' => Card::COLOR_PRIMARY, 
+                'headerIcon' => 'list', 
+                'collapsable' => true, 
+                'title' => '<strong style="font-size: 20px">Dados do Pretendente</strong>', 
+                'titleTextType' => Card::TYPE_PRIMARY, 
+                'showFooter' => true,
+                'footerContent' => 'Dados atualizados <sup>Março</sup> 2022',
+            ]);
             echo '<div class="col-md-6">
             <div class="item-interno-proposta col-md-12">';
             $i = 1;
@@ -210,11 +221,19 @@ use yii\widgets\MaskedInput;
             }
             echo '</div></div>';
             echo '<div class="clearfix"></div>';
+            Card::end();
             //Seção 2 --------------------------------------------------------------------
             if ($docmto->estado_civil == "Casado"):
-                echo '<div class="col-md-12"><hr>
-                <h3><center><strong>Cônjuge:</strong></center></h3>
-                </div>';
+                Card::begin([  
+                    'id' => 'dados_do_proponente_principal_conjuge', 
+                    'color' => Card::COLOR_INFO, 
+                    'headerIcon' => 'list', 
+                    'collapsable' => true, 
+                    'title' => '<strong style="font-size: 20px">Dados do Cônjuge</strong>', 
+                    'titleTextType' => Card::TYPE_INFO, 
+                    'showFooter' => true,
+                    'footerContent' => 'Dados atualizados <sup>Março</sup> 2022',
+                ]);
                 echo '<div class="col-md-4">
                 <div class="item-interno-proposta col-md-12">';
                 $i = 1;
@@ -248,7 +267,7 @@ use yii\widgets\MaskedInput;
                         echo imprime_campo('SloProposta', $key, $pessoa->getAttributeLabel($key),$valor, $pessoa->id);
                         echo '</div>';
                         echo '<div class="item-campo col-md-2">';
-                        echo '<br><button title="Copiar" alt="Copiar" class="btn btn-primary" style="color: white !important; padding: 5px 15px" onClick="copyToClipboard(\'#SloProposta_invisivel_'.$key.'-targ\')"><span class="glyphicon glyphicon-copy"></span></button>';
+                        echo '<br><button title="Copiar" alt="Copiar" class="btn btn-info" style="color: white !important; padding: 5px 15px" onClick="copyToClipboard(\'#SloProposta_invisivel_'.$key.'-targ\')"><span class="glyphicon glyphicon-copy"></span></button>';
                         echo '</div>';
                         if ($i%4==0)
                             echo '</div></div><div class="col-md-4"><div class="item-interno-proposta col-md-12">';
@@ -257,32 +276,39 @@ use yii\widgets\MaskedInput;
                 }
                 echo '</div></div>';
                 echo '<div class="clearfix"></div>';
+                Card::end();
             endif;
             //Seção 3 PROPONENTES --------------------------------------------------------------------
             if ($model->proponentes) {
+                Card::begin([  
+                    'id' => 'dados_do_proponente_principal_pretendentes', 
+                    'color' => Card::COLOR_WARNING, 
+                    'headerIcon' => 'list', 
+                    'collapsable' => true, 
+                    'title' => '<strong style="font-size: 20px">Proponentes adicionais</strong>', 
+                    'titleTextType' => Card::TYPE_WARNING, 
+                    'showFooter' => true,
+                    'footerContent' => 'Dados atualizados <sup>Março</sup> 2022',
+                ]);
                 $modelproponentes = json_decode($model->proponentes);
-                // echo '<pre>';
-                // print_r(json_decode($model->proponentes));
-                // echo '</pre>';
-                echo '<div class="col-md-12"><hr>
-                <h3><center><strong>Proponentes:</strong></center></h3>
-                </div>';
+                
                 echo '<div class="col-md-4">
-                <div class="item-interno-proposta col-md-12">';
+                <div class="item-interno-proposta col-md-12" style"font-size: 15px !important;">';
                 
                 foreach ($modelproponentes as $v) {
-                    echo('<b>Nome: </b>'.$v->nome.'<br>');
-                    echo('<b>CPF: </b>'.$v->cpf.'<br>');
-                    echo('<b>Telefone Fixo: </b>'.$v->telefone_fixo.'<br>');
-                    echo('<b>Celular: </b>'.$v->telefone_celular.'<br>');
-                    echo('<b>Email: </b>'.$v->email.'<br>');
-                    echo('<b>Renda: </b>'.$v->renda.'<br>');
-                    echo('<b>Estado Civil: </b>'.$v->estado_civil.'<br>');
-                    echo('<b>Vínculo Empregatício: </b>'.$v->vinculo_empregaticio.'<br>');
-                    echo '</div></div><div class="col-md-4"><div class="item-interno-proposta col-md-12">';
+                    echo('<label>Nome: </label>  <label style="font-weight: bold; float: right">'.$v->nome.'</label><br>');
+                    echo('<label>CPF: </label>  <label style="font-weight: bold; float: right">'.$v->cpf.'</label><br>');
+                    // echo('<label>Telefone Fixo: </label>  <label style="font-weight: bold; float: right">'.$v->telefone_fixo.'</label><br>');
+                    echo('<label>Celular: </label>  <label style="font-weight: bold; float: right">'.$v->telefone_celular.'</label><br>');
+                    echo('<label>Email: </label>  <label style="font-weight: bold; float: right">'.$v->email.'</label><br>');
+                    echo('<label>Renda: </label>  <label style="font-weight: bold; float: right">'.$v->renda.'</label><br>');
+                    echo('<label>Estado Civil: </label>  <label style="font-weight: bold; float: right">'.$v->estado_civil.'</label><br>');
+                    echo('<label>Vínculo Empregatício: </label>  <label style="font-weight: bold; float: right">'.$v->vinculo_empregaticio.'</label><br>');
+                    echo '</div></div><div class="col-md-4"><div class="item-interno-proposta col-md-12" style"font-size: 15px !important;">';
                 }
                 echo '</div></div>';
                 echo '<div class="clearfix"></div>';
+                Card::end();
             }
             //Seção 5 --------------------------------------------------------------------
 
@@ -412,7 +438,8 @@ use yii\widgets\MaskedInput;
                             echo '</div>';
                         } else {
                             echo '<div class="col-md-3">';
-                            echo "<h3><strong>".$arques->getAttributeLabel($key)."</strong></h3>"."<hr>";
+                            // echo "<hr>";
+                            echo "<h3 style='text-align: center;color:gray'><strong>".$arques->getAttributeLabel($key)."</strong></h3>";
                             echo '<img src="'.Yii::$app->homeUrl.'uploads/'.$nome_arq.$value.'" style="width: auto;max-height: 300px;">';
                             echo '</div>';
                         }
