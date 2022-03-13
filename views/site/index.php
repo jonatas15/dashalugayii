@@ -352,15 +352,23 @@ foreach ($visitas_grafico as $key => $val) {
                     //     }
                     // ],
                     [
-                        'attribute'=>'id',
-                        'headerOptions'=>[
+                        'attribute'=> 'id',
+                        'headerOptions'=> [
                             'style' => 'width: 5%',
                         ],
                         'header' => 'Id'
                     ],
                     [
-                        'attribute' => 'imovel_info',
-                        'header' => 'Imóvel'
+                        'attribute' => 'codigo_imovel',
+                        'header' => 'Imóvel',
+                        'format'=>'raw',
+                        'value' => function($data) {
+                            if (!empty($data->codigo_imovel)) {
+                                return '<a href="https://www.alugadigital.com.br/imovel/'.$data->codigo_imovel.'" target="blanck">PIN-'.$data->codigo_imovel."&nbsp;&nbsp;<i class='fa fa-home'></i>".'</a>';
+                            } else {
+                                return 'Indefinido';
+                            }
+                        }
                     ],
                     [
                         'header'=>'Proponente Principal',

@@ -36,6 +36,9 @@ use yii\helpers\Json;
 
 use kartik\mpdf\Pdf;
 
+use kartik\editable\Editable;
+use yii\widgets\MaskedInput;
+
 /**
  * PropostaController implements the CRUD actions for SloProposta model.
  */
@@ -669,6 +672,40 @@ class PropostaController extends Controller
         }
 
         return $codigos;
+    }
+    // Pega Json do Imóvel e cadastra
+    public function cadastraimovelupdate($id, $codigo) {
+        // Pega os dados no Jetimob
+        $json_imoveis = $this->get_content('https://api.jetimob.app/webservice/tZuuHuri8Q3ohAf7cvmMm8hTmWrXKJoEdes8ViSi/imoveis?v=v2',864000);
+        // $json_imoveis = $this->get_content('http://www.jetimob.com/services/tZuuHuri8Q3ohAf7cvmMm8hTmWrXKJoEdes8ViSi/imoveis/',864000);
+        $imoveis = json_decode($json_imoveis);
+        $imovel = array();
+        foreach ($imoveis as $e) {
+            if ($e->codigo == $codigo && $e->contrato != 'Compra') {
+
+                $imovel['subtipo'] = ($e->subtipo != ''?$e->subtipo:$e->tipo);
+                $imovel['endereco'] = $e->endereco_logradouro;
+                $imovel['complemento'] = $e->endereco_complemento;
+                $imovel['numero'] = $e->endereco_numero;
+                $imovel['bairro'] = $e->endereco_bairro;
+                $imovel['cidade'] = $e->endereco_cidade;
+                $imovel['estado'] = $e->endereco_estado;
+                $imovel['cep'] = $e->endereco_cep;
+                $imovel['dormitorios'] = $e->dormitorios;
+                $imovel['aluguel'] = $e->valor_locacao;
+                $imovel['iptu'] = $e->valor_iptu;
+                $imovel['condominio'] = $e->valor_condominio;
+                $imovel['codigo'] = $e->codigo;
+
+                break;
+            }
+        }
+        $dados_do_imovel = json_encode($imovel);
+        // Atualiza no Banco de dados para
+        $atualizar = SloProposta::findOne($id);
+        $atualizar->imovel_info = $dados_do_imovel;
+        $atualizar->save();
+
     }
     // Retorna o Imóvel
     public function actionRetornaimovel(){
@@ -1373,5 +1410,78 @@ class PropostaController extends Controller
         
         // return the pdf output as per the destination setting
         return $pdf->render(); 
+    }
+    /**
+     * Campo Editável
+     * 
+     */
+    public function imprime_campo($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
+        $input = Editable::INPUT_TEXT;
+        $editableoptions = [
+                'class'=>'form-control',
+        ];
+        $widgetClass = '';
+
+        if (in_array($campo,['data', 'data_nascimento', 'data_expedicao', 'documento_data_emissao', 'data_admissao'])) {
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => '99/99/9999'
+            ];
+            $widgetClass = MaskedInput::className();
+        }
+        if (in_array($campo,['cpf', 'conj_cpf'])) {
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => '999.999.999-99',
+                'value' => $valor
+            ];
+            $widgetClass = MaskedInput::className();
+        }
+        if (in_array($campo,['cep', 'end_cep'])) {
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => '99.999-999'
+            ];
+            $widgetClass = MaskedInput::className();
+        }
+        if (in_array($campo,['celular', 'telefone_celular', 'whatsapp', 'telefone', 'fone', 'telefone_residencial','fone_residencial', 'fone_celular'])) {
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => ['(99)9999-9999','(99)99999-9999']
+            ];
+            $widgetClass = MaskedInput::className();
+        }
+
+        $retorno = '<label>'.$title.'</label><br />';
+        $retorno .= Editable::widget([
+            'language' => 'pt_BR',
+            'name'=> $campo, 
+            'asPopover' => false,
+            'value' => $valor,
+            'displayValue' => $valor,
+            'header' => 'Name',
+            'size'=>'md',
+            'options' => $editableoptions,
+            'inputType' => $input,
+            'widgetClass' => $widgetClass,
+            'id' => ($conj?'conjuge_':'').$tabela.'_invisivel_'.$campo,
+            'formOptions' => [
+                'action' => [
+                    'editcampo',
+                    'id' => $id,
+                    'tabela' => $tabela,
+                    'campo' => $campo
+                ]
+            ],
+            'valueIfNull' => 'valor alterado'
+        ]);
+        $retorno .= "<br>";
+        $retorno .= "<br>";
+        $retorno .= "<br>";
+        return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
     }
 }

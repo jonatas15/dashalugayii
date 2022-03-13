@@ -4,11 +4,13 @@
 ######################################## TOME NOTA!!! ##########################################
 /**
  * ATUALIZAR DADOS DO IMÓVEL PELO CÓDIGO NO PRIMEIRO ACESSO, CONFERINDO IMOVEL_INFO CASO VAZIO
+ * AJUSTAR TABELA DA HOME
  * ADD ABA, OU ÁREA AQUI EM IMÓVEL, PARA RECEBER DADOS DO PROPRIETÁRIO
+ # ######################################## FALTA ##############################################
+ * CRIAR FORMULÁRIO DO PROPRIETÁRIO PELO SITE ALUGA
+ * REPLICAR O QUE PUDER PARA O CREDPAGO...
  * ADD ENVIO AO SUPERLÓGICA, SEI QUE TEM COMO, SÓ VER ESSE COMO E JÁ ERAS
  * ADD CAMPO PARA O CÓDIGO DO D4SIGN
- * REPLICAR O QUE PUDER PARA O CREDPAGO...
- * CRIAR FORMULÁRIO DO PROPRIETÁRIO PELO SITE ALUGA
  */
 ################################################################################################
 ################################################################################################
@@ -59,6 +61,27 @@ $imoveis = $this->context->retorna_imoveis();
     <br />
     <div class="col-md-6">
         <!-- <div class="row"> -->
+        <?php
+            Card::begin([  
+                'id' => 'cardproprietario', 
+                'color' => Card::COLOR_PRIMARY, 
+                'headerIcon' => 'person', 
+                'collapsable' => true, 
+                'title' => '<strong style="font-size: 20px">Proprietário</strong>', 
+                'titleTextType' => Card::TYPE_PRIMARY, 
+                'showFooter' => true,
+                'footerContent' => 'Dados atualizados <sup>Março</sup> 2022',
+            ])
+        ?>
+        <?php
+            $proprietario = new \app\models\Proprietario();
+            echo $this->render('/proprietario/_form', [
+                'model' => $proprietario,
+                'proposta' => $model->id,
+                'action' => 'create'
+            ]);
+        ?>
+        <?php Card::end(); ?>
         <?php $form = ActiveForm::begin(); ?>
             <div class="hidden">
                 <?= $form->field($model, 'usuario_id')->hiddenInput([
@@ -216,8 +239,12 @@ $imoveis = $this->context->retorna_imoveis();
             </table>
 
             <?php Card::end(); ?>
+            
             <!-- </div> -->
         <!-- </div> -->
+    </div>
+    <div class="col-md-6">
+        
     </div>
     <div class="clearfix"></div>
 </div>

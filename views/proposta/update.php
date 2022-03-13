@@ -42,6 +42,14 @@ use yii\helpers\Url;
         $quant_etapas = 5;
     }
 
+    //Dados do Imóvel - inserir se vazio
+    // echo 'Código!!! '.$model->imovel_info;
+    $model_imovelinfo_ = json_decode($model->imovel_info);
+    if (empty($model_imovelinfo_) or $model_imovelinfo_ == "") {
+        echo '<h1>Imóvel não definido</h1>';
+        $this->context->cadastraimovelupdate($model->id, $model->codigo_imovel);
+    }
+
     // $msg_whats = "Teste de Msg\\n_Italico_ \\n*negrito*\\n~tachado~\\n```Monoespaçado```\\n😜";
     $msg_whats = "Cadastro recebido. Em análise.";
 

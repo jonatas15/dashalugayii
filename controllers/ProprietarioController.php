@@ -9,6 +9,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use kartik\editable\Editable;
+use yii\widgets\MaskedInput;
+
 /**
  * ProprietarioController implements the CRUD actions for Proprietario model.
  */
@@ -123,5 +126,78 @@ class ProprietarioController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    /**
+     * Campo Editável
+     * 
+     */
+    public function imprime_campo($tabela, $campo, $title, $valor, $id, $conj = null) {
+        $input = Editable::INPUT_TEXT;
+        $editableoptions = [
+                'class'=>'form-control',
+        ];
+        $widgetClass = '';
+
+        if (in_array($campo,['data', 'data_nascimento', 'data_expedicao', 'documento_data_emissao', 'data_admissao'])) {
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => '99/99/9999'
+            ];
+            $widgetClass = MaskedInput::className();
+        }
+        if (in_array($campo,['cpf', 'conj_cpf'])) {
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => '999.999.999-99',
+                'value' => $valor
+            ];
+            $widgetClass = MaskedInput::className();
+        }
+        if (in_array($campo,['cep', 'end_cep'])) {
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => '99.999-999'
+            ];
+            $widgetClass = MaskedInput::className();
+        }
+        if (in_array($campo,['celular', 'telefone_celular', 'whatsapp', 'telefone', 'fone', 'telefone_residencial','fone_residencial', 'fone_celular'])) {
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => ['(99)9999-9999','(99)99999-9999']
+            ];
+            $widgetClass = MaskedInput::className();
+        }
+
+        $retorno = '<label>'.$title.'</label><br />';
+        $retorno .= Editable::widget([
+            'language' => 'pt_BR',
+            'name'=> $campo, 
+            'asPopover' => false,
+            'value' => $valor,
+            'displayValue' => $valor,
+            'header' => 'Name',
+            'size'=>'md',
+            'options' => $editableoptions,
+            'inputType' => $input,
+            'widgetClass' => $widgetClass,
+            'id' => ($conj?'conjuge_':'').$tabela.'_invisivel_'.$campo,
+            'formOptions' => [
+                'action' => [
+                    'editcampo',
+                    'id' => $id,
+                    'tabela' => $tabela,
+                    'campo' => $campo
+                ]
+            ],
+            'valueIfNull' => 'valor alterado'
+        ]);
+        $retorno .= "<br>";
+        $retorno .= "<br>";
+        $retorno .= "<br>";
+        return $retorno;
     }
 }
