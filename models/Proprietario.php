@@ -57,7 +57,7 @@ class Proprietario extends \yii\db\ActiveRecord
             [['inicio_locacao', 'data_nascimento'], 'safe'],
             [['mais_informacoes', 'sexo', 'foto_rg', 'foto_cpf'], 'string'],
             [['usuario_id', 'proposta_id'], 'integer'],
-            [['iptu', 'condominio'], 'number'],
+            [['iptu', 'condominio'], 'string'],
             [['nome'], 'string', 'max' => 145],
             [['conta_deposito', 'nacionalidade'], 'string', 'max' => 45],
             [['codigo_imovel', 'cep'], 'string', 'max' => 10],

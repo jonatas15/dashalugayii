@@ -1415,7 +1415,7 @@ class PropostaController extends Controller
      * Campo Editável
      * 
      */
-    public function imprime_campo($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
+    public function imprime_campo_editavel($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
         $input = Editable::INPUT_TEXT;
         $editableoptions = [
                 'class'=>'form-control',
@@ -1483,5 +1483,12 @@ class PropostaController extends Controller
         $retorno .= "<br>";
         $retorno .= "<br>";
         return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
+    }
+    public function imprime_campo($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
+        $retorno .= "<label><strong>$title: </strong><br><span>$valor</span></label>";
+        // $retorno .= "<br>";
+        // $retorno .= "<br>";
+        // $retorno .= "<br>";
+        return '<div class="col-md-'.$col_md.'">'.$retorno.'<hr></div>';
     }
 }

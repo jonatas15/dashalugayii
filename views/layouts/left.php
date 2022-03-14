@@ -20,6 +20,7 @@ use yii\helpers\Html;
             'items' => [
                 ['label' => 'Dashboard', 'icon' => 'dashboard', 'url' => ['/']],
                 ['label' => 'Visitas', 'icon' => 'table_chart', 'url' => ['/visita']],
+                ['label' => 'Proprietários', 'icon' => 'list', 'url' => ['/proprietario']],
                 // ['label' => 'Contact', 'icon' => 'web', 'url' => ['site/contact']],
                 // ['label' => 'Javascript', 'icon' => 'code', 'url' => ['/javascript']],
                 // ['label' => 'Notifications', 'icon' => 'notifications', 'url' => ['/notifications']],

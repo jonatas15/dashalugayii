@@ -12,10 +12,15 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="proprietario-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?php //= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Proprietario', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php //= Html::a('Create Proprietario', ['create'], ['class' => 'btn btn-success']) ?>
+        <br />
+        <br />
+        <br />
+        <!-- <br /> -->
+        <!-- <br /> -->
     </p>
 
     <?php Pjax::begin(); ?>
@@ -27,17 +32,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            // 'id',
             'nome',
-            'conta_deposito',
             'codigo_imovel',
-            'logradouro',
+            'conta_deposito',
+            // 'logradouro',
             //'inicio_locacao',
             //'mais_informacoes:ntext',
-            //'celular',
-            //'telefone',
-            //'email:email',
-            //'cpf_cnpj',
+            'celular',
+            // 'telefone',
+            'email:email',
+            'cpf_cnpj',
             //'usuario_id',
             //'rg',
             //'orgao',
@@ -52,12 +57,12 @@ $this->params['breadcrumbs'][] = $this->title;
             //'cidade',
             //'estado',
             //'proposta_id',
-            //'iptu',
-            //'condominio',
+            'iptu',
+            'condominio',
             //'foto_rg',
             //'foto_cpf',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            // ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 

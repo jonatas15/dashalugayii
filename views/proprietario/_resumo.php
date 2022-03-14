@@ -14,14 +14,14 @@ use yii\widgets\ActiveForm;
 
 <div class="col-md-12 proprietario-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php //$form = ActiveForm::begin(); ?>
     <!-- $tabela, $campo, $title, $valor, $id, $conj = null -->
-    <?= $this->context->imprime_campo('12', 'proprietario', 'nome', 'Nome', $model->nome, $model->id); ?>
+    <?= $this->context->imprime_campo('6', 'proprietario', 'nome', 'Nome', $model->nome, $model->id); ?>
     <?= $this->context->imprime_campo('6', 'proprietario', 'codigo_imovel', 'Código do Imóvel', $model->codigo_imovel, $model->id); ?>
     <?= $this->context->imprime_campo('6', 'proprietario', 'condominio', 'Condomínio', $model->condominio, $model->id); ?>
     <?= $this->context->imprime_campo('6', 'proprietario', 'iptu', 'IPTU', $model->iptu, $model->id); ?>
     <?= $this->context->imprime_campo('6', 'proprietario', 'conta_deposito', 'Conta p/ depósito', $model->conta_deposito, $model->id); ?>
-    <?= $this->context->imprime_campo('12', 'proprietario', 'celular', 'Celular', $model->celular, $model->id); ?>
+    <?= $this->context->imprime_campo('6', 'proprietario', 'celular', 'Celular', $model->celular, $model->id); ?>
     <?php /*
     <div class="hidden">
         <?= $form->field($model, 'conta_deposito')->textInput(['maxlength' => true]) ?>
@@ -82,9 +82,23 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Salvar', ['class' => 'btn btn-success']) ?>
     </div>
     <?php */
+    // echo 'Imagel: ';
     ?>
-
-    <?php ActiveForm::end(); ?>
+    <div class="col-md-6" style="text-align: center">
+        <h4><strong>RG</strong></h4>
+        <?= Html::img('@web/uploads/_file_rg_proprietario_'.$model->codigo_imovel.'_'.$model->foto_rg, [
+            'alt' => 'RG',
+            'style' => 'width: 100%'
+        ]); ?>
+    </div>
+    <div class="col-md-6" style="text-align: center">
+        <h4><strong>CPF</strong></h4>
+        <?= Html::img('@web/uploads/_file_cpf_proprietario_'.$model->codigo_imovel.'_'.$model->foto_cpf, [
+            'alt' => 'RG',
+            'style' => 'width: 100%'
+        ]); ?>
+    </div>
+    <?php //ActiveForm::end(); ?>
 
 </div>
 <div class="clearfix"></div>
