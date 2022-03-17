@@ -40,6 +40,7 @@ class AntaresController extends ActiveController
     public $file_comprovante_de_endereco;
     public $file_carteira_de_trabalho;
     public $file_extrato_inss;
+    public $file_ultima_fatura;
 
 
     public $modelClass = 'app\models\SloExfiles';
@@ -53,6 +54,7 @@ class AntaresController extends ActiveController
         $this->file_comprovante_de_endereco = UploadedFile::getInstanceByName('file_comprovante_de_endereco');
         $this->file_carteira_de_trabalho = UploadedFile::getInstanceByName('file_carteira_de_trabalho');
         $this->file_extrato_inss = UploadedFile::getInstanceByName('file_extrato_inss');
+        $this->file_ultima_fatura = UploadedFile::getInstanceByName('file_ultima_fatura');
 
         $proposta_id = $_REQUEST['proposta_id'];
         $pasta = "uploads/";
@@ -64,6 +66,7 @@ class AntaresController extends ActiveController
         if (!empty($this->file_comprovante_de_endereco)) { $this->file_comprovante_de_endereco->saveAs($pasta ."_file_comprovante_de_endereco_{$proposta_id}_" . $this->file_comprovante_de_endereco->baseName . '.' . $this->file_comprovante_de_endereco->extension); }
         if (!empty($this->file_carteira_de_trabalho)) { $this->file_carteira_de_trabalho->saveAs($pasta ."_file_carteira_de_trabalho_{$proposta_id}_" . $this->file_carteira_de_trabalho->baseName . '.' . $this->file_carteira_de_trabalho->extension); }
         if (!empty($this->file_extrato_inss)) { $this->file_extrato_inss->saveAs($pasta ."_file_extrato_inss_{$proposta_id}_" . $this->file_extrato_inss->baseName . '.' . $this->file_extrato_inss->extension); }
+        if (!empty($this->file_ultima_fatura)) { $this->file_ultima_fatura->saveAs($pasta ."_file_ultima_fatura_{$proposta_id}_" . $this->file_ultima_fatura->baseName . '.' . $this->file_ultima_fatura->extension); }
 
         $actions = parent::actions();
         unset($actions['delete']);

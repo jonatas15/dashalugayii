@@ -71,7 +71,16 @@ foreach ($visitas_grafico as $key => $val) {
         max-width: 100% !important;
         height: 100px !important;
         border-radius: 3px !important;
-        background-color: black;
+        /* background-color: black; */
+    }
+    .imagem-icone-imovel img {
+        max-width: 100% !important;
+        height: auto;
+        max-height: 100px !important;
+        border-radius: 3px !important;
+        /* background-color: black; */
+        -webkit-filter: drop-shadow(1px 2px 1px #000);
+        filter: drop-shadow(1px 2px 1px #000);
     }
     .ct-chart .ct-label {
         color: white !important;
@@ -206,16 +215,24 @@ foreach ($visitas_grafico as $key => $val) {
                                     'id' => 'card_'.$visit->idvisita, 
                                     'color' => Card::COLOR_PRIMARY, 
                                     'headerIcon' => "<img src='".Yii::$app->homeUrl.'usuarios/'.$foto_usuario."' class='float-left imagem-icone' style='width:100%;'/>", 
-                                    'collapsable' => false, 
+                                    'collapsable' => false,
                                     'title' => '<strong>'.$visit->idCorretor->nome.'</strong>', 
                                     'titleTextType' => Card::TYPE_PRIMARY, 
                                     'showFooter' => true,
-                                    'footerContent' => 'Contrato fechado em '.date('d/m/Y', strtotime($visit->data_visita)),
+                                    'footerContent' => 'Visita feita em '.date('d/m/Y', strtotime($visit->data_visita)),
                                 ])
                             ?>
                             <!-- START your <body> content of the Card below this line  -->
-                            <span class='col-md-6'><?="<img src='".($imagem_do_imovel?$imagem_do_imovel:Yii::$app->homeUrl.'icones/logo_site.png')."' class='float-left imagem-icone-imovel'/>"?></span>
-                            <span class='col-md-6'><i class="material-icons">key</i><h4> <strong style="font-weight: bolder;"><?="PIN {$visit->codigo_imovel}"?></strong></h4></span>
+                            <span class='col-md-6'><div class='float-left imagem-icone-imovel'><?="<img src='".($imagem_do_imovel?$imagem_do_imovel:Yii::$app->homeUrl.'icones/logo_site.png')."'/>"?></div></span>
+                            <div class='col-md-6' style="box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);background-color:ghostwhite">
+                                <h3>
+                                    <strong style="font-weight: bolder;"><i class="material-icons">key</i> <?=" PIN {$visit->codigo_imovel}"?></strong>                
+                                </h3>
+                                <p>
+                                    <strong>Cliente: </strong>
+                                    <?=$visit->nome_cliente?>
+                                </p>
+                            </div>
                             <!-- END your <body> content of the Card above this line, right before "Card::end()"  -->                
                             <?php Card::end(); ?>
                         </div>

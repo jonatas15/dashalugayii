@@ -7,12 +7,13 @@
  * AJUSTAR TABELA DA HOME
  * ADD ABA, OU ÁREA AQUI EM IMÓVEL, PARA RECEBER DADOS DO PROPRIETÁRIO
  * CRIAR FORMULÁRIO DO PROPRIETÁRIO PELO SITE ALUGA
- # ######################################## FALTA ##############################################
  * REPLICAR O QUE PUDER PARA O CREDPAGO...
+ * AJUSTAR DASH PROPRIETARIOS - VERSÃO 1
+ # ######################################## FALTA ##############################################
  * ADD ENVIO AO SUPERLÓGICA, SEI QUE TEM COMO, SÓ VER ESSE COMO E JÁ ERAS
  * ADD CAMPO PARA O CÓDIGO DO D4SIGN
- * AJUSTAR DASH PROPRIETARIOS - VERSÃO 1
  * AJUSTAR DASH PROPRIETARIOS - VERSÃO COMPLETA
+ * Completar CREDPAGO (formulários)
  */
 ################################################################################################
 ################################################################################################

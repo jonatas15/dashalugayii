@@ -17,6 +17,7 @@ use Yii;
  * @property string $comprovante_de_endereco
  * @property string $carteira_de_trabalho
  * @property string $extrato_inss
+ * @property string $ultima_fatura
  */
 class SloExfiles extends \yii\db\ActiveRecord
 {
@@ -36,7 +37,7 @@ class SloExfiles extends \yii\db\ActiveRecord
         return [
             [['proposta_id'], 'required'],
             [['proposta_id'], 'integer'],
-            [['cpf', 'rg_frente', 'rg_verso', 'extrato_bancario', 'imposto_de_renda', 'comprovante_de_endereco', 'carteira_de_trabalho', 'extrato_inss'], 'string'],
+            [['cpf', 'rg_frente', 'rg_verso', 'extrato_bancario', 'imposto_de_renda', 'comprovante_de_endereco', 'carteira_de_trabalho', 'extrato_inss', 'ultima_fatura'], 'string'],
         ];
     }
 

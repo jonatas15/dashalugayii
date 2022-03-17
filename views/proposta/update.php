@@ -249,7 +249,7 @@ use yii\helpers\Url;
         // echo '</pre>';
 
 
-    // $msg_whats .= "\\n ".'https://cafeimobiliaria.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').'/'.$model->id;
+    // $msg_whats .= "\\n ".'https://alugadigital.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').'/'.$model->id;
 
 ?>
 <script>
@@ -504,7 +504,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                         <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=1&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '1' ? 'primary' : 'default')?>">Pendenciado</a>
                         <?php 
                             // Modal aqui
-                            if ($model->opcoes == '1'):
+                            if ($model->opcoes == '1' and $model->tipo == "Seguro Fiança"):
                                 Modal::begin([
                                     // 'header' => 'Definir Documentos',
                                     'size' => 'modal-md',
@@ -621,7 +621,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                     <div class="clearfix"></div>
                     <div class="col-md-12">
                         <?php 
-                            $url = 'https://cafeimobiliaria.com.br/'.$linkcp;
+                            $url = 'https://alugadigital.com.br/'.$linkcp;
                             // $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
                             $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
                             $bitly->shorten($url);
@@ -686,7 +686,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 $msg_html3.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
                                 $msg_html3.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
                                 $msg_html3.= '</p>';
-                                $msg_html3.= '<img src="https://cafeimobiliaria.com.br/img/logo_a_empresa.f21cb89d.png" width="100">';
+                                $msg_html3.= '<img src="https://alugadigital.com.br/img/logo_a_empresa.f21cb89d.png" width="100">';
                                 $msg_html3.= '</center>';
                                 echo $msg_html.$msg_html3;
                                 echo '<br>';
@@ -858,7 +858,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                 // echo '<h4 style="text-align: center"><strong>Ainda sem Proponente</strong></h4>';
                 // echo '<h5 style="text-align: center">(Copie o Link abaixo pra enviar ao Pretendente)</h5><hr>';
                 // $retorno .= "<div class='col-md-10' style='padding: 0px'>";
-                // $retorno .= '<input style="background-color: lightgray; height: 35px; width: 100%" type="text" value="https:://www.cafeinteligencia.com.br'.Yii::$app->homeUrl.'proposta/pretendente001?proposta_id='.$data->id.'&pretendente_id=novo" id="myInput">';
+                // $retorno .= '<input style="background-color: lightgray; height: 35px; width: 100%" type="text" value="https:://www.alugadigital.com.br'.Yii::$app->homeUrl.'proposta/pretendente001?proposta_id='.$data->id.'&pretendente_id=novo" id="myInput">';
                 // $retorno .= "</div>";
 
                 // $retorno .= '<div class="col-md-2" style="margin-top: 0px !important;padding-right: 0px;padding-left: 0px;">';
