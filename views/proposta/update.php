@@ -896,7 +896,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     'model' => $model,
                                 ]).
                             '</div>',
-                        'active' => true
+                        'active' => false
                     ],
                     [
                         'label' => 'Registro: Pretendente',
@@ -906,7 +906,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'id' => $id,
                         ]).
                         '</div>',
-                        'active' => false 
+                        'active' => true 
                     ],
                     // 'nome',
                     [

@@ -100,6 +100,10 @@ use deyraka\materialdashboard\widgets\Card;
         font-size: 14px !important;
         font-weight: bold !important;
     }
+    .btn-documentos {
+        background-color: ghostwhite !important;
+        color: black !important;
+    }
 </style>
 <div class="clearfix"><br /></div>
 <div class="col-md-12" style="background-color: white !important;">
@@ -165,7 +169,8 @@ use deyraka\materialdashboard\widgets\Card;
                 'proponentes',
                 'naoLocalizado',
                 'condicao_do_imovel',
-                'telefone'
+                'telefone',
+                'corresponsavel'
             ];
             switch ($model->tipo) {
                 case 'credpago': array_push($arr_campos_retirados,'idsapo');
@@ -184,6 +189,7 @@ use deyraka\materialdashboard\widgets\Card;
             echo '<div class="col-md-6">
             <div class="item-interno-proposta col-md-12">';
             $i = 1;
+            $m = 1;
             foreach ($pessoa as $key => $value) {
                 if (!in_array($key,$arr_campos_retirados)):
                     switch ($key) {
@@ -218,6 +224,23 @@ use deyraka\materialdashboard\widgets\Card;
                     $total++;
                     $i++;
                 endif;
+            }
+            echo '</div></div>';
+            echo '<div class="col-md-6">
+            <div class="item-interno-proposta col-md-12">';
+            foreach ($pessoa as $key => $value) {
+                if (in_array($key, ['endereco', 'complemento', 'bairro', 'cidade', 'estado', 'cep'])) {
+                    echo '<div class="item-campo col-md-10">';
+                    echo imprime_campo('SloProposta', $key, $pessoa->getAttributeLabel($key),$value, $pessoa->id);
+                    echo '</div>';
+                    echo '<div class="item-campo col-md-2">';
+                    echo '<br><button title="Copiar" alt="Copiar" class="btn btn-primary" style="color: white !important; padding: 5px 15px" onClick="copyToClipboard(\'#SloProposta_invisivel_'.$key.'-targ\')"><span class="glyphicon glyphicon-copy"></span></button>';
+                    echo '</div>';
+                    if ($m%4==0) {
+                        echo '</div></div><div class="col-md-6"><div class="item-interno-proposta col-md-12">';
+                    }
+                    $m++;
+                }
             }
             echo '</div></div>';
             echo '<div class="clearfix"></div>';
@@ -310,11 +333,35 @@ use deyraka\materialdashboard\widgets\Card;
                 echo '<div class="clearfix"></div>';
                 Card::end();
             }
+            if ($model->corresponsavel) {
+                Card::begin([  
+                    'id' => 'dados_do_proponente_principal_corresponsavel', 
+                    'color' => Card::COLOR_WARNING, 
+                    'headerIcon' => 'list', 
+                    'collapsable' => true, 
+                    'title' => '<strong style="font-size: 20px">Corresponsável</strong>', 
+                    'titleTextType' => Card::TYPE_WARNING, 
+                    'showFooter' => true,
+                    'footerContent' => 'Dados atualizados <sup>Março</sup> 2022',
+                ]);
+                // $modelcorresponsavel = json_encode($model->corresponsavel);
+                $modelcorresponsavel = json_decode($model->corresponsavel, true);
+                
+                echo '<div class="item-interno-proposta col-md-4" style"font-size: 15px !important;">';
+                    echo('<label>Nome: </label>  <label style="font-weight: bold; float: right">'.$modelcorresponsavel['nome'].'</label><br>');
+                    echo('<label>Data de Nascimento: </label>  <label style="font-weight: bold; float: right">'.$modelcorresponsavel['data_nascimento'].'</label><br>');
+                    echo('<label>CPF: </label>  <label style="font-weight: bold; float: right">'.$modelcorresponsavel['cpf'].'</label><br>');
+                    echo('<label>Telefone: </label>  <label style="font-weight: bold; float: right">'.$modelcorresponsavel['telefone'].'</label><br>');
+                    echo('<label>Email: </label>  <label style="font-weight: bold; float: right">'.$modelcorresponsavel['email'].'</label><br>');           
+                echo '</div>';
+                echo '<div class="clearfix"></div>';
+                Card::end();
+            }
             //Seção 5 --------------------------------------------------------------------
 
             $prefixo_nome_arquivo = $this->context->clean($model->cpf);
             
-            if (count($docmto) > 0) {
+            if (count($docmto) > 0 and $docmto->frente) {
                 echo '<div class="col-md-12"><hr>
                 <h3><center><strong>Arquivos da Documentação:</strong></center></h3>
                 </div>';
@@ -327,7 +374,7 @@ use deyraka\materialdashboard\widgets\Card;
                         'header' => '',
                         'toggleButton' => [
                             'label' => (pathinfo($frente_doc, PATHINFO_EXTENSION) == 'pdf' ? '<i class="fas fa-file-pdf" style="font-size: 25px"></i>' : '<img src="'.$frente_doc.'" style="width: auto;max-width: 100%;max-height: 120px;">').'<hr>'."<strong>Frente do Documento</strong>",
-                            'class' => 'btn',
+                            'class' => 'btn btn-documentos',
                             'style' => 'margin-bottom: 12px;width:100%;height:180px;'
                         ],
                     ]);
@@ -347,7 +394,7 @@ use deyraka\materialdashboard\widgets\Card;
                         'header' => '',
                         'toggleButton' => [
                             'label' => (pathinfo($verso_doc, PATHINFO_EXTENSION) == 'pdf' ? '<i class="fas fa-file-pdf" style="font-size: 25px"></i>' : '<img src="'.$verso_doc.'" style="width: auto;max-width: 100%;max-height: 120px;">').'<hr>'."<strong>Verso do Documento</strong>",
-                            'class' => 'btn',
+                            'class' => 'btn btn-documentos',
                             'style' => 'margin-bottom: 12px;width:100%;height:180px;'
                         ],
                     ]);
@@ -372,7 +419,7 @@ use deyraka\materialdashboard\widgets\Card;
                         'header' => '',
                         'toggleButton' => [
                             'label' => (pathinfo($conj_frente_doc, PATHINFO_EXTENSION) == 'pdf' ? '<i class="fas fa-file-pdf" style="font-size: 25px"></i>' : '<img src="'.$conj_frente_doc.'" style="width: auto;max-height: 120px;">').'<hr>'."<strong>Cônjuge: Frente do Documento</strong>",
-                            'class' => 'btn',
+                            'class' => 'btn btn-documentos',
                             'style' => 'margin-bottom: 12px;width:100%'
                         ],
                         ]);
@@ -393,7 +440,7 @@ use deyraka\materialdashboard\widgets\Card;
                         'header' => '',
                         'toggleButton' => [
                             'label' => (pathinfo($conj_verso_doc, PATHINFO_EXTENSION) == 'pdf' ? '<i class="fas fa-file-pdf" style="font-size: 25px"></i>' : '<img src="'.$conj_verso_doc.'" style="width: auto;max-height: 120px;">').'<hr>'."<strong>Cônjuge: Verso do Documento</strong>",
-                            'class' => 'btn',
+                            'class' => 'btn btn-documentos',
                             'style' => 'margin-bottom: 12px;width:100%'
                         ],
                     ]);

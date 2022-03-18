@@ -14,6 +14,7 @@ use app\models\SloRefbancaria;
 use app\models\SloMoratual;
 use app\models\SloOcupante;
 use app\models\SloFiador;
+use app\models\Proprietario;
 
 use app\models\PropostaSearch;
 use yii\web\Controller;
@@ -1140,15 +1141,15 @@ class PropostaController extends Controller
         // echo $tabela;
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $valor = $_REQUEST[$campo];
-        // switch ($tabela) {
-        //     case 'SloInfospessoais':
-        //         $model = SloInfospessoais::findOne($id);
-        //     break;
-        //     case 'SloContratodocumento':
-        //         $model = SloContratodocumento::findOne($id);
-        //     break;
-        // }
-        $model = SloProposta::findOne($id);
+        switch ($tabela) {
+            case 'SloProposta':
+                $model = SloProposta::findOne($id);
+            break;
+            case 'Proprietario':
+                $model = Proprietario::findOne($id);
+            break;
+        }
+        // $model = SloProposta::findOne($id);
         switch ($campo) {
             case 'data': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'data_nascimento': $model->$campo = $this->formatar_data_pro_banco($valor); break;
@@ -1163,6 +1164,7 @@ class PropostaController extends Controller
             case 'celular': $model->$campo = $this->clean($valor); break;
             case 'telefone': $model->$campo = $this->clean($valor); break;
             case 'fone_celular': $model->$campo = $this->clean($valor); break;
+            case 'celular': $model->$campo = $this->clean($valor); break;
             case 'fone_residencial': $model->$campo = $this->clean($valor); break;
             default: $model->$campo = $valor; break;
         }

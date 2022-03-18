@@ -16,12 +16,12 @@ use yii\widgets\ActiveForm;
 
     <?php //$form = ActiveForm::begin(); ?>
     <!-- $tabela, $campo, $title, $valor, $id, $conj = null -->
-    <?= $this->context->imprime_campo('6', 'proprietario', 'nome', 'Nome', $model->nome, $model->id); ?>
-    <?= $this->context->imprime_campo('6', 'proprietario', 'codigo_imovel', 'Código do Imóvel', $model->codigo_imovel, $model->id); ?>
-    <?= $this->context->imprime_campo('6', 'proprietario', 'condominio', 'Condomínio', $model->condominio, $model->id); ?>
-    <?= $this->context->imprime_campo('6', 'proprietario', 'iptu', 'IPTU', $model->iptu, $model->id); ?>
-    <?= $this->context->imprime_campo('6', 'proprietario', 'conta_deposito', 'Conta p/ depósito', $model->conta_deposito, $model->id); ?>
-    <?= $this->context->imprime_campo('6', 'proprietario', 'celular', 'Celular', $model->celular, $model->id); ?>
+    <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'nome', 'Nome', $model->nome, $model->id); ?>
+    <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'codigo_imovel', 'Código do Imóvel', $model->codigo_imovel, $model->id); ?>
+    <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'condominio', 'Condomínio', $model->condominio, $model->id); ?>
+    <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'iptu', 'IPTU', $model->iptu, $model->id); ?>
+    <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'conta_deposito', 'Conta p/ depósito', $model->conta_deposito, $model->id); ?>
+    <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'celular', 'Celular', $model->celular, $model->id); ?>
     <?php /*
     <div class="hidden">
         <?= $form->field($model, 'conta_deposito')->textInput(['maxlength' => true]) ?>

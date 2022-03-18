@@ -56,7 +56,15 @@ class DefaultController extends ActiveController
         // }
 
         // uploadimagem($frente);
-        $request_numero = $_REQUEST['cpf'];
+        if ($_REQUEST['cpf'] != "") {
+            $request_numero = $_REQUEST['cpf'];
+        } else {
+            $modelidcpf = \app\models\SloProposta::find()->where([
+                'id' => $_REQUEST['id']
+            ])->one();
+            $request_numero = $modelidcpf->cpf;
+        }
+
         if (!empty($this->frente)) {
             $this->frente->saveAs($pasta ."_frente_{$request_numero}_" . $this->frente->baseName . '.' . $this->frente->extension);
         }

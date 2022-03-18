@@ -18,8 +18,8 @@ class ProprietarioSearch extends Proprietario
     {
         return [
             [['id', 'usuario_id', 'proposta_id'], 'integer'],
-            [['nome', 'conta_deposito', 'codigo_imovel', 'logradouro', 'inicio_locacao', 'mais_informacoes', 'celular', 'telefone', 'email', 'cpf_cnpj', 'rg', 'orgao', 'sexo', 'data_nascimento', 'nacionalidade', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'estado', 'foto_rg', 'foto_cpf'], 'safe'],
-            [['iptu', 'condominio'], 'number'],
+            [['nome', 'conta_deposito', 'codigo_imovel', 'logradouro', 'inicio_locacao', 'mais_informacoes', 'celular', 'telefone', 'email', 'cpf_cnpj', 'rg', 'orgao', 'sexo', 'data_nascimento', 'nacionalidade', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'estado', 'foto_rg', 'foto_cpf', 'iptu', 'condominio'], 'safe'],
+            [['iptu'], 'number'],
         ];
     }
 
@@ -64,8 +64,7 @@ class ProprietarioSearch extends Proprietario
             'usuario_id' => $this->usuario_id,
             'data_nascimento' => $this->data_nascimento,
             'proposta_id' => $this->proposta_id,
-            'iptu' => $this->iptu,
-            'condominio' => $this->condominio,
+            'iptu' => $this->iptu
         ]);
 
         $query->andFilterWhere(['like', 'nome', $this->nome])
@@ -89,6 +88,7 @@ class ProprietarioSearch extends Proprietario
             ->andFilterWhere(['like', 'cidade', $this->cidade])
             ->andFilterWhere(['like', 'estado', $this->estado])
             ->andFilterWhere(['like', 'foto_rg', $this->foto_rg])
+            ->andFilterWhere(['like', 'condominio', $this->condominio])
             ->andFilterWhere(['like', 'foto_cpf', $this->foto_cpf]);
 
         return $dataProvider;

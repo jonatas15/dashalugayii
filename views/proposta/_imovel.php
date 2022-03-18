@@ -80,11 +80,15 @@ $imoveis = $this->context->retorna_imoveis();
             $proprietario = \app\models\Proprietario::find()->where([
                 'codigo_imovel' => $model->codigo_imovel
             ])->one();
-            echo $this->render('/proprietario/_resumo', [
-                'model' => $proprietario,
-                'proposta' => $model->id,
-                'action' => 'update'
-            ]);
+            if ($proprietario) {
+                echo $this->render('/proprietario/_resumo', [
+                    'model' => $proprietario,
+                    'proposta' => $model->id,
+                    'action' => 'update'
+                ]);
+            } else {
+                echo 'Cadastre um novo proprietário no site com o código '.$model->codigo_imovel;
+            }
         ?>
         <?php Card::end(); ?>
         <?php $form = ActiveForm::begin(); ?>
