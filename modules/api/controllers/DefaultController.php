@@ -71,7 +71,7 @@ class DefaultController extends ActiveController
         }
         
         // echo '<pre>';
-        // print_r($request_numero);
+        // print_r($_REQUEST);
         // echo '</pre>';
         // echo "\n";
         // echo '<pre>';
