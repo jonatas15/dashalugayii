@@ -1,6 +1,18 @@
 <?php
 use yii\helpers\Html;
 ?>
+<style>
+    .main-panel>.navbar {
+        /* background-color: #191919 !important; */
+        /* background-color: #000 !important;
+        font-style: bold !important;
+        font-family: Georgia, "Times New Roman", Times, serif !important;
+        font-size: 12px !important; */
+        /* background-image: url("<?=Yii::$app->homeUrl?>img/sidebar-5.jpg");
+        background-position: center top;
+        background-size: 100% auto; */
+    }
+</style>
 <nav class="navbar navbar-transparent navbar-expand-lg navbar-absolute fixed-top" role="navigation-demo">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
