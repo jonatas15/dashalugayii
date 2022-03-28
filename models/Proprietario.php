@@ -9,7 +9,8 @@ use Yii;
  *
  * @property int $id
  * @property string $nome Nome
- * @property string|null $conta_deposito Conta - depósito
+ * @property string $nome_fantasia Nome Fantasia
+ * @property string|null $conta_deposito Conta depósito
  * @property string|null $codigo_imovel Código do Imóvel
  * @property string|null $logradouro Logradouro
  * @property string|null $inicio_locacao Início da Locação
@@ -18,6 +19,7 @@ use Yii;
  * @property string|null $telefone Contato
  * @property string|null $email Recebe
  * @property string|null $cpf_cnpj CPF/CNPJ
+ * @property string|null $cpf CPF
  * @property int|null $usuario_id Usuário
  * @property string|null $rg
  * @property string|null $orgao
@@ -63,8 +65,8 @@ class Proprietario extends \yii\db\ActiveRecord
             [['codigo_imovel', 'cep'], 'string', 'max' => 10],
             [['logradouro', 'email'], 'string', 'max' => 245],
             [['celular', 'telefone', 'cpf_cnpj', 'rg', 'complemento'], 'string', 'max' => 20],
-            [['orgao', 'numero'], 'string', 'max' => 15],
-            [['endereco', 'bairro'], 'string', 'max' => 255],
+            [['orgao', 'numero', 'cpf'], 'string', 'max' => 15],
+            [['endereco', 'bairro', 'nome_fantasia'], 'string', 'max' => 255],
             [['cidade'], 'string', 'max' => 200],
             [['estado'], 'string', 'max' => 100],
         ];

@@ -69,7 +69,7 @@ $imoveis = $this->context->retorna_imoveis();
                 'id' => 'cardproprietario', 
                 'color' => Card::COLOR_PRIMARY, 
                 'headerIcon' => 'person', 
-                'collapsable' => true, 
+                'collapsable' => false, 
                 'title' => '<strong style="font-size: 20px">Proprietário</strong>', 
                 'titleTextType' => Card::TYPE_PRIMARY, 
                 'showFooter' => true,

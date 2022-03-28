@@ -275,6 +275,19 @@ class ProprietarioController extends Controller
         $retorno .= "<br>";
         return $retorno;
     }
+    public function format_doc($doc,$tipo){
+        switch ($tipo) {
+            case 'cpf': $f = str_split($doc,3); $retorno = $f[0].'.'.$f[1].'.'.$f[2].'-'.$f[3]; break;
+            case 'cep': $f = str_split($doc,5); $retorno = $f[0].'-'.$f[1]; break;
+            case 'cnpj': 
+                $f = str_split($doc,1); 
+                // XX. XXX. XXX/0001-XX
+                $retorno = $f[0].$f[1].'.'.$f[2].$f[3].$f[4].'.'.$f[5].$f[6].$f[7].'/'.$f[8].$f[9].$f[10].$f[11].'-'.$f[12].$f[13]; 
+                break;
+            default: $retorno = null; break;
+        }
+        return $retorno;        
+    }
     public function imprime_campo_editavel($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
         $input = Editable::INPUT_TEXT;
         $editableoptions = [
@@ -307,6 +320,21 @@ class ProprietarioController extends Controller
                 'mask' => '99.999-999'
             ];
             $widgetClass = MaskedInput::className();
+        }
+        if (in_array($campo,['cpf_cnpj'])) {
+            // XX. XXX. XXX/0001-XX
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => ['999.999.999-99', '99.999.999/9999-99'],
+                'value' => $valor
+            ];
+            $widgetClass = MaskedInput::className();
+            if ($this->clean($valor) == 11) {
+                $valore = $this->format_doc($valor, 'cpf');
+            } else {
+                $valore = $this->format_doc($valor, 'cnpj');
+            }
         }
         if (in_array($campo,['celular', 'telefone_celular', 'whatsapp', 'telefone', 'fone', 'telefone_residencial','fone_residencial', 'fone_celular'])) {
             $input = Editable::INPUT_WIDGET;

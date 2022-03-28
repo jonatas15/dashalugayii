@@ -102,9 +102,9 @@ foreach ($visitas_grafico as $key => $val) {
         print_r($javisto);
         echo '</pre>';
     */
-    echo $this->render('avisos',[
-        'idreferencia' => ''
-    ]);
+    // echo $this->render('avisos',[
+    //     'idreferencia' => ''
+    // ]);
     
     ?>
     <hr>

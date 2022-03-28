@@ -534,6 +534,64 @@ class PropostaController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
+    public function superlogicaproprietario($codigo_imovel) {
+
+         $proprietario = \app\models\Proprietario::find()->where([
+             'codigo_imovel' => $codigo_imovel,
+         ])->one();
+
+        echo '<pre>';
+        print_r($proprietario);
+        echo '</pre>';
+        echo '<hr>';
+        // exit();
+        
+        $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/proprietarios/put");
+
+        //curl_setopt($ch, CURLOPT_URL, "http://apps.superlogica.net/imobiliaria/api/proprietarios");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+
+        $model = $proprietario;
+
+        $a_enviar = json_encode('{
+            "ST_NOME_PES": "'.$model->nome.'",
+            "ST_FANTASIA_PES": "'.$model->nome.'",
+            "ST_CNPJ_PES": "'.$model->cpf_cnpj.'",
+            "ST_CELULAR_PES": "'.$this->clean($model->celular).'",
+            "ST_TELEFONE_PES": "'.$this->clean($model->telefone).'",
+            "ST_EMAIL_PES": "'.$model->email.'",
+            "ST_RG_PES": "'.$model->rg.'",
+            "ST_ORGAO_PES": "'.$model->orgao.'",
+            "ST_SEXO_PES": "'.($model->sexo == 'M'?1:2).'",
+            "DT_NASCIMENTO_PES": "'.date("d/m/Y", strtotime($model->data_nascimento)).'",
+            "ST_NACIONALIDADE_PES": "'.$model->nacionalidade.'",
+            "ST_CEP_PES": "'.$this->clean($model->cep).'",
+            "ST_ENDERECO_PES": "'.$model->endereco.'",
+            "ST_NUMERO_PES": "'.$model->numero.'",
+            "ST_COMPLEMENTO_PES": "'.$model->complemento.'",
+            "ST_BAIRRO_PES":"'.$model->bairro.'",
+            "ST_CIDADE_PES": "'.$model->cidade.'",
+            "ST_ESTADO_PES": "'.$model->estado.'",
+            "ST_OBSERVACAO_PES": "'.$model->mais_informacoes.'"
+        }');
+        // echo $a_enviar;
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "app_token: 86f34537-5693-3c40-a60d-754b3c5b9fa8",
+            "access_token: d615ff2c-35bc-3855-8a44-c231c920fc4c"
+        ));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        echo '<hr>';
+        print_r($response);
+    }
+
     public function superlogica($url, $metodo, $id) {
 
         /**
@@ -595,6 +653,12 @@ class PropostaController extends Controller
         return $response;
     }
 
+    public function actionAddtosuperlogica ($id) {
+        $sapo = $this->superlogicaproprietario('32210'); //$this->superlogica("https://api.superlogica.net/v2/financeiro/recorrencias/recorrenciasdeplanos?tipo=contratos&gridMensalidadesAgrupadasPorPlano=false&semTrial=true&CLIENTES[0]=12,CLIENTES[1]=13&dtInicio&dtFim&pagina=1&itensPorPagina=50");
+        // $sapo = $this->superlogica('http://apps.superlogica.net/imobiliaria/api/imoveis','POST', $id); //$this->superlogica("https://api.superlogica.net/v2/financeiro/recorrencias/recorrenciasdeplanos?tipo=contratos&gridMensalidadesAgrupadasPorPlano=false&semTrial=true&CLIENTES[0]=12,CLIENTES[1]=13&dtInicio&dtFim&pagina=1&itensPorPagina=50");
+        return $sapo;
+    }
+
     public function actionTrazprops () {
         $ch = curl_init();
 
@@ -627,27 +691,16 @@ class PropostaController extends Controller
         switch ($tipo) {
             case 'cpf': $f = str_split($doc,3); $retorno = $f[0].'.'.$f[1].'.'.$f[2].'-'.$f[3]; break;
             case 'cep': $f = str_split($doc,5); $retorno = $f[0].'-'.$f[1]; break;
+            case 'cnpj': 
+                $f = str_split($doc,1); 
+                // XX. XXX. XXX/0001-XX
+                $retorno = $f[0].$f[1].'.'.$f[2].$f[3].$f[4].'.'.$f[5].$f[6].$f[7].'/'.$f[8].$f[9].$f[10].$f[11].'-'.$f[12].$f[13]; 
+                break;
             default: $retorno = null; break;
         }
         return $retorno;        
     }
 
-    public function superlogicaitem ($proposta) {
-        // $prop = /*[];*/ $this->superlogica("https://apps.superlogica.net/imobiliaria/api/contratos/id/{$proposta}");
-        // $desp = /*[];*/ $this->superlogica("https://apps.superlogica.net/imobiliaria/api/despesas/index?idContrato[0]={$proposta}");
-        // $cobr = /*[];*/ $this->superlogica("https://cafeintel.superlogica.net/financeiro/atual/cobranca/index?idLabel={$proposta}&status=todos");
-        $sapo = $this->superlogica('https://apps.superlogica.net/imobiliaria/api/contratos/id/216','GET'); //$this->superlogica("https://api.superlogica.net/v2/financeiro/recorrencias/recorrenciasdeplanos?tipo=contratos&gridMensalidadesAgrupadasPorPlano=false&semTrial=true&CLIENTES[0]=12,CLIENTES[1]=13&dtInicio&dtFim&pagina=1&itensPorPagina=50");
-        return $sapo;
-    }
-
-    public function actionAddtosuperlogica ($id) {
-        // $prop = /*[];*/ $this->superlogica("https://apps.superlogica.net/imobiliaria/api/contratos/id/{$proposta}");
-        // $desp = /*[];*/ $this->superlogica("https://apps.superlogica.net/imobiliaria/api/despesas/index?idContrato[0]={$proposta}");
-        // $cobr = /*[];*/ $this->superlogica("https://cafeintel.superlogica.net/financeiro/atual/cobranca/index?idLabel={$proposta}&status=todos");
-        $sapo = $this->superlogica('http://apps.superlogica.net/imobiliaria/api/imoveis','POST', $id); //$this->superlogica("https://api.superlogica.net/v2/financeiro/recorrencias/recorrenciasdeplanos?tipo=contratos&gridMensalidadesAgrupadasPorPlano=false&semTrial=true&CLIENTES[0]=12,CLIENTES[1]=13&dtInicio&dtFim&pagina=1&itensPorPagina=50");
-        return $sapo;
-    }
-    
     // Pega dados do Jetimob
     public function get_content($url, $expire = 0) {
         $file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . sha1($url);
@@ -1157,6 +1210,7 @@ class PropostaController extends Controller
             case 'documento_data_emissao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'data_admissao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'conj_data_nascimento': $model->$campo = $this->formatar_data_pro_banco($valor); break;
+            case 'inicio_locacao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'cpf': $model->$campo = $this->clean($valor); break;
             case 'conj_cpf': $model->$campo = $this->clean($valor); break;
             case 'cep': $model->$campo = $this->clean($valor); break;
@@ -1166,6 +1220,7 @@ class PropostaController extends Controller
             case 'fone_celular': $model->$campo = $this->clean($valor); break;
             case 'celular': $model->$campo = $this->clean($valor); break;
             case 'fone_residencial': $model->$campo = $this->clean($valor); break;
+            case 'cpf_cnpj': $model->$campo = $this->clean($valor); break;
             default: $model->$campo = $valor; break;
         }
         $model->save(); 
@@ -1423,14 +1478,19 @@ class PropostaController extends Controller
                 'class'=>'form-control',
         ];
         $widgetClass = '';
+        $valore = $valor;
+        $data = [];
+        $displayValueConfig = [];
+        $submitOnEnter = true;
 
-        if (in_array($campo,['data', 'data_nascimento', 'data_expedicao', 'documento_data_emissao', 'data_admissao'])) {
+        if (in_array($campo,['data', 'data_nascimento', 'data_expedicao', 'documento_data_emissao', 'data_admissao', 'inicio_locacao'])) {
             $input = Editable::INPUT_WIDGET;
             $editableoptions = [
                 'class' => 'form-control',
                 'mask' => '99/99/9999'
             ];
             $widgetClass = MaskedInput::className();
+            // $valore = date('d/m/Y', strtotime($valor));
         }
         if (in_array($campo,['cpf', 'conj_cpf'])) {
             $input = Editable::INPUT_WIDGET;
@@ -1440,6 +1500,41 @@ class PropostaController extends Controller
                 'value' => $valor
             ];
             $widgetClass = MaskedInput::className();
+            $valore = $this->format_doc($valor, 'cpf');
+        }
+        if (in_array($campo,['sexo'])) {
+            $input = Editable::INPUT_DROPDOWN_LIST;
+            $data = ['M' => 'Masculino', 'F' => 'Feminino', 'I' => 'Indefinido'];
+            switch ($valor) {
+                case 'M': $valore = "Masculino"; break;
+                case 'F': $valore = "Feminino"; break;
+                case 'I': $valore = "Indefinido"; break;
+                default: $valore = "Masculino"; break;
+            }
+            $displayValueConfig = [
+                'M' => "Masculino",
+                'F' => "Feminino",
+                'I' => "Indefinido"
+            ];
+        }
+        if (in_array($campo,['mais_informacoes'])) {
+            $input = Editable::INPUT_TEXTAREA;
+            $submitOnEnter = false;
+        }
+        if (in_array($campo,['cpf_cnpj'])) {
+            // XX. XXX. XXX/0001-XX
+            $input = Editable::INPUT_WIDGET;
+            $editableoptions = [
+                'class' => 'form-control',
+                'mask' => ['999.999.999-99', '99.999.999/9999-99'],
+                'value' => $valor
+            ];
+            $widgetClass = MaskedInput::className();
+            if (strlen($this->clean($valor)) == 11) {
+                $valore = $this->format_doc($valor, 'cpf');
+            } else {
+                $valore = $this->format_doc($valor, 'cnpj');
+            }
         }
         if (in_array($campo,['cep', 'end_cep'])) {
             $input = Editable::INPUT_WIDGET;
@@ -1456,6 +1551,7 @@ class PropostaController extends Controller
                 'mask' => ['(99)9999-9999','(99)99999-9999']
             ];
             $widgetClass = MaskedInput::className();
+            $valore = $this->format_telefone($valor);
         }
 
         $retorno = '<label>'.$title.'</label><br />';
@@ -1464,12 +1560,15 @@ class PropostaController extends Controller
             'name'=> $campo, 
             'asPopover' => false,
             'value' => $valor,
-            'displayValue' => $valor,
+            'displayValue' => $valore,
             'header' => 'Name',
             'size'=>'md',
             'options' => $editableoptions,
             'inputType' => $input,
             'widgetClass' => $widgetClass,
+            'data' => $data,
+            'displayValueConfig'=> $displayValueConfig,
+            'submitOnEnter' => $submitOnEnter,
             'id' => ($conj?'conjuge_':'').$tabela.'_invisivel_'.$campo,
             'formOptions' => [
                 'action' => [
