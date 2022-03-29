@@ -540,15 +540,13 @@ class PropostaController extends Controller
              'codigo_imovel' => $codigo_imovel,
          ])->one();
 
-        echo '<pre>';
-        print_r($proprietario);
-        echo '</pre>';
-        echo '<hr>';
-        // exit();
-        
+        $jatem_superlogica = "";
+        if ($proprietario->superlogica != "") {
+            $jatem_superlogica = '"ID_PESSOA_PES": "'.$proprietario->superlogica.'",';
+        }
+
         $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/proprietarios/put");
 
-        //curl_setopt($ch, CURLOPT_URL, "http://apps.superlogica.net/imobiliaria/api/proprietarios");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -556,6 +554,7 @@ class PropostaController extends Controller
         $model = $proprietario;
 
         $a_enviar = json_encode('{
+            '.$jatem_superlogica.'
             "ST_NOME_PES": "'.$model->nome.'",
             "ST_FANTASIA_PES": "'.$model->nome.'",
             "ST_CNPJ_PES": "'.$model->cpf_cnpj.'",
@@ -565,7 +564,7 @@ class PropostaController extends Controller
             "ST_RG_PES": "'.$model->rg.'",
             "ST_ORGAO_PES": "'.$model->orgao.'",
             "ST_SEXO_PES": "'.($model->sexo == 'M'?1:2).'",
-            "DT_NASCIMENTO_PES": "'.date("d/m/Y", strtotime($model->data_nascimento)).'",
+            "DT_NASCIMENTO_PES": "'.date("m/d/Y", strtotime($model->data_nascimento)).'",
             "ST_NACIONALIDADE_PES": "'.$model->nacionalidade.'",
             "ST_CEP_PES": "'.$this->clean($model->cep).'",
             "ST_ENDERECO_PES": "'.$model->endereco.'",
@@ -576,7 +575,7 @@ class PropostaController extends Controller
             "ST_ESTADO_PES": "'.$model->estado.'",
             "ST_OBSERVACAO_PES": "'.$model->mais_informacoes.'"
         }');
-        // echo $a_enviar;
+        
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -588,8 +587,25 @@ class PropostaController extends Controller
         $response = curl_exec($ch);
         curl_close($ch);
 
-        echo '<hr>';
-        print_r($response);
+        $retorno = json_decode($response);
+
+        // echo '<pre>';
+        // print_r($a_enviar);
+        // echo '<pre>';
+        // echo '<hr>';
+        // echo '<pre>';
+        // print_r($retorno);
+        // echo '<pre>';
+        // echo '<hr>';
+        
+        if ($retorno->data[0]->msg == 'Sucesso') {
+            $retorna_id_proprietario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
+            $proprietario->superlogica = (int)$retorna_id_proprietario_superlogica;
+            $proprietario->save();
+            return $retorna_id_proprietario_superlogica;
+        }
+
+        return $proprietario->superlogica;
     }
 
     public function superlogica($url, $metodo, $id) {
@@ -654,8 +670,12 @@ class PropostaController extends Controller
     }
 
     public function actionAddtosuperlogica ($id) {
-        $sapo = $this->superlogicaproprietario('32210'); //$this->superlogica("https://api.superlogica.net/v2/financeiro/recorrencias/recorrenciasdeplanos?tipo=contratos&gridMensalidadesAgrupadasPorPlano=false&semTrial=true&CLIENTES[0]=12,CLIENTES[1]=13&dtInicio&dtFim&pagina=1&itensPorPagina=50");
-        // $sapo = $this->superlogica('http://apps.superlogica.net/imobiliaria/api/imoveis','POST', $id); //$this->superlogica("https://api.superlogica.net/v2/financeiro/recorrencias/recorrenciasdeplanos?tipo=contratos&gridMensalidadesAgrupadasPorPlano=false&semTrial=true&CLIENTES[0]=12,CLIENTES[1]=13&dtInicio&dtFim&pagina=1&itensPorPagina=50");
+        $proposta = $this->findModel($id);
+        $proprietario = $this->superlogicaproprietario($proposta->codigo_imovel);
+
+        // Add Imóvel ao Propríetário no Superlógica
+        // estamos aqui
+        
         return $sapo;
     }
 

@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "proprietario".
  *
  * @property int $id
+ * @property int $superlogica
  * @property string $nome Nome
  * @property string $nome_fantasia Nome Fantasia
  * @property string|null $conta_deposito Conta depósito
@@ -58,7 +59,7 @@ class Proprietario extends \yii\db\ActiveRecord
             [['nome'], 'required'],
             [['inicio_locacao', 'data_nascimento'], 'safe'],
             [['mais_informacoes', 'sexo', 'foto_rg', 'foto_cpf'], 'string'],
-            [['usuario_id', 'proposta_id'], 'integer'],
+            [['usuario_id', 'proposta_id', 'superlogica'], 'integer'],
             [['iptu', 'condominio'], 'string'],
             [['nome'], 'string', 'max' => 145],
             [['conta_deposito', 'nacionalidade'], 'string', 'max' => 45],
