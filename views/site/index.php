@@ -213,11 +213,11 @@ foreach ($visitas_grafico as $key => $val) {
                             <?php
                                 Card::begin([  
                                     'id' => 'card_'.$visit->idvisita, 
-                                    'color' => Card::COLOR_PRIMARY, 
+                                    'color' => Card::COLOR_SUCCESS, 
                                     'headerIcon' => "<img src='".Yii::$app->homeUrl.'usuarios/'.$foto_usuario."' class='float-left imagem-icone' style='width:100%;'/>", 
                                     'collapsable' => false,
                                     'title' => '<strong>'.$visit->idCorretor->nome.'</strong>', 
-                                    'titleTextType' => Card::TYPE_PRIMARY, 
+                                    'titleTextType' => Card::TYPE_SUCCESS, 
                                     'showFooter' => true,
                                     'footerContent' => 'Visita feita em '.date('d/m/Y', strtotime($visit->data_visita)),
                                 ])
@@ -250,11 +250,11 @@ foreach ($visitas_grafico as $key => $val) {
         <?php
             echo Progress::widget([
                 'title' => 'Desenvolvimento DO SISTEMA',
-                'value' => 75,
-                'color' => Progress::COLOR_INFO,
+                'value' => 80,
+                'color' => Progress::COLOR_SUCCESS,
                 'isBarStrip' => true,
                 'isBarAnimated' => true,
-                'titleTextType' => Progress::TYPE_INFO
+                'titleTextType' => Progress::TYPE_SUCCESS
             ]);
             ?>
     </div>

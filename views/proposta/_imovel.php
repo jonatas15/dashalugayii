@@ -30,6 +30,7 @@ use kartik\number\NumberControl;
 use yii\bootstrap\Modal;
 use yii\widgets\MaskedInput;
 use deyraka\materialdashboard\widgets\Card;
+use dmstr\widgets\Alert;
 //=====================================
 $dispOptions = ['class' => 'form-control kv-monospace'];
 $saveOptions = [
@@ -59,8 +60,18 @@ $imoveis = $this->context->retorna_imoveis();
     font-size: 13px !important;
     top: -15px !important;
   }
+  .alert-success {
+    font-size: 17px !important;
+    text-align: center !important;
+    font-weight: bold;
+  }
+  .disabled {
+      background-color: lightgray !important;
+  }
 </style>
 <div class="col-md-12">
+    <br />
+    <?= Alert::widget() ?>
     <br />
     <div class="col-md-6">
         <!-- <div class="row"> -->
@@ -69,7 +80,7 @@ $imoveis = $this->context->retorna_imoveis();
                 'id' => 'cardproprietario', 
                 'color' => Card::COLOR_PRIMARY, 
                 'headerIcon' => 'person', 
-                'collapsable' => false, 
+                'collapsable' => true, 
                 'title' => '<strong style="font-size: 20px">Proprietário</strong>', 
                 'titleTextType' => Card::TYPE_PRIMARY, 
                 'showFooter' => true,
@@ -252,8 +263,28 @@ $imoveis = $this->context->retorna_imoveis();
             <!-- </div> -->
         <!-- </div> -->
     </div>
-    <div class="col-md-6">
-        
+    <div class="col-md-6" style="text-align: center">
+        <?=Html::a('SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
+            'class' => 'btn btn-primary',
+            'onClick' => '
+                $("body").css("cursor", "wait");
+                $(this).css("cursor", "wait");
+                $("#progressando").show();
+                // $(this).addAttribute(\'disabled\');
+                $(this).addClass(\'disabled\');
+            '
+        ]);?>
+        <br />
+        <br />
+        <div id="progressando" style="display: none">
+            <?php
+                use kartik\spinner\Spinner;
+                echo '<div class="">';
+                    echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
+                    echo '<div class="clearfix"></div>';
+                echo '</div>';
+            ?>
+        </div>
     </div>
     <div class="clearfix"></div>
 </div>

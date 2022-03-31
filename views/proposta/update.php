@@ -284,8 +284,8 @@ $this->params['breadcrumbs'][] = 'Editar';
         border-radius:45px;
     }
     .item1:hover,.item2:hover,.item3:hover,.item4:hover,.item5:hover,.item6:hover,.item7:hover,.item8:hover,.item9:hover,.item10:hover {
-        background-color: #337ab7 !important;
-        border-color: #337ab7;
+        background-color: green !important;
+        border-color: #69c629;
     }
     .etapa-ativa {border: 4px solid #4989bd;}
     <?php if ($model->tipo == 'Credpago') : ?>
@@ -334,7 +334,7 @@ $this->params['breadcrumbs'][] = 'Editar';
         border: 1px solid lightgray; border-radius: 5px; padding: 10px;
     }
     .etapa-ativa {
-        border: 6px solid #4989bd;
+        border: 6px solid #69c629 !important;
     }
     .descricao-formulario {
         white-space: nowrap;
@@ -345,6 +345,9 @@ $this->params['breadcrumbs'][] = 'Editar';
         top: 52px;
         left: -42px;
         max-width: none !important;
+    }
+    .progress-bar {
+        background-color: #69c629 !important;
     }
 </style>
 <div class="slo-proposta-update">

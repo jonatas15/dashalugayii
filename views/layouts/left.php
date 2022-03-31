@@ -18,9 +18,20 @@ use yii\helpers\Html;
     <div class="sidebar-wrapper">
         <?= Menu::widget([
             'items' => [
-                ['label' => 'Dashboard', 'icon' => 'dashboard', 'url' => ['/']],
-                ['label' => 'Visitas', 'icon' => 'table_chart', 'url' => ['/visita']],
-                ['label' => 'Proprietários', 'icon' => 'list', 'url' => ['/proprietario']],
+                ['label' => 'Dashboard', 
+                    'icon' => 'dashboard', 
+                    'url' => ['/'],
+                    'visible' => !Yii::$app->user->isGuest
+                ],
+                ['label' => 'Visitas', 
+                    'icon' => 'table_chart', 'url' => ['/visita'],
+                    'visible' => !Yii::$app->user->isGuest
+                ],
+                ['label' => 'Proprietários', 
+                    'icon' => 'list', 
+                    'url' => ['/proprietario'],
+                    'visible' => !Yii::$app->user->isGuest
+                ],
                 // ['label' => 'Contact', 'icon' => 'web', 'url' => ['site/contact']],
                 // ['label' => 'Javascript', 'icon' => 'code', 'url' => ['/javascript']],
                 // ['label' => 'Notifications', 'icon' => 'notifications', 'url' => ['/notifications']],
@@ -35,6 +46,7 @@ use yii\helpers\Html;
                 //         ['label' => 'Registration', 'icon' => 'text_format', 'url' => ['/registration']],
                 //     ]],
                 // ]],
+                
             ]
         ]); ?>    
     </div>

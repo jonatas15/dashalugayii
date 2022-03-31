@@ -751,7 +751,12 @@ class PropostaController extends Controller
         // Add Imóvel ao Propríetário no Superlógica
         // estamos aqui ó
         
-        return $propostajet;
+        if ($propostajet) {
+            Yii::$app->session->setFlash('success', 'Proprietário e Imóvel cadastrado/atualizado com sucesso no Superlógica!');
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            Yii::$app->session->setFlash('warning', 'Algo deu errado, solicite o suporte!');
+        }
     }
 
     public function actionTrazprops () {
@@ -1232,23 +1237,6 @@ class PropostaController extends Controller
         }
         return $this->redirect(Yii::$app->request->referrer);
     }
-
-    // public function actionGetpropostas() {
-
-    // }
-
-    // public function actionValida(){
-    //     $email = filter_input(INPUT_POST, 'userEmail', FILTER_SANITIZE_STRING);
-    //
-    //     $identity = Usuario::findOne(['email' => $email]);
-    //
-    //
-    //     if (Yii::$app->user->login($identity)) {
-    //         echo 'sapo - '.Yii::$app->user->identity->username;
-    //     }else{
-    //         echo 'rã';
-    //     }
-    // }
     
     public function actionNotifica(){
         // Yii::$app->homeUrl."alerta/sendwhats?msg=$mensagem&num=$fone"
@@ -1565,7 +1553,6 @@ class PropostaController extends Controller
     }
     /**
      * Campo Editável
-     * 
      */
     public function imprime_campo_editavel($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
         $input = Editable::INPUT_TEXT;
