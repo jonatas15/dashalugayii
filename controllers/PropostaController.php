@@ -49,6 +49,53 @@ class PropostaController extends Controller
      * @inheritdoc
      */
 
+    public $estadosBrasileiros = [
+        'AC'=>'Acre',
+        'AL'=>'Alagoas',
+        'AP'=>'Amapá',
+        'AM'=>'Amazonas',
+        'BA'=>'Bahia',
+        'CE'=>'Ceará',
+        'DF'=>'Distrito Federal',
+        'ES'=>'Espírito Santo',
+        'GO'=>'Goiás',
+        'MA'=>'Maranhão',
+        'MT'=>'Mato Grosso',
+        'MS'=>'Mato Grosso do Sul',
+        'MG'=>'Minas Gerais',
+        'PA'=>'Pará',
+        'PB'=>'Paraíba',
+        'PR'=>'Paraná',
+        'PE'=>'Pernambuco',
+        'PI'=>'Piauí',
+        'RJ'=>'Rio de Janeiro',
+        'RN'=>'Rio Grande do Norte',
+        'RS'=>'Rio Grande do Sul',
+        'RO'=>'Rondônia',
+        'RR'=>'Roraima',
+        'SC'=>'Santa Catarina',
+        'SP'=>'São Paulo',
+        'SE'=>'Sergipe',
+        'TO'=>'Tocantins'
+    ];
+
+    public function returnEstado($valor, $modo) {
+        if ($modo == 'sigla') {
+            foreach ($this->estadosBrasileiros as $key => $value) {
+                if ($value == $valor) {
+                    $retorno = $key;
+                }
+            }
+        } else {
+            foreach ($this->estadosBrasileiros as $key => $value) {
+                if ($key == $valor) {
+                    $retorno = $value;
+                }
+            }
+        }
+        return $retorno;
+    }
+
     public $arr_campos_retirados_docs_conj = [
         'id_conjuge_pretendente',
         'slo_pretendente_id',
@@ -608,54 +655,63 @@ class PropostaController extends Controller
         return $proprietario->superlogica;
     }
 
-    public function superlogica($url, $metodo, $id) {
+    public function superlogicaimovel($proposta, $proprietario) {
+        // está criando
+        $jatem_superlogica = "";
+        $proprietarios_beneficiados = '"PROPRIETARIOS_BENEFICIARIOS": [
+            {
+                "ID_PESSOA_PES": "'.$proprietario.'",
+                "FL_PROPRIETARIO_PRB": "1",
+                "NM_FRACAO_PRB": "100.00"
+            }
+        ],';
+        $identificador_imovel = '"ST_IDENTIFICADOR_IMO": "'.$proposta->codigo_imovel.'",';
+        // está editando
+        if ($proposta->superlogica_imovel != "") {
+            echo '<br><hr>Edita<hr><br>';
+            $ch = curl_init();
+            
+            curl_setopt($ch, CURLOPT_URL, "http://apps.superlogica.net/imobiliaria/api/imoveis");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($ch, CURLOPT_HEADER, FALSE);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            $jatem_superlogica = '"ID_IMOVEL_IMO": "'.$proposta->superlogica_imovel.'",';
+            // $identificador_imovel = '';
+            // $proprietarios_beneficiados = '';
+        } 
+        // está criando um novo
+        else {
+            echo '<br><hr>Cria<hr><br>';
+            $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/imoveis/put");
+    
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_POST, true);
+        }
 
-        /**
-         * 
-            App token: 86f34537-5693-3c40-a60d-754b3c5b9fa8
 
-            Secret: 462ae8ab-0daa-3e53-a099-126cea31bec8
+        $tipo_imovel = 4;
+        $model_infoimovel = json_decode($proposta->imovel_info,true);
+        $complemento = 'Apartamento';
 
-            Access token: d615ff2c-35bc-3855-8a44-c231c920fc4c (válido apenas para esta licença: cafeintel)
-         */
-
-        $proposta = $this->findModel($id);
-
-        echo '<pre>';
-        print_r($proposta);
-        echo '</pre>';
-        exit();
-        
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_HEADER, FALSE);
-
-        curl_setopt($ch, CURLOPT_POST, TRUE);
-
-        curl_setopt($ch, CURLOPT_POSTFIELDS, '{
-            "ST_TIPO_IMO":"1",
-            "ST_CEP_IMO":"13180220",
-            "ST_ENDERECO_IMO":"'.$proposta->endereco.'",
-            "ST_NUMERO_IMO":"'.$proposta->cep.'",
-            "ST_COMPLEMENTO_IMO":"'.$proposta->complemento.'",
-            "ST_BAIRRO_IMO":"'.$proposta->bairro.'",
-            "ST_CIDADE_IMO":"'.$proposta->cidade.'",
-            "ST_ESTADO_IMO":"'.$proposta->estado.'",
-            "PROPRIETARIOS_BENEFICIARIOS":[
-                {
-                    "ID_PESSOA_PES":"275",
-                    "FL_PROPRIETARIO_PRB":"1",
-                    "NM_FRACAO_PRB":"100.00"
-                }
-            ],
-            "ST_IDENTIFICADOR_IMO":"'.$proposta->codigo_imovel.'",
-            "VL_ALUGUEL_IMO":"'.$proposta->aluguel.'",
-            "VL_VENDA_IMO":"'.$proposta->aluguel.'",
-            "TX_ADM_IMO":"10.00",
-            "FL_TXADMVALORFIXO_IMO":"0"
+        $a_enviar = json_encode('{
+            '.$jatem_superlogica.'
+            "ST_TIPO_IMO": "'.$tipo_imovel.'",
+            "ST_CEP_IMO": "'.$this->clean($model_infoimovel['cep']).'",
+            "ST_ENDERECO_IMO": "'.$model_infoimovel['endereco'].'",
+            "ST_NUMERO_IMO": "'.$model_infoimovel['numero'].'",
+            "ST_COMPLEMENTO_IMO": "'.$complemento.'",
+            "ST_BAIRRO_IMO":"'.$model_infoimovel['bairro'].'",
+            "ST_CIDADE_IMO": "'.$model_infoimovel['cidade'].'",
+            "ST_ESTADO_IMO": "'.$this->returnEstado($model_infoimovel['estado'], 'sigla').'",
+            '.$proprietarios_beneficiados.'
+            '.$identificador_imovel.'
+            "VL_ALUGUEL_IMO": "'.$model_infoimovel['aluguel'].'",
+            "VL_VENDA_IMO": "0",
+            "TX_ADM_IMO": "0"
         }');
+       
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             "Content-Type: application/json",
@@ -666,17 +722,36 @@ class PropostaController extends Controller
         $response = curl_exec($ch);
         curl_close($ch);
 
-        return $response;
-    }
+        $retorno = json_decode($response);
+
+        // echo '<pre>';
+        // print_r(json_decode($a_enviar));
+        // echo '<pre>';
+        // echo '<hr>';
+        // echo '<pre>';
+        // print_r($retorno);
+        // echo '<pre>';
+        // echo '<hr>';
+       
+        if ($retorno->data[0]->status == '200') {
+            $retorna_id_imovel_superlogica = $retorno->data[0]->data->id_imovel_imo;
+            $proposta->superlogica_imovel = (int)$retorna_id_imovel_superlogica;
+            $proposta->save();
+            return $retorna_id_imovel_superlogica;
+        }
+
+        return $proposta->superlogica_imovel;
+   }
 
     public function actionAddtosuperlogica ($id) {
         $proposta = $this->findModel($id);
         $proprietario = $this->superlogicaproprietario($proposta->codigo_imovel);
+        $propostajet = $this->superlogicaimovel($proposta,  $proprietario);
 
         // Add Imóvel ao Propríetário no Superlógica
-        // estamos aqui
+        // estamos aqui ó
         
-        return $sapo;
+        return $propostajet;
     }
 
     public function actionTrazprops () {
