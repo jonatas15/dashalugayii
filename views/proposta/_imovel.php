@@ -194,6 +194,9 @@ $imoveis = $this->context->retorna_imoveis();
                 ])
             ?>
             <div class="">
+                <hr>
+                <?= 'Superlógica Id-Imóvel: '.$model->superlogica_imovel ?>
+                <hr>
                 <?= $form->field($model, 'imoveis_jet')->widget(Select2::classname(), [
                     'data' => $imoveis,
                     'language' => 'pt',

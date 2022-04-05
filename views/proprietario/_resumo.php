@@ -18,6 +18,7 @@ use yii\widgets\ActiveForm;
     <!-- $tabela, $campo, $title, $valor, $id, $conj = null -->
     <!-- VAI na SUPERLÓGICA -->
     <h3>Campos que vão para o Superlógica</h3><hr>
+    <?php //= $this->context->imprime_campo_editavel('12', 'Proprietario', 'superlogica', 'ID Superlógica', $model->superlogica, $model->id); ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'nome', 'Nome', $model->nome, $model->id); ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'nome_fantasia', 'Nome Fantasia', $model->nome_fantasia, $model->id); ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'cpf_cnpj', 'CPF/CNPJ', $model->cpf_cnpj, $model->id); ?>
@@ -34,9 +35,9 @@ use yii\widgets\ActiveForm;
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'bairro', 'Bairro', $model->bairro, $model->id); ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'cidade', 'Cidade', $model->cidade, $model->id); ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'estado', 'Estado', $model->estado, $model->id); ?>
-    <?= $this->context->imprime_campo_editavel('12', 'Proprietario', 'mais_informacoes', 'Observações', $model->mais_informacoes, $model->id); ?>
     <!-- Não vai na SUPERLÓGICA -->
     <h3>Campos de Registro Local</h3><hr>
+    <?= $this->context->imprime_campo_editavel('12', 'Proprietario', 'mais_informacoes', 'Observações', $model->mais_informacoes, $model->id); ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'codigo_imovel', 'Código do Imóvel', $model->codigo_imovel, $model->id); ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'inicio_locacao', 'Início da Locação', date('d/m/Y',strtotime($model->inicio_locacao)), $model->id); ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'condominio', 'Condomínio', $model->condominio, $model->id); ?>

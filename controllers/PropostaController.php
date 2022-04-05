@@ -619,8 +619,8 @@ class PropostaController extends Controller
             "ST_COMPLEMENTO_PES": "'.$model->complemento.'",
             "ST_BAIRRO_PES":"'.$model->bairro.'",
             "ST_CIDADE_PES": "'.$model->cidade.'",
-            "ST_ESTADO_PES": "'.$model->estado.'",
-            "ST_OBSERVACAO_PES": "'.$model->mais_informacoes.'"
+            "ST_ESTADO_PES": "'.$this->returnEstado($model->estado, 'sigla').'",
+            "ST_OBSERVACAO_PES": "Cadastro pelo sistema em '.date().'"
         }');
         
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
@@ -644,15 +644,34 @@ class PropostaController extends Controller
         // print_r($retorno);
         // echo '<pre>';
         // echo '<hr>';
+        // exit();
         
-        if ($retorno->data[0]->msg == 'Sucesso') {
+        // if ($retorno->data[0]->msg == 'Sucesso') {
+        //     $retorna_id_proprietario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
+        //     $proprietario->superlogica = (int)$retorna_id_proprietario_superlogica;
+        //     $proprietario->save();
+        //     return $retorna_id_proprietario_superlogica;
+        // }
+
+        if ($retorno->data[0]->status == '200') {
             $retorna_id_proprietario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
             $proprietario->superlogica = (int)$retorna_id_proprietario_superlogica;
             $proprietario->save();
-            return $retorna_id_proprietario_superlogica;
+            // return $retorna_id_proprietario_superlogica;
+            return [
+                'superlogica' => $retorna_id_proprietario_superlogica,
+                'conteudo' => $retorno->data[0]->msg,
+                'resultado' => 'sucesso'
+            ];
+        } else {
+            // return $proprietario->superlogica;
+            return [
+                'superlogica' => $proposta->superlogica,
+                'conteudo' => $retorno->data[0]->msg,
+                'resultado' => 'erro'
+            ];
         }
 
-        return $proprietario->superlogica;
     }
 
     public function superlogicaimovel($proposta, $proprietario) {
@@ -668,7 +687,7 @@ class PropostaController extends Controller
         $identificador_imovel = '"ST_IDENTIFICADOR_IMO": "'.$proposta->codigo_imovel.'",';
         // está editando
         if ($proposta->superlogica_imovel != "") {
-            echo '<br><hr>Edita<hr><br>';
+            // echo '<br><hr>Edita<hr><br>';
             $ch = curl_init();
             
             curl_setopt($ch, CURLOPT_URL, "http://apps.superlogica.net/imobiliaria/api/imoveis");
@@ -681,7 +700,7 @@ class PropostaController extends Controller
         } 
         // está criando um novo
         else {
-            echo '<br><hr>Cria<hr><br>';
+            // echo '<br><hr>Cria<hr><br>';
             $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/imoveis/put");
     
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -737,25 +756,37 @@ class PropostaController extends Controller
             $retorna_id_imovel_superlogica = $retorno->data[0]->data->id_imovel_imo;
             $proposta->superlogica_imovel = (int)$retorna_id_imovel_superlogica;
             $proposta->save();
-            return $retorna_id_imovel_superlogica;
+            // return $retorna_id_imovel_superlogica;
+            return [
+                'superlogica_imovel' => $retorna_id_imovel_superlogica,
+                'conteudo' => $retorno->data[0]->msg,
+                'resultado' => 'sucesso'
+            ];
+        } else {
+            return [
+                'superlogica_imovel' => $proposta->superlogica_imovel,
+                'conteudo' => $retorno->data[0]->msg,
+                'resultado' => 'erro'
+            ];
         }
-
-        return $proposta->superlogica_imovel;
+        
+        
    }
 
     public function actionAddtosuperlogica ($id) {
         $proposta = $this->findModel($id);
         $proprietario = $this->superlogicaproprietario($proposta->codigo_imovel);
-        $propostajet = $this->superlogicaimovel($proposta,  $proprietario);
+        $propostajet = $this->superlogicaimovel($proposta,  $proprietario['superlogica']);
 
         // Add Imóvel ao Propríetário no Superlógica
         // estamos aqui ó
         
-        if ($propostajet) {
+        if ($propostajet["resultado"] == 'sucesso') {
             Yii::$app->session->setFlash('success', 'Proprietário e Imóvel cadastrado/atualizado com sucesso no Superlógica!');
             return $this->redirect(Yii::$app->request->referrer);
         } else {
-            Yii::$app->session->setFlash('warning', 'Algo deu errado, solicite o suporte!');
+            Yii::$app->session->setFlash('warning', 'Algo deu errado, solicite o suporte e mostre isso: <hr>'.$propostajet["conteudo"].'<hr>'.$proprietario['conteudo'].'<hr>');
+            return $this->redirect(Yii::$app->request->referrer);
         }
     }
 
