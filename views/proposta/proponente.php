@@ -114,6 +114,9 @@ use deyraka\materialdashboard\widgets\Card;
         <?php 
             $arr_campos_retirados = [
                 'id',
+                'id_migrado',
+                'superlogica_imovel',
+                'superlogica_cliente',
                 'tipo',
                 'prazo_responder',
                 'proprietario',
@@ -367,6 +370,10 @@ use deyraka\materialdashboard\widgets\Card;
                 </div>';
                 $frente_doc = Yii::$app->homeUrl.'/uploads/_frente_'.$prefixo_nome_arquivo.'_'.$docmto->frente;
                 $verso_doc = Yii::$app->homeUrl.'/uploads/_verso_'.$prefixo_nome_arquivo.'_'.$docmto->verso;
+                if ($docmto->id_migrado) {
+                    $frente_doc = 'https://cafeinteligencia.com.br/'.$docmto->frente;
+                    $verso_doc = 'https://cafeinteligencia.com.br/'.$docmto->verso;
+                }
                 // echo '<h4><strong>Arquivos da Documentação</strong></h4> <hr>';
                 
                 echo '<div class="col-md-3">';

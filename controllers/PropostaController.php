@@ -895,6 +895,14 @@ class PropostaController extends Controller
     // Retorna o Imóvel
     public function actionRetornaimovel(){
         $codigo = filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_STRING);
+        $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
+        
+        // Atualiza a Model:
+        $model = $this->findModel($id);
+        $model->codigo_imovel = $codigo;
+        $model->save();
+        // --------------------------------------------------------------------------------
+
         $json_imoveis = $this->get_content('https://api.jetimob.app/webservice/tZuuHuri8Q3ohAf7cvmMm8hTmWrXKJoEdes8ViSi/imoveis?v=v2',864000);
         // $json_imoveis = $this->get_content('http://www.jetimob.com/services/tZuuHuri8Q3ohAf7cvmMm8hTmWrXKJoEdes8ViSi/imoveis/',864000);
         $imoveis = json_decode($json_imoveis);

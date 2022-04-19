@@ -208,6 +208,7 @@ $imoveis = $this->context->retorna_imoveis();
                             url: "'.Yii::$app->homeUrl.'proposta/retornaimovel",
                             data: {
                                 codigo: $(this).val(),
+                                id: '.$model->id.'
                             },
                         }).done(function(data) {
                             var response = $.parseJSON(data);

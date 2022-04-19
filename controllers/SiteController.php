@@ -78,14 +78,14 @@ class SiteController extends Controller
             ]);
         } else {
             # code...
-            if(Yii::$app->user->can('administrador')){
-              return $this->render('index');
-            }
-            elseif(Yii::$app->user->can('locacao') || Yii::$app->user->can('corretor')){
-                return $this->render('indexlocacao');
-            } else {
-              return $this->render('indexcliente');
-            }
+            // if(Yii::$app->user->can('administrador')){
+            return $this->render('index');    
+            // }
+            // elseif(Yii::$app->user->can('locacao') || Yii::$app->user->can('corretor')){
+            //     return $this->render('indexlocacao');
+            // } else {
+            //   return $this->render('indexcliente');
+            // }
         }
 
 
