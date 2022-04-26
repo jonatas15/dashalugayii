@@ -43,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'nome',
                 'format' => 'raw',
+                'headerOptions' => ['style' => 'width:15%'],
                 'value' => function ($data) {
                     return $this->context->imprime_campo_editavel('12', 'Proprietario', 'nome', '', $data->nome, $data->id);
                 }
@@ -50,23 +51,27 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'codigo_imovel',
                 'format' => 'raw',
+                'headerOptions' => ['style' => 'width:8%'],
                 'value' => function ($data) {
-                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'codigo_imovel', '', $data->codigo_imovel, $data->id);
+                    return '<strong style="font-size: 15px;text-align:center">'.$this->context->imprime_campo_editavel('12', 'Proprietario', 'codigo_imovel', '', $data->codigo_imovel, $data->id).'</strong>';
                 }
             ],
+            // [
+            //     'attribute' => 'conta_deposito',
+            //     'format' => 'raw',
+            //     'value' => function ($data) {
+            //         return $this->context->imprime_campo_editavel('6', 'Proprietario', 'banco', 'Banco', $data->banco, $data->id).
+            //         $this->context->imprime_campo_editavel('6', 'Proprietario', 'agencia', 'Agência', $data->agencia, $data->id).
+            //         $this->context->imprime_campo_editavel('6', 'Proprietario', 'operacao', 'Operação', $data->operacao, $data->id).
+            //         $this->context->imprime_campo_editavel('6', 'Proprietario', 'conta_deposito', 'Nº Conta', $data->conta_deposito, $data->id);
+            //     }
+            // ],
             [
-                'attribute' => 'conta_deposito',
+                'attribute' => 'email',
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'conta_deposito', '', $data->conta_deposito, $data->id);
-                }
-            ],
-            [
-                'attribute' => 'celular',
-                'format' => 'raw',
-                'value' => function ($data) {
-                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'celular', 'Celular', $data->celular, $data->id).'<br>'.
-                    $this->context->imprime_campo_editavel('12', 'Proprietario', 'email', 'Email', $data->email, $data->id);
+                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'email', '', $data->email, $data->id).
+                    $this->context->imprime_campo_editavel('12', 'Proprietario', 'celular', 'Celular', $data->celular, $data->id);
                 }
             ],
             // [
@@ -78,6 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // ],
             [
                 'attribute' => 'cpf_cnpj',
+                'headerOptions' => ['style' => 'width:12%'],
                 'format' => 'raw',
                 'value' => function ($data) {
                     return $this->context->imprime_campo_editavel('12', 'Proprietario', 'cpf_cnpj', '', $data->cpf_cnpj, $data->id);
@@ -94,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'condominio',
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'condominio', '', $data->condominio, $data->id).'<br>'.
+                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'condominio', '', $data->condominio, $data->id).
                     $this->context->imprime_campo_editavel('12', 'Proprietario', 'iptu', 'IPTU', $data->iptu, $data->id);
                 }
             ],

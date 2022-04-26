@@ -276,6 +276,8 @@ class ProprietarioController extends Controller
         return $retorno;
     }
     public function format_doc($doc,$tipo){
+        $doc = trim($doc);
+        $doc = $this->clean($doc);
         switch ($tipo) {
             case 'cpf': $f = str_split($doc,3); $retorno = $f[0].'.'.$f[1].'.'.$f[2].'-'.$f[3]; break;
             case 'cep': $f = str_split($doc,5); $retorno = $f[0].'-'.$f[1]; break;
@@ -330,7 +332,7 @@ class ProprietarioController extends Controller
                 'value' => $valor
             ];
             $widgetClass = MaskedInput::className();
-            if ($this->clean($valor) == 11) {
+            if (strlen($this->clean($valor)) == 11) {
                 $valore = $this->format_doc($valor, 'cpf');
             } else {
                 $valore = $this->format_doc($valor, 'cnpj');
