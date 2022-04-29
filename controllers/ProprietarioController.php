@@ -298,13 +298,14 @@ class ProprietarioController extends Controller
         $widgetClass = '';
         $valore = $valor;
 
-        if (in_array($campo,['data', 'data_nascimento', 'data_expedicao', 'documento_data_emissao', 'data_admissao'])) {
+        if (in_array($campo,['data', 'data_nascimento', 'cnj_data_nascimento', 'data_expedicao', 'documento_data_emissao', 'data_admissao'])) {
             $input = Editable::INPUT_WIDGET;
             $editableoptions = [
                 'class' => 'form-control',
                 'mask' => '99/99/9999'
             ];
             $widgetClass = MaskedInput::className();
+            $valore = date('d/m/Y', strtotime($valor));
         }
         if (in_array($campo,['cpf', 'conj_cpf'])) {
             $input = Editable::INPUT_WIDGET;
@@ -347,8 +348,9 @@ class ProprietarioController extends Controller
             $widgetClass = MaskedInput::className();
             $valore = $this->format_telefone($valor);
         }
-
-        $retorno = '<label>'.$title.'</label><br />';
+        if ($title) {
+            $retorno = '<label>'.$title.'</label><br />';
+        }
         $retorno .= Editable::widget([
             'language' => 'pt_BR',
             'name'=> $campo, 
@@ -371,9 +373,11 @@ class ProprietarioController extends Controller
             ],
             'valueIfNull' => 'valor alterado'
         ]);
-        $retorno .= "<br>";
-        $retorno .= "<br>";
-        $retorno .= "<br>";
+        if ($title) {
+            $retorno .= "<br>";
+            $retorno .= "<br>";
+            $retorno .= "<br>";
+        }
         return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
     }
 }

@@ -70,8 +70,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'email',
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'email', '', $data->email, $data->id).
-                    $this->context->imprime_campo_editavel('12', 'Proprietario', 'celular', 'Celular', $data->celular, $data->id);
+                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'email', '', $data->email, $data->id);
+                }
+            ],
+            [
+                'attribute' => 'celular',
+                'format' => 'raw',
+                'value' => function ($data) {
+                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'celular', '', $data->celular, $data->id);
                 }
             ],
             // [
@@ -100,8 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'condominio',
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'condominio', '', $data->condominio, $data->id).
-                    $this->context->imprime_campo_editavel('12', 'Proprietario', 'iptu', 'IPTU', $data->iptu, $data->id);
+                    return $this->context->imprime_campo_editavel('12', 'Proprietario', 'condominio', '', $data->condominio, $data->id);
                 }
             ],
             // 'logradouro',
