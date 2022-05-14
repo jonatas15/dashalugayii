@@ -1713,4 +1713,82 @@ class PropostaController extends Controller
         // $retorno .= "<br>";
         return '<div class="col-md-'.$col_md.'">'.$retorno.'<hr></div>';
     }
+
+    public function actionRobo1() {
+
+        $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
+        $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_URL, $url);
+
+
+
+        // curl_setopt_array($curl, [
+        //     CURLOPT_URL => $url,
+        //     CURLOPT_HEADER => false,
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     // CURLOPT_POST => [
+        //     //     "phone" => "+559991642468",
+        //     //     "first_name" => "Núrya",
+        //     //     "last_name" => "Ramos",
+        //     // ],
+        //     CURLOPT_POST => json_encode('{
+        //         "phone": "+559991642468,
+        //         "first_name": "Núrya",
+        //         "last_name": "Ramos",
+        //     }'),
+        // ]);
+        $a_enviar = json_encode('{
+            "phone": "+559991642468",
+            "first_name": "Núrya",
+            "last_name": "Ramos",
+        }');
+
+        //Como array
+        $arr_enviar = [
+            "phone" => "+559991642468",
+            "first_name" => "Núrya",
+            "last_name" => "Ramos",
+        ];
+       
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "API-KEY: $key",
+        ));
+
+        $response = curl_exec($curl);
+
+        if ($error = curl_error($curl)) {
+            throw new \Exception($error);
+        }
+
+        curl_close($curl);
+        $response = json_decode($response, true);
+
+        var_dump('Response:', $response);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+
+        /**
+         * para o envio de mensagem, parâmetros:
+         * 
+        {
+            "type": "text",
+            "value": "teste teste"
+        }
+        * meu ID
+        15437309
+        * Url
+        /subscriber/{subscriber_id}/send_message/
+        */
+    }
 }
