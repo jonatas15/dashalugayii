@@ -46,7 +46,7 @@ use yii\helpers\Url;
     // echo 'Código!!! '.$model->imovel_info;
     $model_imovelinfo_ = json_decode($model->imovel_info);
     if (empty($model_imovelinfo_) or $model_imovelinfo_ == "") {
-        echo '<h1>Imóvel não definido</h1>';
+        echo '<span>Imóvel não definido/atualize a página</span>';
         $this->context->cadastraimovelupdate($model->id, $model->codigo_imovel);
     }
 
@@ -702,9 +702,37 @@ $this->params['breadcrumbs'][] = 'Editar';
                         </center>
                     </div>
                     <div class="col-md-12">
-                        <div class="item-interno-proposta" style="text-align: center !important;">
+                        <hr>
+                        <div class="col-md-6" style="text-align: center !important;">
                             <h4><strong>Gerar PDF com essas Informações</strong></h4>
-                            <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Gerar Documento PDF</a>
+                            <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style = 'width: 100%'>
+                            <i style="font-size: 20px; padding: 5px;" class="fa fa-file"></i> Gerar Documento PDF
+                            </a>
+                        </div>
+                        <div class="col-md-6" style="text-align: center !important;">
+                            <h4><strong>Cadastrar essas Informações no Jetimob</strong></h4>
+                            <?=Html::a('<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
+                                'class' => 'btn btn-primary',
+                                'style' => 'width: 100%',
+                                'onClick' => '
+                                    $("body").css("cursor", "wait");
+                                    $(this).css("cursor", "wait");
+                                    $("#progressando").show();
+                                    // $(this).addAttribute(\'disabled\');
+                                    $(this).addClass(\'disabled\');
+                                '
+                            ]);?>
+                            <br />
+                            <br />
+                            <div id="progressando" style="display: none">
+                                <?php
+                                    use kartik\spinner\Spinner;
+                                    echo '<div class="">';
+                                        echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
+                                        echo '<div class="clearfix"></div>';
+                                    echo '</div>';
+                                ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -803,26 +831,22 @@ $this->params['breadcrumbs'][] = 'Editar';
             });
 
             var settings = {
-                'url': 'https://app.whatsgw.com.br/api/WhatsGw/Send',
+                'url': '".Yii::$app->homeUrl."proposta/apibotmensagem',
                 'method': 'POST',
                 'timeout': 0,
                 'headers': {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 'data': {
-                    'apikey': 'cfdab196-e034-4b76-a543-cef032285dff',
-                    'phone_number': '555533079012',
-                    'contact_phone_number': '$fonewhats',
-                    'message_custom_id': 'mysoftwareid',
-                    'message_type': 'text',
-                    'message_body': '$msg_whats'
+                    'subscriberid': ".$model->apibotsubs.",
+                    'mensagem': '".$msg_whats."'
                 }
             };
 
             $('#botao-whats').on('click', function() {
                 $.ajax(settings).done(function (response) {
                     console.log(response);
-                    if(response.result == 'success') {
+                    if(response.result == 1 || response.result == '1') {
                         alert('Mensagem enviada com sucesso! <hr> $msg_whats');
                         $.ajax({
                             'url': '".Yii::$app->homeUrl."proposta/gravahistorico',

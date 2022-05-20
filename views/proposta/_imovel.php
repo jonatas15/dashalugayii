@@ -267,7 +267,7 @@ $imoveis = $this->context->retorna_imoveis();
             <!-- </div> -->
         <!-- </div> -->
     </div>
-    <div class="col-md-6" style="text-align: center">
+    <div class="col-md-6 hidden" style="text-align: center">
         <?=Html::a('SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
             'class' => 'btn btn-primary',
             'onClick' => '

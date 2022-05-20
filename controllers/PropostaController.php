@@ -1791,4 +1791,120 @@ class PropostaController extends Controller
         /subscriber/{subscriber_id}/send_message/
         */
     }
+
+    public function actionApibotsubscriber() {
+        // MySql
+        // alter table slo_proposta add apibotsubs int after id;
+
+        $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
+        $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_URL, $url);
+
+        $a_enviar = json_encode('{
+            "phone": "+559991642468",
+            "first_name": "Núrya",
+            "last_name": "Ramos",
+        }');
+
+        //Como array
+        $arr_enviar = [
+            "phone" => "+559991642468",
+            "first_name" => "Núrya",
+            "last_name" => "Ramos",
+        ];
+       
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "API-KEY: $key",
+        ));
+
+        $response = curl_exec($curl);
+
+        if ($error = curl_error($curl)) {
+            throw new \Exception($error);
+        }
+
+        curl_close($curl);
+        $response = json_decode($response, true);
+
+        var_dump('Response:', $response);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+
+    }
+
+    public function actionApibotmensagem() {
+
+        $subscriberid = $_REQUEST['subscriberid'];
+        $mensagem = $_REQUEST['mensagem'];
+
+        $url = "https://backend.botconversa.com.br/api/v1/webhook/subscriber/$subscriberid/send_message/";
+        $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_URL, $url);
+
+        $a_enviar = json_encode('{
+            "type": "text",
+            "value": '.$mensagem.'
+        }');
+
+        //Como array
+        $arr_enviar = [
+            "type" => "text",
+            "value" => $mensagem,
+        ];
+       
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "API-KEY: $key",
+        ));
+
+        $response = curl_exec($curl);
+
+        if ($error = curl_error($curl)) {
+            throw new \Exception($error);
+            return 0;
+        }
+
+        curl_close($curl);
+        $response = json_decode($response, true);
+
+        // var_dump('Response:', $response);
+        // echo '<pre>';
+        // print_r($response);
+        // echo '</pre>';
+
+        return 1;
+
+        /**
+         * para o envio de mensagem, parâmetros:
+         * 
+        {
+            "type": "text",
+            "value": "teste teste"
+        }
+        * meu ID
+        15437309
+        * Url
+        /subscriber/{subscriber_id}/send_message/
+        */
+    }
 }
