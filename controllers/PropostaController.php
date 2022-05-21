@@ -49,6 +49,39 @@ class PropostaController extends Controller
      * @inheritdoc
      */
 
+
+    public function callAPI($method, $url, $data, $chave){
+        $curl = curl_init();
+        switch ($method){
+           case "POST":
+              curl_setopt($curl, CURLOPT_POST, 1);
+              if ($data)
+                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+              break;
+           case "PUT":
+              curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+              if ($data)
+                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);			 					
+              break;
+           default:
+              if ($data)
+                 $url = sprintf("%s?%s", $url, http_build_query($data));
+        }
+        // OPTIONS:
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+           'API-KEY: '.$chave.'',
+           'Content-Type: application/json',
+        ));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        // EXECUTE:
+        $result = curl_exec($curl);
+        if(!$result){die("Connection deu Merdis");}
+        curl_close($curl);
+        return $result;
+     }
+
     public $estadosBrasileiros = [
         'AC'=>'Acre',
         'AL'=>'Alagoas',
@@ -1714,6 +1747,16 @@ class PropostaController extends Controller
         return '<div class="col-md-'.$col_md.'">'.$retorno.'<hr></div>';
     }
 
+    public function telefone_api($telefone) {
+        $telefone_clean = $this->clean($telefone);
+        $fone_arr = str_split($telefone_clean);
+
+        $telefone_para_api = '+55'.$fone_arr[0].$fone_arr[1]
+        .$fone_arr[3].$fone_arr[4].$fone_arr[5].$fone_arr[6]    //retiramos o arr[2] ou terceiro número, que é o nono dígito
+        .$fone_arr[7].$fone_arr[8].$fone_arr[9].$fone_arr[10];
+        return $telefone_para_api;
+    }
+
     public function actionRobo1() {
 
         $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
@@ -1791,13 +1834,22 @@ class PropostaController extends Controller
         /subscriber/{subscriber_id}/send_message/
         */
     }
-
+                    //    apibotsubscriber
     public function actionApibotsubscriber() {
         // MySql
         // alter table slo_proposta add apibotsubs int after id;
-
         $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
         $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+        
+        $nome = $_REQUEST['nome'];
+        $proposta_id = $_REQUEST['proposta_id'];
+        $nome_arr = explode(' ', $nome);
+        $primeiro_nome = $nome_arr[0];
+        $segundo_nome = $nome_arr[1];
+
+        $telefonexx = $_REQUEST['telefone'];
+        $telefone_para_api = $this->telefone_api($telefonexx);
+        
 
         $curl = curl_init();
 
@@ -1807,17 +1859,11 @@ class PropostaController extends Controller
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_URL, $url);
 
-        $a_enviar = json_encode('{
-            "phone": "+559991642468",
-            "first_name": "Núrya",
-            "last_name": "Ramos",
-        }');
-
         //Como array
         $arr_enviar = [
-            "phone" => "+559991642468",
-            "first_name" => "Núrya",
-            "last_name" => "Ramos",
+            "phone" => $telefone_para_api,
+            "first_name" => $primeiro_nome,
+            "last_name" => $segundo_nome,
         ];
        
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
@@ -1834,12 +1880,108 @@ class PropostaController extends Controller
         }
 
         curl_close($curl);
+
         $response = json_decode($response, true);
 
-        var_dump('Response:', $response);
+        // var_dump('Response:', $response);
+        // echo '<pre>';
+        // print_r($response);
+        // echo '</pre>';
+        // echo '<pre>';
+        // print_r($arr_enviar);
+        // echo '</pre>';
+
+        // $this->apibotget($telefone_para_api, $proposta_id);
+        if ($response['error_message']) {
+            return 0;
+        } else {
+            return 1;
+        }
+
+    }
+
+    public function actionApibotget() {
+        // MySql
+        // alter table slo_proposta add apibotsubs int after id;
+        
+        $proposta = $_REQUEST['proposta'];
+        $telefone = $_REQUEST['telefone'];
+        $telefone_pra_api = $this->telefone_api($telefone);
+        
+        $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/'.$telefone_pra_api.'/';
+        $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+        
+        $curl = curl_init();
+
+        // set url
+        curl_setopt($curl, CURLOPT_URL, $url);
+
+        //return the transfer as a string
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+
+        // $arr_enviar = [
+        //     "phone" => $telefone_pra_api
+        // ];
+       
+        // curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
+
+        //chave
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "API-KEY: $key"
+        ));
+
+        // $output contains the output string
+        $output = curl_exec($curl);
+        
+        if(!$output){
+            die("Sem conectar...");
+        }
+
+        // close curl resource to free up system resources
+        curl_close($curl); 
+
+        
+        // $resposta = json_decode(curl_exec($curl), true);
+        // curl_close($curl);
+
+        // var_dump('Response:', $output);
+        // echo '<hr>';
+        
+        // echo '<hr>';
+        // echo '<pre>';
+        // print_r($responsex);
+        // echo '</pre>';
+        // echo '<hr>'.$proposta;
+        // echo '<hr>'.$telefone_pra_api;
+        echo '<hr>'.$url;
+        echo '<hr>';
+
+        // $proposta = $this->findModel($proposta);
+        // $proposta->apibotsubs = $reponse->id;
+        // $proposta->save();
+        
+        $output = json_decode($output);
         echo '<pre>';
-        print_r($response);
+        print_r($output);
         echo '</pre>';
+
+        // $get_data = $this->callAPI('GET', $url, false, $key);
+        // $response = json_decode($get_data, true);
+        // $errors = $response['response']['errors'];
+        // $data = $response['response']['data'][0];
+
+        // echo '<hr>';
+        // echo '<hr>';
+        // echo '<hr>';
+
+        // echo '<pre>';
+        // print_r($response);
+        // echo '</pre>';
 
     }
 
@@ -1881,7 +2023,9 @@ class PropostaController extends Controller
 
         if ($error = curl_error($curl)) {
             throw new \Exception($error);
-            return 0;
+            $retorno = 0;
+        } else {
+            $retorno = 1;
         }
 
         curl_close($curl);
@@ -1891,8 +2035,17 @@ class PropostaController extends Controller
         // echo '<pre>';
         // print_r($response);
         // echo '</pre>';
+        if ($response['error_message']) {
+            return json_encode([
+                'result' => 0
+            ]);
+        } else {
+            return json_encode([
+                'result' => 1
+            ]);
+        }
 
-        return 1;
+        // return $retorno;
 
         /**
          * para o envio de mensagem, parâmetros:

@@ -728,12 +728,23 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 <?php
                                     use kartik\spinner\Spinner;
                                     echo '<div class="">';
-                                        echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
-                                        echo '<div class="clearfix"></div>';
+                                    echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
+                                    echo '<div class="clearfix"></div>';
                                     echo '</div>';
-                                ?>
+                                    ?>
                             </div>
                         </div>
+                        <?php if ($model->apibotsubs == ''): ?>
+                        <div class="col-md-12">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6" style="text-align: center !important;">
+                                <button id="botao-cadastra-subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Add Cliente ao Botconversa</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button id="retorna_subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Retorna Cliente</button>
+                            </div>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -838,8 +849,22 @@ $this->params['breadcrumbs'][] = 'Editar';
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 'data': {
-                    'subscriberid': ".$model->apibotsubs.",
+                    'subscriberid': ".($model->apibotsubs ? $model->apibotsubs : '"nulo"').",
+                    'proposta_id': ".$model->id.",
                     'mensagem': '".$msg_whats."'
+                }
+            };
+
+            var settings_subs = {
+                'url': '".Yii::$app->homeUrl."proposta/apibotsubscriber',
+                'method': 'POST',
+                'timeout': 0,
+                'headers': {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                'data': {
+                    'nome': '".$model->nome."',
+                    'telefone': '".$model->telefone_celular."'
                 }
             };
 
@@ -863,11 +888,45 @@ $this->params['breadcrumbs'][] = 'Editar';
                         });
                         document.location.reload(true);
                     } else {
-                        alert('Ocorreu algum erro:' + response.result);
+                        alert('Ocorreu algum erro no json:' + response.result);
                         console.log(response);
                     }
                 });
-            })
+            });
+
+            // ADD subscriber
+
+            $('#botao-cadastra-subscriber').on('click', function() {
+                $.ajax(settings_subs).done(function (response) {
+                    // console.log(response);
+                    if(response == 1 || response == '1') {
+                        $.ajax({
+                            'url': '".Yii::$app->homeUrl."proposta/apibotget',
+                            'method': 'POST',
+                            'data': {
+                                'proposta': '{$model->id}',
+                                'telefone': '{$model->telefone_celular}'
+                            }
+                        });
+                        alert('Usuário cadastrado com sucesso!');
+                        // document.location.reload(true);x
+                    } else {
+                        alert('Ocorreu algum erro neste Json:' + response);
+                        // console.log(response);
+                    }
+                });
+            });
+
+            $('#retorna_subscriber').on('click', function() {
+                $.ajax({
+                    'url': '".Yii::$app->homeUrl."proposta/apibotget',
+                    'method': 'POST',
+                    'data': {
+                        'proposta': '{$model->id}',
+                        'telefone': '{$model->telefone_celular}'
+                    }
+                });
+            });
             
         ");
     ?>
