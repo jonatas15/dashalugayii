@@ -153,7 +153,7 @@ use deyraka\materialdashboard\widgets\Card;
                 'data_inicio',
                 'id_slogica',
                 'etapa_andamento',
-                'codigo',
+                // 'codigo',
                 'conj_nome',
                 'conj_email',
                 'conj_cpf',
