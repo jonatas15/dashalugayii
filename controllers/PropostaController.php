@@ -1218,7 +1218,7 @@ class PropostaController extends Controller
         
         $disparo->data = date('Y-m-d h:i:s');
         $disparo->proposta_id = $proposta_id;
-        $disparo->mensagem = utf8_encode($mensagem.'<p>Mensagem enviada para '.$disparo->proposta->celular.'</p>');
+        $disparo->mensagem = utf8_encode($mensagem.'<p>Mensagem enviada para '.$disparo->proposta->telefone_celular.'</p>');
         $disparo->usuario_id = $usuario_id;
         $disparo->etapa = $etapa;
         $disparo->modo = 'whats';
@@ -1901,13 +1901,12 @@ class PropostaController extends Controller
     }
 
     public function actionApibotget() {
-        // MySql
-        // alter table slo_proposta add apibotsubs int after id;
         
         $proposta = $_REQUEST['proposta'];
         $telefone = $_REQUEST['telefone'];
         $telefone_pra_api = $this->telefone_api($telefone);
         
+        // A barra '/' no final é indispensável pra essa URL funcionar... IMPORTANTE
         $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/'.$telefone_pra_api.'/';
         $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
         
@@ -1922,10 +1921,6 @@ class PropostaController extends Controller
         curl_setopt($curl, CURLOPT_HEADER, 0);
 
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-
-        // $arr_enviar = [
-        //     "phone" => $telefone_pra_api
-        // ];
        
         // curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
 
@@ -1935,53 +1930,31 @@ class PropostaController extends Controller
             "API-KEY: $key"
         ));
 
-        // $output contains the output string
+        // Captura as informações,em string
         $output = curl_exec($curl);
         
         if(!$output){
             die("Sem conectar...");
         }
 
-        // close curl resource to free up system resources
+        // Fecha a conexão com a API
         curl_close($curl); 
 
-        
-        // $resposta = json_decode(curl_exec($curl), true);
-        // curl_close($curl);
-
-        // var_dump('Response:', $output);
-        // echo '<hr>';
-        
-        // echo '<hr>';
-        // echo '<pre>';
-        // print_r($responsex);
-        // echo '</pre>';
-        // echo '<hr>'.$proposta;
-        // echo '<hr>'.$telefone_pra_api;
-        echo '<hr>'.$url;
-        echo '<hr>';
-
-        // $proposta = $this->findModel($proposta);
-        // $proposta->apibotsubs = $reponse->id;
-        // $proposta->save();
-        
+        //Torna Objeto para captura dos dados
         $output = json_decode($output);
-        echo '<pre>';
-        print_r($output);
-        echo '</pre>';
 
-        // $get_data = $this->callAPI('GET', $url, false, $key);
-        // $response = json_decode($get_data, true);
-        // $errors = $response['response']['errors'];
-        // $data = $response['response']['data'][0];
-
+        // TESTES ======================================================================================
+        // echo '<hr>'.$url;
         // echo '<hr>';
-        // echo '<hr>';
-        // echo '<hr>';
-
         // echo '<pre>';
-        // print_r($response);
+        // print_r($output);
         // echo '</pre>';
+        // TESTES ======================================================================================
+        
+        // Salva no Banco de dados
+        $proposta = $this->findModel($proposta);
+        $proposta->apibotsubs = $output->id;
+        $proposta->save();
 
     }
 
@@ -2031,33 +2004,11 @@ class PropostaController extends Controller
         curl_close($curl);
         $response = json_decode($response, true);
 
-        // var_dump('Response:', $response);
-        // echo '<pre>';
-        // print_r($response);
-        // echo '</pre>';
         if ($response['error_message']) {
-            return json_encode([
-                'result' => 0
-            ]);
+            return 0;
         } else {
-            return json_encode([
-                'result' => 1
-            ]);
+            return 1;
         }
 
-        // return $retorno;
-
-        /**
-         * para o envio de mensagem, parâmetros:
-         * 
-        {
-            "type": "text",
-            "value": "teste teste"
-        }
-        * meu ID
-        15437309
-        * Url
-        /subscriber/{subscriber_id}/send_message/
-        */
     }
 }

@@ -98,7 +98,9 @@ $imoveis = $this->context->retorna_imoveis();
                     'action' => 'update'
                 ]);
             } else {
+                echo '<h3><strong><i style="color: red;">';
                 echo 'Cadastre um novo proprietário no site com o código '.$model->codigo_imovel;
+                echo '</i></strong></h3>';
             }
         ?>
         <?php Card::end(); ?>

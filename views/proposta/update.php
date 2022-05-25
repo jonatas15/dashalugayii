@@ -23,7 +23,13 @@ use yii\helpers\Url;
     .nav-tabs {
         font-size: 15px !important;
     }
+    .ver-mais-card {
+        font-size: 30px;
+    }
 </style>
+<div class="tooltip">Hover over me
+  <span class="tooltiptext">Tooltip text</span>
+</div>
 <?php
     echo $this->render('/site/avisos', [
         'idreferencia' => $model->id,
@@ -868,11 +874,12 @@ $this->params['breadcrumbs'][] = 'Editar';
                 }
             };
 
+            // Dispara a Mensagem
             $('#botao-whats').on('click', function() {
                 $.ajax(settings).done(function (response) {
                     console.log(response);
-                    if(response.result == 1 || response.result == '1') {
-                        alert('Mensagem enviada com sucesso! <hr> $msg_whats');
+                    if(response == 1 || response == '1') {
+                        alert('Mensagem enviada com sucesso!');
                         $.ajax({
                             'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
                             'method': 'POST',
@@ -886,7 +893,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 'status': '{$model->opcoes}'
                             }
                         });
-                        document.location.reload(true);
+                        // document.location.reload(true);
                     } else {
                         alert('Ocorreu algum erro no json:' + response.result);
                         console.log(response);
@@ -895,7 +902,6 @@ $this->params['breadcrumbs'][] = 'Editar';
             });
 
             // ADD subscriber
-
             $('#botao-cadastra-subscriber').on('click', function() {
                 $.ajax(settings_subs).done(function (response) {
                     // console.log(response);
@@ -917,6 +923,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                 });
             });
 
+            // Botão auxiliar temporário direto na função pra trazer o Subscriber e cadastrar no BD, caso a execução acima falhe
             $('#retorna_subscriber').on('click', function() {
                 $.ajax({
                     'url': '".Yii::$app->homeUrl."proposta/apibotget',

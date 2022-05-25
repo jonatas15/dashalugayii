@@ -116,6 +116,13 @@ class Card extends Widget
 
     protected function isCollapsable()
     {
-        return $this->collapsable ? Html::a(Html::tag('i','expand_circle_down',['class'=>'material-icons']),'#'.$this->id,['class'=>$this->titleTextType.' pull-right collapsed','data-toggle'=>'collapse','aria-expanded'=>'false', 'aria-controls'=>'1']) : '';
+        return $this->collapsable ? Html::a('Ver mais '.Html::tag('i','expand_circle_down',[
+            'class'=>'material-icons ver-mais-card'
+        ]),'#'.$this->id, [
+            'class'=>$this->titleTextType.' pull-right collapsed',
+            'data-toggle'=>'collapse',
+            'aria-expanded'=>'false',
+            'aria-controls'=>'1'
+        ]) : '';
     }
 }
