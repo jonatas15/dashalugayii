@@ -180,7 +180,8 @@ class SloProposta extends \yii\db\ActiveRecord
             'file2' => 'Verso do Documento:',
             'file3' => 'Selfie com o Documento:',
             'imageFiles' => 'Outros Comprovantes (máx. 3):',
-            'codigo' => 'Código D4sign (Assinatura do Contrato)'
+            'codigo' => 'Código D4sign (Assinatura do Contrato)',
+            'apibotsubs' => 'Código ID BotConversa'
 
         ];
     }

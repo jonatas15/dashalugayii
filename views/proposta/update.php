@@ -716,7 +716,16 @@ $this->params['breadcrumbs'][] = 'Editar';
                             </a>
                         </div>
                         <div class="col-md-6" style="text-align: center !important;">
-                            <h4><strong>Cadastrar essas Informações no Jetimob</strong></h4>
+                            <h4><strong>Cadastrar essas Informações no Superlógica</strong></h4>
+                            <?php
+                            Modal::begin([
+                                'toggleButton' => [
+                                    'label' => '<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',
+                                    'class' => 'btn btn-primary',
+                                    'style' => 'font-weight: bolder'
+                                ]
+                            ]);
+                            ?>
                             <?=Html::a('<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
                                 'class' => 'btn btn-primary',
                                 'style' => 'width: 100%',
@@ -728,6 +737,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     $(this).addClass(\'disabled\');
                                 '
                             ]);?>
+                            <?php Modal::end(); ?>
                             <br />
                             <br />
                             <div id="progressando" style="display: none">
@@ -981,17 +991,6 @@ $this->params['breadcrumbs'][] = 'Editar';
             echo Tabs::widget([
                 'items' => [
                     [
-                        'label' => 'Registro do Imóvel',
-                        'content' => 
-                        // '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
-                        '<div style="background-color: white !important">'.
-                                $this->render('_imovel', [
-                                    'model' => $model,
-                                ]).
-                            '</div>',
-                        'active' => true
-                    ],
-                    [
                         'label' => 'Registro: Pretendente',
                         'content' => '<div style="background-color: white !important">'.
                         $this->render('proponente', [
@@ -1000,6 +999,17 @@ $this->params['breadcrumbs'][] = 'Editar';
                         ]).
                         '</div>',
                         'active' => false 
+                    ],
+                    [
+                        'label' => 'Integrar ao Superlógica',
+                        'content' => 
+                        // '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
+                        '<div style="background-color: white !important">'.
+                                $this->render('_imovel', [
+                                    'model' => $model,
+                                ]).
+                            '</div>',
+                        'active' => true
                     ],
                     // 'nome',
                     [

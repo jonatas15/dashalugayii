@@ -153,7 +153,8 @@ use deyraka\materialdashboard\widgets\Card;
                 'data_inicio',
                 'id_slogica',
                 'etapa_andamento',
-                // 'codigo',
+                'codigo',
+                'apibotsubs',
                 'conj_nome',
                 'conj_email',
                 'conj_cpf',
@@ -189,6 +190,20 @@ use deyraka\materialdashboard\widgets\Card;
                 'showFooter' => true,
                 'footerContent' => 'Dados atualizados <sup>Março</sup> 2022',
             ]);
+            foreach ($pessoa as $key => $value) {
+                if (in_array($key, ['apibotsubs','codigo'])):
+                    echo '<div class="col-md-6">
+                            <div class="item-interno-proposta col-md-12">';
+                    echo '<div class="item-campo col-md-12">';
+                    // echo "<= $key =><br>";
+                    echo imprime_campo('SloProposta', $key, $pessoa->getAttributeLabel($key),$value, $pessoa->id);
+                    echo '</div>';
+                    // echo '<div class="item-campo col-md-2">';
+                    // echo '<br><button title="Copiar" alt="Copiar" class="btn btn-primary" style="color: white !important; padding: 5px 15px" onClick="copyToClipboard(\'#SloProposta_invisivel_'.$key.'-targ\')"><span class="glyphicon glyphicon-copy"></span></button>';
+                    // echo '</div>';
+                    echo '</div>'.'</div>';
+                endif;
+            }
             echo '<div class="col-md-6">
             <div class="item-interno-proposta col-md-12">';
             $i = 1;
