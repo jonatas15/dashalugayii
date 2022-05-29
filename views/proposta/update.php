@@ -719,6 +719,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                             <h4><strong>Cadastrar essas Informações no Superlógica</strong></h4>
                             <?php
                             Modal::begin([
+                                'size' => 'modal-lg',
                                 'toggleButton' => [
                                     'label' => '<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',
                                     'class' => 'btn btn-primary',
@@ -726,17 +727,22 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 ]
                             ]);
                             ?>
-                            <?=Html::a('<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
-                                'class' => 'btn btn-primary',
-                                'style' => 'width: 100%',
-                                'onClick' => '
-                                    $("body").css("cursor", "wait");
-                                    $(this).css("cursor", "wait");
-                                    $("#progressando").show();
-                                    // $(this).addAttribute(\'disabled\');
-                                    $(this).addClass(\'disabled\');
-                                '
-                            ]);?>
+                            <?php
+                                // echo Html::a('<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
+                                //     'class' => 'btn btn-primary',
+                                //     'style' => 'width: 100%',
+                                //     'onClick' => '
+                                //         $("body").css("cursor", "wait");
+                                //         $(this).css("cursor", "wait");
+                                //         $("#progressando").show();
+                                //         // $(this).addAttribute(\'disabled\');
+                                //         $(this).addClass(\'disabled\');
+                                //     '
+                                // ]);
+                                echo $this->render('_superlogica', [
+                                    'model' => $model,
+                                ]);
+                            ?>
                             <?php Modal::end(); ?>
                             <br />
                             <br />
@@ -998,19 +1004,19 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'id' => $id,
                         ]).
                         '</div>',
-                        'active' => false 
+                        'active' => true 
                     ],
-                    [
-                        'label' => 'Integrar ao Superlógica',
-                        'content' => 
-                        // '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
-                        '<div style="background-color: white !important">'.
-                                $this->render('_imovel', [
-                                    'model' => $model,
-                                ]).
-                            '</div>',
-                        'active' => true
-                    ],
+                    // [
+                    //     'label' => 'Integrar ao Superlógica',
+                    //     'content' => 
+                    //     // '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
+                    //     '<div style="background-color: white !important">'.
+                    //             $this->render('_imovel', [
+                    //                 'model' => $model,
+                    //             ]).
+                    //         '</div>',
+                    //     'active' => true
+                    // ],
                     // 'nome',
                     [
                         'label' => 'Histórico',

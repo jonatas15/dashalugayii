@@ -16,6 +16,7 @@ Modal::begin([
 <div class="col-md-12">
     <h3>Dados Pessoais</h3>
     <?= $this->context->imprime_campo_editavel('12', 'Proprietario', 'nome', 'Nome', $model->nome, $model->id) ?>
+    <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'sexo', 'Sexo: ', $model->sexo, $model->id) ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'documento_numero', 'Documento: '.$model->documento_tipo, $model->cnj_documento_numero, $model->id) ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'cpf_cnpj', 'Cpf/Cnpj', $model->cpf_cnpj, $model->id) ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'data_nascimento', $model->getAttributeLabel('data_nascimento'), $model->data_nascimento, $model->id) ?>

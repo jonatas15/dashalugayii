@@ -297,6 +297,8 @@ class ProprietarioController extends Controller
         ];
         $widgetClass = '';
         $valore = $valor;
+        $data = [];
+        $displayValueConfig = [];
 
         if (in_array($campo,['data', 'data_nascimento', 'cnj_data_nascimento', 'data_expedicao', 'documento_data_emissao', 'data_admissao'])) {
             $input = Editable::INPUT_WIDGET;
@@ -348,6 +350,21 @@ class ProprietarioController extends Controller
             $widgetClass = MaskedInput::className();
             $valore = $this->format_telefone($valor);
         }
+        if (in_array($campo,['sexo'])) {
+            $input = Editable::INPUT_DROPDOWN_LIST;
+            $data = ['M' => 'Masculino', 'F' => 'Feminino', 'I' => 'Indefinido'];
+            switch ($valor) {
+                case 'M': $valore = "Masculino"; break;
+                case 'F': $valore = "Feminino"; break;
+                case 'I': $valore = "Indefinido"; break;
+                default: $valore = "Masculino"; break;
+            }
+            $displayValueConfig = [
+                'M' => "Masculino",
+                'F' => "Feminino",
+                'I' => "Indefinido"
+            ];
+        }
         if ($title) {
             $retorno = '<label>'.$title.'</label><br />';
         }
@@ -362,6 +379,8 @@ class ProprietarioController extends Controller
             'options' => $editableoptions,
             'inputType' => $input,
             'widgetClass' => $widgetClass,
+            'data' => $data,
+            'displayValueConfig'=> $displayValueConfig,
             'id' => ($conj?'conjuge_':'').$tabela.'_invisivel_'.$campo.'_'.$id,
             'formOptions' => [
                 'action' => [

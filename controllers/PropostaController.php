@@ -1344,6 +1344,11 @@ class PropostaController extends Controller
         return $arr[2].'-'.$arr[1].'-'.$arr[0];
     }
 
+    public function formatar_data_pra_tela($data) {
+        $arr = explode('-',$data);
+        return $arr[2].'/'.$arr[1].'/'.$arr[0];
+    }
+
     public function actionEditcampo($id, $tabela, $campo){
         // Yii::$app->homeUrl."alerta/sendwhats?msg=$mensagem&num=$fone"
         // echo $tabela;
@@ -1739,6 +1744,7 @@ class PropostaController extends Controller
         $retorno .= "<br>";
         return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
     }
+    
     public function imprime_campo($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
         $retorno .= "<label><strong>$title: </strong><br><span>$valor</span></label>";
         // $retorno .= "<br>";
@@ -2010,5 +2016,57 @@ class PropostaController extends Controller
             return 1;
         }
 
+    }
+
+    // Traz as informações dos proprietários
+    public function actionRetornaproprietario () {
+        $id = $_REQUEST['id'];
+        $P = Proprietario::find()->where([
+            'id' => $id
+        ])->one();
+        $arrP = [];
+        $arrP['nome'] = $P->nome;
+        $arrP['proprietario_nomefantasia'] = $P->nome_fantasia;
+        $arrP['proprietario_cnpj'] = $P->cpf_cnpj;
+        $arrP['proprietario_celular'] = $P->celular;
+        $arrP['proprietario_telefone'] = $P->telefone;
+        $arrP['proprietario_email'] = $P->email;
+        $arrP['proprietario_rg'] = $P->rg;
+        $arrP['proprietario_orgao'] = $P->orgao;
+        $arrP['proprietario_sexo'] = $P->sexo;
+        $arrP['proprietario_datanascimento'] = $this->formatar_data_pra_tela($P->data_nascimento);
+        $arrP['proprietario_nacionalidade'] = $P->nacionalidade;
+        $arrP['proprietario_cep'] = $P->cep;
+        $arrP['proprietario_endereco'] = $P->endereco;
+        $arrP['proprietario_numero'] = $P->numero;
+        $arrP['proprietario_complemento'] = $P->complemento;
+        $arrP['proprietario_bairro'] = $P->bairro;
+        $arrP['proprietario_cidade'] = $P->cidade;
+        $arrP['proprietario_estado'] = $P->estado;
+        return json_encode($arrP);
+    }
+
+    // INPUTS mais simples para o Disparo ao Superlógica
+    public function linhatabela($campo, $id_campo, $formulario, $valor=null) {
+        if ($id_campo == 'proprietario_datanascimento') {
+            $valor = $this->formatar_data_pra_tela($valor);
+        }
+        if ($id_campo == 'proprietario_sexo') {
+            switch ($valor) {
+                case 'M': $sexoM = 'selected'; $sexoF = ''; break;
+                case 'F': $sexoM = ''; $sexoF = 'selected'; break;
+                default: $sexoM = 'selected'; $sexoF = ''; break;
+            }
+            $input = '<select style="width: 100%;border: 1px solid lightgray;padding:4px;background-color:transparent" id="'.$id_campo.'" name="'.$formulario.'['.$id_campo.']" required>
+                <option value="M" '.$sexoM.'>Masculino</option>
+                <option value="F" '.$sexoF.'>Feminino</option>
+            </select>';
+        } else {
+            $input = '<input style="width: 100%;border: 1px solid lightgray;padding:4px;" type="text" id="'.$id_campo.'" name="'.$formulario.'['.$id_campo.']" value="'.$valor.'" required>';
+        }
+        return '<tr style="">
+         <td style="font-size: 15px !important;text-align:left;">
+            <exp style="color:#AAAAAA;font-weight:bold;">'.$campo.':</exp>'.$input.
+        '</td></tr>';
     }
 }
