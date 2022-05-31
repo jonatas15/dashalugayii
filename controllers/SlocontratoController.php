@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\filters\AccessControl;
 /**
  * SlocontratoController implements the CRUD actions for Slocontrato model.
  */
@@ -17,9 +18,22 @@ class SlocontratoController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
+            'access'=> [
+                'class' => AccessControl::className(),
+                //'only' => ['create','delete','update'],
+                'rules' => [
+                      ['actions' => ['update'],       'allow' => true,   'roles' => ['faturas-update']],
+                      ['actions' => ['editcampo'],    'allow' => true,   'roles' => ['faturas-update']],
+                      ['actions' => ['create'],       'allow' => true,   'roles' => ['faturas-create']],
+                      ['actions' => ['novo'],         'allow' => true,   'roles' => ['faturas-create']],
+                      ['actions' => ['index'],        'allow' => true,   'roles' => ['faturas-indexa']],
+                      ['actions' => ['view'],         'allow' => true,   'roles' => ['faturas-indexa']],
+                      ['actions' => ['cruzamento'],   'allow' => true,   'roles' => ['faturas-indexa']],
+                      ['actions' => ['delete'],       'allow' => true,   'roles' => ['faturas-delete']],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -27,7 +41,7 @@ class SlocontratoController extends Controller
                 ],
             ],
         ];
-    }
+      }
 
     /**
      * Lists all Slocontrato models.

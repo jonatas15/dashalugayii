@@ -19,6 +19,7 @@ use Yii;
  * @property int|null $usuario_id
  * @property string|null $tipo_imovel
  * @property string|null $motivo_locacao
+ * @property string|null $nome
  * @property string|null $endereco
  * @property string|null $complemento
  * @property string|null $bairro
@@ -45,7 +46,6 @@ use Yii;
  * @property string|null $id_slogica
  * @property int|null $etapa_andamento
  * @property string|null $codigo
- * @property string|null $nome
  * @property string|null $data_nascimento
  * @property string|null $cpf
  * @property string|null $telefone
@@ -112,14 +112,14 @@ class SloProposta extends \yii\db\ActiveRecord
     {
         return [
             [['tipo', 'data_inicio'], 'required'],
-            [['tipo', 'proprietario_info', 'imovel_info', 'opcoes', 'motivo_locacao', 'conj_frente', 'conj_verso', 'frente', 'verso', 'proponentes', 'corresponsavel'], 'string'],
+            [['tipo', 'proprietario_info', 'imovel_info', 'opcoes', 'motivo_locacao', 'conj_frente', 'conj_verso', 'frente', 'verso', 'proponentes', 'corresponsavel', 'sexo'], 'string'],
             [['usuario_id', 'dormitorios', 'aluguel', 'iptu', 'condominio', 'agua', 'luz', 'gas_encanado', 'total', 'numero', 'etapa_andamento', 'conj_num_dependentes', 'superlogica_cliente', 'superlogica_imovel', 'apibotsubs'], 'integer'],
             [['data_inicio', 'data_nascimento', 'documento_data_emissao', 'data_admissao', 'conj_data_nascimento'], 'safe'],
             [['prazo_responder', 'proprietario', 'atvc_data_constituicao', 'id_slogica'], 'string', 'max' => 45],
             [['codigo_imovel'], 'string', 'max' => 5],
             [['imovel_valores', 'nome', 'email', 'naoLocalizado', 'condicao_do_imovel', 'conj_nome', 'conj_email', 'conj_profissao'], 'string', 'max' => 245],
             [['tipo_imovel', 'endereco', 'bairro', 'cidade', 'estado', 'atvc_contato'], 'string', 'max' => 255],
-            [['complemento', 'atvc_telefone'], 'string', 'max' => 25],
+            [['complemento', 'atvc_telefone', 'cnpj'], 'string', 'max' => 25],
             [['cep', 'documento_orgao_emissor'], 'string', 'max' => 10],
             [['atvc_empresa', 'codigo', 'renda', 'conj_renda'], 'string', 'max' => 100],
             [['atvc_cnpj', 'documento_numero', 'estado_civil', 'conj_documento_numero'], 'string', 'max' => 20],
@@ -152,6 +152,7 @@ class SloProposta extends \yii\db\ActiveRecord
             'imovel_valores' => 'Valores do Imóvel',
             'tipo_imovel' => 'Tipo de Imóvel',
             'motivo_locacao' => 'Motivo de Locação',
+            'nome' => 'Nome',
             'endereco' => 'Endereço',
             'complemento' => 'Complemento',
             'bairro' => 'Bairro',

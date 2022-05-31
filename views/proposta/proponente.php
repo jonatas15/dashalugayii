@@ -128,12 +128,6 @@ use deyraka\materialdashboard\widgets\Card;
                 'usuario_id',
                 'tipo_imovel',
                 'motivo_locacao',
-                'endereco',
-                'complemento',
-                'bairro',
-                'cidade',
-                'estado',
-                'cep',
                 'dormitorios',
                 'aluguel',
                 'iptu',
@@ -214,6 +208,7 @@ use deyraka\materialdashboard\widgets\Card;
                         case 'end_cep': $valor = $this->context->format_doc($value,'cep'); break;
                         case 'cep': $valor = $this->context->format_doc($value,'cep'); break;
                         case 'cpf': $valor = $this->context->format_doc($value,'cpf'); break;
+                        case 'cnpj': $valor = $this->context->format_doc($value,'cnpj'); break;
                         case 'telefone': $valor = $this->context->format_telefone($value); break;
                         case 'celular': $valor = $this->context->format_telefone($value); break;
                         case 'fone_residencial': $valor = $this->context->format_telefone($value); break;
@@ -223,10 +218,10 @@ use deyraka\materialdashboard\widgets\Card;
                         case 'genero': $valor = $value=='M'?'Masculino':'Feminino'; break;
                         default: $valor = $value; break;
                     }
-                    echo '<div class="item-campo col-md-10">';
+                    // echo '<div class="item-campo col-md-10">';
                     // echo "<= $key =><br>";
-                    echo imprime_campo('SloProposta', $key, $pessoa->getAttributeLabel($key),$valor, $pessoa->id);
-                    echo '</div>';
+                    echo $this->context->imprime_campo_editavel('10', 'SloProposta', $key, $pessoa->getAttributeLabel($key),$valor, $pessoa->id);
+                    // echo '</div>';
                     echo '<div class="item-campo col-md-2">';
                     // echo '<button class="urlx btn btn-info" value="sapos pulam muito">';
                     // echo 'Copiar  ';
@@ -236,7 +231,7 @@ use deyraka\materialdashboard\widgets\Card;
                     // echo '<p id="invisivel_'.$key.'" style="display: none">'.$valor.'</p>';
                     echo '<br><button title="Copiar" alt="Copiar" class="btn btn-primary" style="color: white !important; padding: 5px 15px" onClick="copyToClipboard(\'#SloProposta_invisivel_'.$key.'-targ\')"><span class="glyphicon glyphicon-copy"></span></button>';
                     echo '</div>';
-                    if ($i%4==0 and $i < 16) {
+                    if ($i%6==0 and $i < 24) {
                         echo '</div></div><div class="col-md-6"><div class="item-interno-proposta col-md-12">';
                     }
                     $total++;
@@ -244,23 +239,23 @@ use deyraka\materialdashboard\widgets\Card;
                 endif;
             }
             echo '</div></div>';
-            echo '<div class="col-md-6">
-            <div class="item-interno-proposta col-md-12">';
-            foreach ($pessoa as $key => $value) {
-                if (in_array($key, ['endereco', 'complemento', 'bairro', 'cidade', 'estado', 'cep'])) {
-                    echo '<div class="item-campo col-md-10">';
-                    echo imprime_campo('SloProposta', $key, $pessoa->getAttributeLabel($key),$value, $pessoa->id);
-                    echo '</div>';
-                    echo '<div class="item-campo col-md-2">';
-                    echo '<br><button title="Copiar" alt="Copiar" class="btn btn-primary" style="color: white !important; padding: 5px 15px" onClick="copyToClipboard(\'#SloProposta_invisivel_'.$key.'-targ\')"><span class="glyphicon glyphicon-copy"></span></button>';
-                    echo '</div>';
-                    if ($m%4==0) {
-                        echo '</div></div><div class="col-md-6"><div class="item-interno-proposta col-md-12">';
-                    }
-                    $m++;
-                }
-            }
-            echo '</div></div>';
+            // echo '<div class="col-md-6">
+            // <div class="item-interno-proposta col-md-12">';
+            // foreach ($pessoa as $key => $value) {
+            //     if (in_array($key, ['endereco', 'complemento', 'bairro', 'cidade', 'estado', 'cep'])) {
+            //         echo '<div class="item-campo col-md-10">';
+            //         echo imprime_campo('SloProposta', $key, $pessoa->getAttributeLabel($key),$value, $pessoa->id);
+            //         echo '</div>';
+            //         echo '<div class="item-campo col-md-2">';
+            //         echo '<br><button title="Copiar" alt="Copiar" class="btn btn-primary" style="color: white !important; padding: 5px 15px" onClick="copyToClipboard(\'#SloProposta_invisivel_'.$key.'-targ\')"><span class="glyphicon glyphicon-copy"></span></button>';
+            //         echo '</div>';
+            //         if ($m%4==0) {
+            //             echo '</div></div><div class="col-md-6"><div class="item-interno-proposta col-md-12">';
+            //         }
+            //         $m++;
+            //     }
+            // }
+            // echo '</div></div>';
             echo '<div class="clearfix"></div>';
             Card::end();
             //Seção 2 --------------------------------------------------------------------
@@ -304,9 +299,9 @@ use deyraka\materialdashboard\widgets\Card;
                             case 'genero': $valor = $value=='M'?'Masculino':'Feminino'; break;
                             default: $valor = $value; break;
                         }
-                        echo '<div class="item-campo col-md-9">';
-                        echo imprime_campo('SloProposta', $key, $pessoa->getAttributeLabel($key),$valor, $pessoa->id);
-                        echo '</div>';
+                        // echo '<div class="item-campo col-md-9">';
+                        echo $this->context->imprime_campo_editavel('9', 'SloProposta', $key, $pessoa->getAttributeLabel($key),$valor, $pessoa->id);
+                        // echo '</div>';
                         echo '<div class="item-campo col-md-2">';
                         echo '<br><button title="Copiar" alt="Copiar" class="btn btn-info" style="color: white !important; padding: 5px 15px" onClick="copyToClipboard(\'#SloProposta_invisivel_'.$key.'-targ\')"><span class="glyphicon glyphicon-copy"></span></button>';
                         echo '</div>';
@@ -563,7 +558,7 @@ use deyraka\materialdashboard\widgets\Card;
     // }
     function createAutoClosingAlert (msg,duration) {
         var el = document.createElement("div");
-        el.setAttribute("style","position:fixed;top:40%;left:45%;background-color:rgba(255,0,255, 0.7);font-size:14px;color:white;font-weight: bold;padding:20px;border-radius:20px;");
+        el.setAttribute("style","z-index:1000000;position:fixed;top:40%;left:45%;background-color:rgba(255,0,0, 0.7);font-size:14px;color:yellow;font-weight: bold;padding:20px;border-radius:20px;");
         el.innerHTML = msg;
         setTimeout(function(){
         el.parentNode.removeChild(el);

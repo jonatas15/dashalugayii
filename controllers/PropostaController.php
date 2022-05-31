@@ -346,6 +346,7 @@ class PropostaController extends Controller
     }
 
     public function format_telefone($fone){
+        $fone = $this->clean($fone);
         $f = str_split($fone,1);
         $ddd = $f[0].$f[1];
         $g1 = '';
@@ -852,6 +853,7 @@ class PropostaController extends Controller
     }
 
     public function format_doc($doc,$tipo){
+        $doc = $this->clean($doc);
         switch ($tipo) {
             case 'cpf': $f = str_split($doc,3); $retorno = $f[0].'.'.$f[1].'.'.$f[2].'-'.$f[3]; break;
             case 'cep': $f = str_split($doc,5); $retorno = $f[0].'-'.$f[1]; break;
@@ -1680,7 +1682,7 @@ class PropostaController extends Controller
             $input = Editable::INPUT_TEXTAREA;
             $submitOnEnter = false;
         }
-        if (in_array($campo,['cpf_cnpj'])) {
+        if (in_array($campo,['cpf_cnpj', 'cnpj'])) {
             // XX. XXX. XXX/0001-XX
             $input = Editable::INPUT_WIDGET;
             $editableoptions = [
@@ -2047,19 +2049,26 @@ class PropostaController extends Controller
     }
 
     // INPUTS mais simples para o Disparo ao Superlógica
-    public function linhatabela($campo, $id_campo, $formulario, $valor=null) {
+    public function linhatabela($campo, $id_campo, $formulario, $valor = null, $opcoes = null) {
         if ($id_campo == 'proprietario_datanascimento') {
             $valor = $this->formatar_data_pra_tela($valor);
         }
-        if ($id_campo == 'proprietario_sexo') {
-            switch ($valor) {
-                case 'M': $sexoM = 'selected'; $sexoF = ''; break;
-                case 'F': $sexoM = ''; $sexoF = 'selected'; break;
-                default: $sexoM = 'selected'; $sexoF = ''; break;
+        if ($opcoes) {
+            // switch ($valor) {
+            //     case 'M': $sexoM = 'selected'; $sexoF = ''; break;
+            //     case 'F': $sexoM = ''; $sexoF = 'selected'; break;
+            //     default: $sexoM = 'selected'; $sexoF = ''; break;
+            // }
+            $select_content = '';
+            foreach ($opcoes as $key => $value) {
+                $selected = '';
+                if ($key == $valor) {
+                    $selected = 'selected';
+                }
+                $select_content .= "<option value='$key' $selected >$value</option>\n";
             }
             $input = '<select style="width: 100%;border: 1px solid lightgray;padding:4px;background-color:transparent" id="'.$id_campo.'" name="'.$formulario.'['.$id_campo.']" required>
-                <option value="M" '.$sexoM.'>Masculino</option>
-                <option value="F" '.$sexoF.'>Feminino</option>
+                '.$select_content.'
             </select>';
         } else {
             $input = '<input style="width: 100%;border: 1px solid lightgray;padding:4px;" type="text" id="'.$id_campo.'" name="'.$formulario.'['.$id_campo.']" value="'.$valor.'" required>';

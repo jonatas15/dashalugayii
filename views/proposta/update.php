@@ -258,22 +258,6 @@ use yii\helpers\Url;
     // $msg_whats .= "\\n ".'https://alugadigital.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').'/'.$model->id;
 
 ?>
-<script>
-    function myFunction() {
-        /* Get the text field */
-        var copyText = document.getElementById("myInput");
-    
-        /* Select the text field */
-        copyText.select();
-        copyText.setSelectionRange(0, 99999); /* For mobile devices */
-    
-        /* Copy the text inside the text field */
-        document.execCommand("copy");
-    
-        /* Alert the copied text */
-        alert("Copied the text: " + copyText.value);
-    }
-</script>
 <?php
 $this->title = 'Proposta: ' . $model->tipo .' pelo Imóvel '. $model->codigo_imovel;
 $this->params['breadcrumbs'][] = ['label' => 'Propostas', 'url' => ['/site/indexlocacao']];

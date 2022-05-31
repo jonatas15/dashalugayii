@@ -19,7 +19,7 @@ class PropostaSearch extends SloProposta
     {
         return [
             [['id', 'usuario_id'], 'integer'],
-            [['tipo', 'prazo_responder', 'proprietario', 'proprietario_info', 'imovel_info', 'imovel_valores','codigo_imovel'], 'safe'],
+            [['nome','endereco','tipo', 'prazo_responder', 'proprietario', 'proprietario_info', 'imovel_info', 'imovel_valores','codigo_imovel'], 'safe'],
         ];
     }
 
@@ -42,14 +42,15 @@ class PropostaSearch extends SloProposta
     public function search($params)
     {
         $query = SloProposta::find();
-
+        
         // add conditions that should always apply here
-
+        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => 10,
             ],
+            'attributes' => ['nome','endereco','cidade'],
             'sort' => [
                 'defaultOrder' => [
                     'data_inicio' => SORT_DESC 

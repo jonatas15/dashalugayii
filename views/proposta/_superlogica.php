@@ -67,13 +67,14 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
     font-weight: bold;
   }
   .disabled {
-      background-color: lightgray !important;
+    background-color: lightgray !important;
+  }
+  .botao-ativo-agora {
+      border: 3px solid black !important;
+      border-radius: 5px !important;
   }
 </style>
 <div class="col-md-12">
-    <br />
-    <?php //= Alert::widget() ?>
-    <br />
     <div class="col-md-12">
         <!-- <div class="row"> -->
         
@@ -110,11 +111,12 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                 'action' => 'vaiouracha.php'
             ]); ?>
             <div class="col-md-12 divs-proprietario">
+                <h3><strong>Dados do Proprietário</strong></h3><hr style="margin-top:0px;margin-bottom:0px !important;">
                 <?= $form->field($model, 'proprietario')->widget(Select2::classname(), [
                     'data' => $proprietarios,
                     'language' => 'pt',
                     'options' => [
-                        'placeholder' => 'Selecione o Proprietário',
+                        'placeholder' => 'Para preencher automaticamente, selecione o nome do Proprietário',
                         'multiple' => false,
                         'onchange' => '$.ajax({
                             method: "POST",
@@ -149,7 +151,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                         'allowClear' => false,
                         'maximumInputLength' => 100
                     ],
-                ])->label('Adicionar ou Atualizar dados do Proprietário do Imóvel'); ?>
+                ])->label(''); ?>
             </div>
             <div class="col-md-6 divs-proprietario">
                 <!-- <hr> -->
@@ -162,7 +164,11 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                     <?= $this->context->linhatabela('Email', 'proprietario_email', 'prop1', $proprietario_ativo->email); ?>
                     <?= $this->context->linhatabela('RG', 'proprietario_rg', 'prop1', $proprietario_ativo->rg); ?>
                     <?= $this->context->linhatabela('Órgão Emissor', 'proprietario_orgao', 'prop1', $proprietario_ativo->orgao); ?>
-                    <?= $this->context->linhatabela('Sexo', 'proprietario_sexo', 'prop1', $proprietario_ativo->sexo); ?>
+                    <?= $this->context->linhatabela('Sexo', 'proprietario_sexo', 'prop1', $proprietario_ativo->sexo, [
+                        'M' => 'Masculino',
+                        'F' => 'Feminino',
+                        'I' => 'Indefinido',
+                    ]); ?>
                 </table>
             </div>
             <div class="col-md-6 divs-proprietario">
@@ -179,11 +185,12 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                 </table>
             </div>
             <div class="col-md-12 divs-imovel">
+                <h3><strong>Dados do Imóvel</strong></h3><hr style="margin-top:0px;margin-bottom:0px !important;">
                 <?= $form->field($model, 'imoveis_jet')->widget(Select2::classname(), [
                     'data' => $imoveis,
                     'language' => 'pt',
                     'options' => [
-                        'placeholder' => 'Selecione o Código',
+                        'placeholder' => 'Para preencher automaticamente, selecione o código do Imóvel',
                         'multiple' => false,
                         'onchange' => '$.ajax({
                             method: "POST",
@@ -226,7 +233,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                         'allowClear' => false,
                         'maximumInputLength' => 100
                     ],
-                ])->label('Adicionar ou Atualizar Imóvel: Dados importados do Jetimob');
+                ])->label('');
                 ?>
             </div>
             <div class="col-md-6 divs-imovel">
@@ -249,10 +256,20 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                     <?= $this->context->linhatabela('Condominio', 'infoimovel_condominio', 'imovelinfo', $model_infoimovel['condominio']); ?>
                 </table>
             </div>
-            <div class="col-md-12 divs-contrato"></div>
+            <div class="col-md-12 divs-contrato">
+                <h3><strong>Informações do Contrato</strong></h3><hr style="">
+            </div>
             <div class="col-md-6 divs-contrato">
                 <table class="kv-grid-table table table-bordered table-striped kv-table-wrap">
-                    <?= $this->context->linhatabela('Id Tipo de Contrato', 'id_tipo_con', 'slocontrato'); ?>
+                    <?= $this->context->linhatabela('Id Tipo de Contrato', 'id_tipo_con', 'slocontrato', null, [
+                        1 => 'Residencial',
+                        2 => 'Não residencial',
+                        3 => 'Comercial',
+                        4 => 'Indústria',
+                        5 => 'Temporada',
+                        6 => 'Por encomenda',
+                        7 => 'Mista',
+                    ]); ?>
                     <?= $this->context->linhatabela('Data de Início', 'dt_inicio_con', 'slocontrato'); ?>
                     <?= $this->context->linhatabela('Data de Fim', 'dt_fim_con', 'slocontrato'); ?>
                     <?= $this->context->linhatabela('Valor do Aluguel', 'vl_aluguel_con', 'slocontrato'); ?>
@@ -281,12 +298,45 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                     <?= $this->context->linhatabela('FL Endereço de Cobrança', 'fl_endcobranca_con', 'slocontrato'); ?>
                 </table>
             </div>
+            <div class="col-md-12 divs-pretendente">
+                <h3><strong>Informações do Pretendente</strong></h3><hr style="">
+            </div>
+            <div class="col-md-6 divs-pretendente">
+                <table class="kv-grid-table table table-bordered table-striped kv-table-wrap">
+                    <?= $this->context->linhatabela('Nome', 'nome', 'pretendente', $model->nome); ?>
+                    <?= $this->context->linhatabela('Nome Fantasia', 'nome_fantasia', 'pretendente', $model->nome); ?>
+                    <?= $this->context->linhatabela('CNPJ', 'cnpj', 'pretendente', $model->cnpj); ?>
+                    <?= $this->context->linhatabela('Celular', 'celular', 'pretendente', $model->telefone_celular); ?>
+                    <?= $this->context->linhatabela('Telefone', 'telefone', 'pretendente', $model->telefone); ?>
+                    <?= $this->context->linhatabela('Email', 'email', 'pretendente', $model->email); ?>
+                    <?= $this->context->linhatabela('RG', 'rg', 'pretendente', $model->documento_numero); ?>
+                    <?= $this->context->linhatabela('Órgão Emissor', 'orgao', 'pretendente', $model->documento_orgao_emissor); ?>
+                    <?= $this->context->linhatabela('Sexo', 'sexo', 'pretendente', $model->sexo, [
+                        'M' => 'Masculino',
+                        'F' => 'Feminino',
+                        'I' => 'Indefinido',
+                    ]); ?>
+                </table>
+            </div>
+            <div class="col-md-6 divs-pretendente">
+                <table class="kv-grid-table table table-bordered table-striped kv-table-wrap">
+                    <?= $this->context->linhatabela('Data de nascimento', 'data_nascimento', 'pretendente', $model->data_nascimento); ?>
+                    <?= $this->context->linhatabela('Nacionalidade', 'nacionalidade', 'pretendente', $model->nacionalidade); ?>
+                    <?= $this->context->linhatabela('Cep', 'cep', 'pretendente', $model->cep); ?>
+                    <?= $this->context->linhatabela('Endereço', 'endereco', 'pretendente', $model->endereco); ?>
+                    <?= $this->context->linhatabela('Número', 'numero', 'pretendente', $model->numero); ?>
+                    <?= $this->context->linhatabela('Complemento', 'complemento', 'pretendente', $model->complemento); ?>
+                    <?= $this->context->linhatabela('Bairro', 'bairro', 'pretendente', $model->bairro); ?>
+                    <?= $this->context->linhatabela('Cidade', 'cidade', 'pretendente', $model->cidade); ?>
+                    <?= $this->context->linhatabela('Estado', 'estado', 'pretendente', $model->estado); ?>
+                </table>
+            </div>
             <div class="col-md-12">
                 <hr>
                 <a id="div-prop-id" class="btn btn-navlocal btn-primary" style="color: white">Proprietário</a>
                 <a id="div-imov-id" class="btn btn-navlocal" style="color: white">Imóvel</a>
-                <a id="div-cont-id" class="btn btn-navlocal" style="color: white">Contrato</a>
                 <a id="div-pret-id" class="btn btn-navlocal" style="color: white">Pretendente</a>
+                <a id="div-cont-id" class="btn btn-navlocal" style="color: white">Contrato</a>
             </div>
             <div class="col-md-12">
                 <hr>
@@ -332,7 +382,8 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             $('.divs-proprietario').show();
             $('.divs-imovel').hide();
             $('.divs-contrato').hide();
-            $('.btn-navlocal').removeClass('btn-primary');
+            $('.divs-pretendente').hide();
+            $('.btn-navlocal').removeClass('btn-primary botao-ativo-agora');
             $(this).addClass('btn-primary');
             var conta_campos = 0;
             var conta_campos_cheios = 0;
@@ -352,12 +403,14 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             }
             $(this).text('Proprietário' + ' ' + conta_campos_cheios + '/' + conta_campos);
             $(this).attr('title', tacheio);
+            $(this).addClass('botao-ativo-agora');
         });
         $('#div-imov-id').on('click', function(){
             $('.divs-proprietario').hide();
             $('.divs-imovel').show();
             $('.divs-contrato').hide();
-            $('.btn-navlocal').removeClass('btn-primary');
+            $('.divs-pretendente').hide();
+            $('.btn-navlocal').removeClass('btn-primary botao-ativo-agora');
             $(this).addClass('btn-primary');
             var conta_campos_2 = 0;
             var conta_campos_cheios_2 = 0;
@@ -377,12 +430,14 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             }
             $(this).text('Imóvel' + ' ' + conta_campos_cheios_2 + '/' + conta_campos_2);
             $(this).attr('title', tacheio_2);
+            $(this).addClass('botao-ativo-agora');
         });
         $('#div-cont-id').on('click', function(){
             $('.divs-proprietario').hide();
             $('.divs-imovel').hide();
             $('.divs-contrato').show();
-            $('.btn-navlocal').removeClass('btn-primary');
+            $('.divs-pretendente').hide();
+            $('.btn-navlocal').removeClass('btn-primary botao-ativo-agora');
             $(this).addClass('btn-primary');
             var conta_campos_3 = 0;
             var conta_campos_cheios_3 = 0;
@@ -402,6 +457,34 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             }
             $(this).text('Contrato' + ' ' + conta_campos_cheios_3 + '/' + conta_campos_3);
             $(this).attr('title', tacheio_3);
+            $(this).addClass('botao-ativo-agora');
+        });
+        $('#div-pret-id').on('click', function(){
+            $('.divs-proprietario').hide();
+            $('.divs-imovel').hide();
+            $('.divs-contrato').hide();
+            $('.divs-pretendente').show();
+            $('.btn-navlocal').removeClass('btn-primary botao-ativo-agora');
+            $(this).addClass('btn-primary');
+            var conta_campos_4 = 0;
+            var conta_campos_cheios_4 = 0;
+            var tacheio_4 = '(Falta dados)';
+            $( \".divs-pretendente input\" ).each(function( index ) {
+                // console.log( index + \": \" + $( this ).val() );
+                conta_campos_4++;
+                if ($( this ).val() != '') {
+                    conta_campos_cheios_4++;
+                }
+            });
+            if (conta_campos_4 == conta_campos_cheios_4) {
+                tacheio_4 = '(Completo)';
+                $(this).addClass('btn-success');
+            } else {
+                $(this).removeClass('btn-success');
+            }
+            $(this).text('Pretendente' + ' ' + conta_campos_cheios_4 + '/' + conta_campos_4);
+            $(this).attr('title', tacheio_4);
+            $(this).addClass('botao-ativo-agora');
         });
         // $('#div-pret-id').on('click', function(){});
     ");
