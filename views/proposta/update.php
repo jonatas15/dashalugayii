@@ -16,6 +16,8 @@ use deyraka\materialdashboard\widgets\CardStats;
 use deyraka\materialdashboard\widgets\Progress;
 use yii\helpers\Url;
 
+use dmstr\widgets\Alert;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\SloProposta */
 ?>
@@ -25,6 +27,16 @@ use yii\helpers\Url;
     }
     .ver-mais-card {
         font-size: 30px;
+    }
+    .alert-success {
+        font-size: 17px !important;
+        text-align: center !important;
+        font-weight: bold;
+    }
+    .alert-warning {
+        font-size: 17px !important;
+        text-align: center !important;
+        font-weight: bold;
     }
 </style>
 <div class="tooltip">Hover over me
@@ -264,6 +276,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Propostas', 'url' => ['/site/index
 // $this->params['breadcrumbs'][] = ['label' => 'Imóvel '.$model->codigo_imovel, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Editar';
 ?>
+<?= Alert::widget() ?>
 <style>
     .item1,.item2,.item3,.item4,.item5,.item6,.item7,.item8,.item9,.item10 {
         position:absolute;

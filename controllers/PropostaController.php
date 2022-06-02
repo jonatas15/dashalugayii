@@ -647,22 +647,34 @@ class PropostaController extends Controller
         $request_pretendente = $this->arrtoobj($_REQUEST['pretendente']);
         $request_contrato = $this->arrtoobj($_REQUEST['slocontrato']);
 
+        // TESTE OBJETIVO
+        /**
+         * 
+         */
+            $contrato = $this->superlogicacontrato($request_contrato, 530, 744);
+            if ($contrato['resultado'] == 'sucesso') {
+                echo 'Feito';
+            } else {
+                echo ' Não Feito: <br><hr>'.$contrato['conteudo'];
+            }
+            exit();
+
         $proprietario = $this->superlogicaproprietario($request_proprietario);
         # => NÍVEL DO PROPRIETÁRIO =============================================================================================
         if ($proprietario['resultado'] == 'sucesso') {
             $imovel = $this->superlogicaimovel($request_imovel, $proprietario['superlogica']);
             # => NÍVEL DO IMÓVEL ===============================================================================================
             if ($imovel['resultado'] == 'sucesso') {
-                $pretendente = $this->superlogicapretendente($request_pretendente, $imovel['superlogica_imovel']);
+                $pretendente = $this->superlogicapretendente($request_pretendente);
                 # => NÍVEL DO PRETENDENTE ======================================================================================
                 if ($pretendente['resultado'] == 'sucesso') {
                     # => NÍVEL DO CONTRATO =====================================================================================
-                    $contrato = $this->superlogicacontrato($request_pretendente, $imovel['superlogica_imovel'], $pretendente['superlogica_locatario']);
+                    $contrato = $this->superlogicacontrato($request_contrato, $imovel['superlogica_imovel'], $pretendente['superlogica_locatario']);
                     if ($contrato['resultado'] == 'sucesso') {
                         Yii::$app->session->setFlash('success', 'TUDO CERTO, Proprietário, Imóvel, Locatário e Contrato adicionados ao Superlógica');
                         return $this->redirect(Yii::$app->request->referrer);
                     } else {
-                        Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Contrato, solicite o suporte e mostre isso: <hr>'.$pretendente["contrato"].'<hr>'.$pretendente['contrato'].'<hr>');
+                        Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Contrato, solicite o suporte e mostre isso: <hr>'.$contrato["resultado"].'<hr>'.$contrato['conteudo'].'<hr>');
                         return $this->redirect(Yii::$app->request->referrer);
                     }
                 } else {
@@ -688,14 +700,14 @@ class PropostaController extends Controller
         $a_enviar = json_encode('{
             "ST_NOME_PES": "'.$arr->proprietario_nome.'",
             "ST_FANTASIA_PES": "'.$arr->proprietario_nomefantasia.'",
-            "ST_CNPJ_PES": "'.$arr->proprietario_cnpj.'",
+            "ST_CNPJ_PES": "'.$this->clean($arr->proprietario_cnpj).'",
             "ST_CELULAR_PES": "'.$this->clean($arr->proprietario_celular).'",
             "ST_TELEFONE_PES": "'.$this->clean($arr->proprietario_telefone).'",
             "ST_EMAIL_PES": "'.$arr->proprietario_email.'",
             "ST_RG_PES": "'.$arr->proprietario_rg.'",
             "ST_ORGAO_PES": "'.$arr->proprietario_orgao.'",
             "ST_SEXO_PES": "'.($arr->proprietario_sexo == 'M'?1:2).'",
-            "DT_NASCIMENTO_PES": "'.$arr->proprietario_datanascimento.'",
+            "DT_NASCIMENTO_PES": "'.date("m/d/Y", strtotime($arr->proprietario_datanascimento)).'",
             "ST_NACIONALIDADE_PES": "'.$arr->proprietario_nacionalidade.'",
             "ST_CEP_PES": "'.$this->clean($arr->proprietario_cep).'",
             "ST_ENDERECO_PES": "'.$arr->proprietario_endereco.'",
@@ -738,8 +750,8 @@ class PropostaController extends Controller
 
        if ($retorno->data[0]->status == '200') {
             $retorna_id_proprietario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
-            $proprietario->superlogica = (int)$retorna_id_proprietario_superlogica;
-            $proprietario->save();
+            // $proprietario->superlogica = (int)$retorna_id_proprietario_superlogica;
+            // $proprietario->save();
             return [
                 'superlogica' => $retorna_id_proprietario_superlogica,
                 'conteudo' => $retorno->data[0]->msg,
@@ -825,37 +837,16 @@ class PropostaController extends Controller
     /**
      * SUPERLÓGICA PRETENDENTE/LOCATÁRIO
      */
-    public function superlogicapretendente($arr, $imovel) {
+    public function superlogicapretendente($arr) {
         
         $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/locatarios/put");
     
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
-
-        /**
-        
-        \"ST_NOME_PES\": \"Giovani Siqueira\",
-        \"ST_FANTASIA_PES\": \"Giovani Siqueira\",
-        \"ST_CNPJ_PES\": \"22911385056\",
-        \"ST_CELULAR_PES\": \"19983080917\",
-        \"ST_TELEFONE_PES\": \"1938547119\",
-        \"ST_EMAIL_PES\": \"giovani.siqueira@imobiliarias.com\",
-        \"ST_RG_PES\": \"480476506\",
-        \"ST_ORGÃO_PES\": \"SSP\",
-        \"ST_SEXO_PES\": \"Masculino\",
-        \"DT_NASCIMENTO_PES\": \"09/01/1996\",
-        \"ST_NACIONALIDADE_PES\": \"Brasileira\",
-        \"ST_CEP_PES\": \"13180220\"
-        \"ST_ENDERECO_PES\": \"Rua Benedito Matheus\"
-        \"ST_NUMERO_PES\": \"100\"
-        \"ST_COMPLEMENTO_PES\": \"Casa\"
-        \"ST_BAIRRO_PES\": \"Jardim Santa Terezinha (Nova Veneza)\"
-        \"ST_CIDADE_PES\": \"Sumaré\"
-        \"ST_ESTADO_PES\": \"SP\"
-        \"ST_OBSERVACAO_PES\" : \"Obs\" 
-        
-        */
+        // echo '<pre>';
+        // echo date("m/d/Y", strtotime($arr->data_nascimento));
+        // echo '</pre>';
         $a_enviar = json_encode('{
             "ST_NOME_PES": "'.$arr->nome.'",
             "ST_FANTASIA_PES": "'.$arr->nome_fantasia.'",
@@ -866,7 +857,7 @@ class PropostaController extends Controller
             "ST_RG_PES": "'.$arr->rg.'",
             "ST_ORGÃO_PES": "'.$arr->orgao.'",
             "ST_SEXO_PES": "'.($arr->sexo == 'M'?1:2).'",
-            "DT_NASCIMENTO_PES": "'.$arr->data_nascimento.'",
+            "DT_NASCIMENTO_PES": "'.date("m/d/Y", strtotime($arr->data_nascimento)).'",
             "ST_NACIONALIDADE_PES": "'.$arr->nacionalidade.'",
             "ST_CEP_PES": "'.$this->clean($arr->cep).'",
             "ST_ENDERECO_PES": "'.$arr->endereco.'",
@@ -875,8 +866,16 @@ class PropostaController extends Controller
             "ST_BAIRRO_PES": "'.$arr->bairro.'",
             "ST_CIDADE_PES": "'.$arr->cidade.'",
             "ST_ESTADO_PES": "'.$arr->estado.'",
-            "ST_OBSERVACAO_PES": "Cadastro pelo sistema em '.date('d/m/Y \à\s H:i:s').'",
+            "ST_OBSERVACAO_PES": "Cadastro pelo sistema em '.date('d/m/Y \à\s H:i:s').'"
         }');
+
+        // echo '<hr>';
+        // echo 'PRETENDENTE ==================================================> ';
+        // echo '<hr>';
+        // echo '<pre>';
+        // print_r(json_decode($a_enviar));
+        // echo '</pre>';
+        // exit();
        
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
 
@@ -917,35 +916,6 @@ class PropostaController extends Controller
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
 
-        /**
-        \"ID_IMOVEL_IMO\": \"364\",
-        \"ID_TIPO_CON\": \"1\",
-        \"DT_INICIO_CON\": \"06/28/2019\",
-        \"DT_FIM_CON\": \"12/27/2021\",
-        \"VL_ALUGUEL_CON\": \"1800\",
-        \"TX_ADM_CON\": \"10\",
-        \"FL_TXADMVALORFIXO_CON\": \"0\",
-        \"NM_DIAVENCIMENTO_CON\": \"25\",
-        \"TX_LOCACAO_CON\": \"0\",
-        \"ID_INDICEREAJUSTE_CON\": \"1\",
-        \"NM_MESREAJUSTE_CON\": \"6\",
-        \"DT_ULTIMOREAJUSTE_CON\": \"06/01/2019\",
-        \"FL_MESFECHADO_CON\": \"0\",
-        \"ID_CONTABANCO_CB\": \"1\",
-        \"FL_DIAFIXOREPASSE_CON\": \"0\",
-        \"NM_DIAREPASSE_CON\": \"5\",
-        \"FL_MESVENCIDO_CON\": \"0\",
-        \"FL_DIMOB_CON\": \"0\",
-        \"ID_FILIAL_FIL\": \"0\",
-        \"ST_OBSERVACAO_CON\": \"Contrato cadastrado via API\",
-        \"NM_REPASSEGARANTIDO_CON\": \"0\",
-        \"FL_GARANTIA_CON\": \"0\",
-        \"FL_SEGUROINCENDIO_CON\": \"0\",
-        \"FL_ENDCOBRANCA_CON\": \"0\",
-        \"INQUILINOS\"
-        
-        */
-
         $inquilinos = '"INQUILINOS": [
             {
                 "ID_PESSOA_PES": "'.$locatario.'",
@@ -954,11 +924,18 @@ class PropostaController extends Controller
             }
         ],';
         
+        
+        echo '<hr>';
+        echo strval($arr->id_tipo_con);
+        echo date("m/d/Y", strtotime($arr->dt_inicio_con));
+        echo '<br>Dt_inicio_con - '.$arr->dt_inicio_con;
+        echo '<hr>';
+
         $a_enviar = json_encode('{
             "ID_IMOVEL_IMO": "'.$imovel.'",
             "ID_TIPO_CON": "'.$arr->id_tipo_con.'",
-            "DT_INICIO_CON": "'.$arr->dt_inicio_con.'",
-            "DT_FIM_CON": "'.$arr->dt_fim_con.'",
+            "DT_INICIO_CON": "'.date("m/d/Y", strtotime($arr->dt_inicio_con)).'",
+            "DT_FIM_CON": "'.date("m/d/Y", strtotime($arr->dt_fim_con)).'",
             "VL_ALUGUEL_CON": "'.$arr->vl_aluguel_con.'",
             "TX_ADM_CON": "'.$arr->tx_adm_con.'",
             "FL_TXADMVALORFIXO_CON": "'.$arr->fl_txadmvalorfixo_con.'",
@@ -966,7 +943,7 @@ class PropostaController extends Controller
             "TX_LOCACAO_CON": "'.$arr->tx_locacao_con.'",
             "ID_INDICEREAJUSTE_CON": "'.$arr->id_indicereajuste_con.'",
             "NM_MESREAJUSTE_CON": "'.$arr->nm_mesreajuste_con.'",
-            "DT_ULTIMOREAJUSTE_CON": "'.$arr->dt_ultimoreajuste_con.'",
+            "DT_ULTIMOREAJUSTE_CON": "'.date("m/d/Y", strtotime($arr->dt_ultimoreajuste_con)).'",
             "FL_MESFECHADO_CON": "'.$arr->fl_mesfechado_con.'",
             "ID_CONTABANCO_CB": "'.$arr->id_contabanco_cb.'",
             "FL_DIAFIXOREPASSE_CON": "'.$arr->fl_diafixorepasse_con.'",
@@ -982,6 +959,13 @@ class PropostaController extends Controller
             '.$inquilinos.'
         }');
        
+        echo '<hr>';
+        echo 'CONTRATO ==================================================> ';
+        echo '<hr>';
+        echo '<pre>';
+        print_r(json_decode($a_enviar));
+        echo '</pre>';
+
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -996,15 +980,15 @@ class PropostaController extends Controller
         $retorno = json_decode($response);
        
         if ($retorno->data[0]->status == '200') {
-            $retorna_id_locatario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
+            $retorna_id_contrato_superlogica = $retorno->data[0]->data->id_pessoa_pes;
             return [
-                'superlogica_locatario' => $retorna_id_locatario_superlogica,
+                'superlogica_contrato' => $retorna_id_contrato_superlogica,
                 'conteudo' => $retorno->data[0]->msg,
                 'resultado' => 'sucesso'
             ];
         } else {
             return [
-                'superlogica_locatario' => '',
+                'superlogica_contrato' => '',
                 'conteudo' => $retorno->data[0]->msg,
                 'resultado' => 'erro'
             ];
@@ -2238,16 +2222,14 @@ class PropostaController extends Controller
     }
 
     // INPUTS mais simples para o Disparo ao Superlógica
-    public function linhatabela($campo, $id_campo, $formulario, $valor = null, $opcoes = null) {
-        if ($id_campo == 'proprietario_datanascimento') {
+    public function linhatabela($tipo, $campo, $id_campo, $formulario, $valor = null, $opcoes = null) {
+        if ($tipo == 'data') {
             $valor = $this->formatar_data_pra_tela($valor);
         }
-        if ($opcoes) {
-            // switch ($valor) {
-            //     case 'M': $sexoM = 'selected'; $sexoF = ''; break;
-            //     case 'F': $sexoM = ''; $sexoF = 'selected'; break;
-            //     default: $sexoM = 'selected'; $sexoF = ''; break;
-            // }
+        if (!$valor) {
+            $valor = '1';
+        }
+        if ($tipo == 'select' and $opcoes) {
             $select_content = '';
             foreach ($opcoes as $key => $value) {
                 $selected = '';
@@ -2259,8 +2241,27 @@ class PropostaController extends Controller
             $input = '<select style="width: 100%;border: 1px solid lightgray;padding:4px;background-color:transparent" id="'.$id_campo.'" name="'.$formulario.'['.$id_campo.']" required>
                 '.$select_content.'
             </select>';
-        } else {
+        } elseif ($tipo == 'text') {
             $input = '<input style="width: 100%;border: 1px solid lightgray;padding:4px;" type="text" id="'.$id_campo.'" name="'.$formulario.'['.$id_campo.']" value="'.$valor.'" required>';
+        } else {
+            switch ($tipo) {
+                case 'data': $mascara = '99/99/9999'; break;
+                case 'cnpf': $mascara = ['999.999.999-99', '99.999.999/9999-99']; break;
+                case 'cell': $mascara = '(99) 99999-9999'; break;
+                case 'tell': $mascara = '(99) 9999-9999'; break;
+                case 'cepp': $mascara = '99.999-999'; break;
+                default: $mascara = ''; break;
+            }
+            // $input = '<input style="width: 100%;border: 1px solid lightgray;padding:4px;" type="text" id="'.$id_campo.'" name="'.$formulario.'['.$id_campo.']" value="'.$valor.'" required data-plugin-inputmask="inputmask_edc622ee">';
+            $input = MaskedInput::widget([
+                'name' => "{$formulario}[{$id_campo}]",
+                'id' => "$id_campo",
+                'value' => $valor,
+                'mask' => $mascara,
+                'options' => [
+                    'style'=> "width: 100%;border: 1px solid lightgray;padding:4px;"
+                ]
+            ]);
         }
         return '<tr style="">
          <td style="font-size: 15px !important;text-align:left;">
