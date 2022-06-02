@@ -73,8 +73,27 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
       border: 3px solid black !important;
       border-radius: 5px !important;
   }
+  #progressando {
+    display: none; 
+    position: absolute; 
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto;
+    top: 50px;
+  }
 </style>
 <div class="col-md-12">
+    <div class="clearfix"></div>
+    <div id="progressando" style="">
+        <?php
+            use kartik\spinner\Spinner;
+            echo '<div class="">';
+                echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
+                echo '<div class="clearfix"></div>';
+            echo '</div>';
+        ?>
+    </div>
     <div class="col-md-12">
         <!-- <div class="row"> -->
         
@@ -108,7 +127,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
         <!-- <div class="row"> -->
         <!-- <div class="col-md-4"> -->
             <?php $form = ActiveForm::begin([
-                'action' => 'vaiouracha.php'
+                'action' => ['proposta/superlogicacompleto']
             ]); ?>
             <div class="col-md-12 divs-proprietario">
                 <h3><strong>Dados do Proprietário</strong></h3><hr style="margin-top:0px;margin-bottom:0px !important;">
@@ -118,33 +137,41 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                     'options' => [
                         'placeholder' => 'Para preencher automaticamente, selecione o nome do Proprietário',
                         'multiple' => false,
-                        'onchange' => '$.ajax({
-                            method: "POST",
-                            url: "'.Yii::$app->homeUrl.'proposta/retornaproprietario",
-                            data: {
-                                id: $(this).val()
-                            },
-                        }).done(function(data) {
-                            var response = $.parseJSON(data);
-                            $("#proprietario_nome").val(response.nome);
-                            $("#proprietario_nomefantasia").val(response.proprietario_nomefantasia);
-                            $("#proprietario_cnpj").val(response.proprietario_cnpj);
-                            $("#proprietario_celular").val(response.proprietario_celular);
-                            $("#proprietario_telefone").val(response.proprietario_telefone);
-                            $("#proprietario_email").val(response.proprietario_email);
-                            $("#proprietario_rg").val(response.proprietario_rg);
-                            $("#proprietario_orgao").val(response.proprietario_orgao);
-                            $("#proprietario_sexo").val(response.proprietario_sexo);
-                            $("#proprietario_datanascimento").val(response.proprietario_datanascimento);
-                            $("#proprietario_nacionalidade").val(response.proprietario_nacionalidade);
-                            $("#proprietario_cep").val(response.proprietario_cep);
-                            $("#proprietario_endereco").val(response.proprietario_endereco);
-                            $("#proprietario_numero").val(response.proprietario_numero);
-                            $("#proprietario_complemento").val(response.proprietario_complemento);
-                            $("#proprietario_bairro").val(response.proprietario_bairro);
-                            $("#proprietario_cidade").val(response.proprietario_cidade);
-                            $("#proprietario_estado").val(response.proprietario_estado);
-                        });'
+                        'onchange' => '
+                            $("body").css("cursor", "wait");
+                            $(this).css("cursor", "wait");
+                            $("#progressando").show();
+                            $.ajax({
+                                method: "POST",
+                                url: "'.Yii::$app->homeUrl.'proposta/retornaproprietario",
+                                data: {
+                                    id: $(this).val()
+                                },
+                            }).done(function(data) {
+                                var response = $.parseJSON(data);
+                                $("#proprietario_nome").val(response.nome);
+                                $("#proprietario_nomefantasia").val(response.proprietario_nomefantasia);
+                                $("#proprietario_cnpj").val(response.proprietario_cnpj);
+                                $("#proprietario_celular").val(response.proprietario_celular);
+                                $("#proprietario_telefone").val(response.proprietario_telefone);
+                                $("#proprietario_email").val(response.proprietario_email);
+                                $("#proprietario_rg").val(response.proprietario_rg);
+                                $("#proprietario_orgao").val(response.proprietario_orgao);
+                                $("#proprietario_sexo").val(response.proprietario_sexo);
+                                $("#proprietario_datanascimento").val(response.proprietario_datanascimento);
+                                $("#proprietario_nacionalidade").val(response.proprietario_nacionalidade);
+                                $("#proprietario_cep").val(response.proprietario_cep);
+                                $("#proprietario_endereco").val(response.proprietario_endereco);
+                                $("#proprietario_numero").val(response.proprietario_numero);
+                                $("#proprietario_complemento").val(response.proprietario_complemento);
+                                $("#proprietario_bairro").val(response.proprietario_bairro);
+                                $("#proprietario_cidade").val(response.proprietario_cidade);
+                                $("#proprietario_estado").val(response.proprietario_estado);
+                            });
+                            $("body").css("cursor", "default");
+                            $(this).css("cursor", "default");
+                            $("#progressando").hide();
+                        '
                     ],
                     'pluginOptions' => [
                         'tags'=>false,
@@ -181,7 +208,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                     <?= $this->context->linhatabela('Complemento', 'proprietario_complemento', 'prop1', $proprietario_ativo->complemento); ?>
                     <?= $this->context->linhatabela('Bairro', 'proprietario_bairro', 'prop1', $proprietario_ativo->bairro); ?>
                     <?= $this->context->linhatabela('Cidade', 'proprietario_cidade', 'prop1', $proprietario_ativo->cidade); ?>
-                    <?= $this->context->linhatabela('Estado', 'proprietario_estado', 'prop1', $proprietario_ativo->estado); ?>
+                    <?= $this->context->linhatabela('Estado', 'proprietario_estado', 'prop1', $proprietario_ativo->estado, $this->context->estadosBrasileiros); ?>
                 </table>
             </div>
             <div class="col-md-12 divs-imovel">
@@ -270,32 +297,32 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                         6 => 'Por encomenda',
                         7 => 'Mista',
                     ]); ?>
-                    <?= $this->context->linhatabela('Data de Início', 'dt_inicio_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Data de Fim', 'dt_fim_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Valor do Aluguel', 'vl_aluguel_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Taxa Adm', 'tx_adm_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Taxa Adm (valor fixo)', 'fl_txadmvalorfixo_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Dia do Vencimento', 'nm_diavencimento_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Taxa de Locação', 'tx_locacao_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Índice de reajuste', 'id_indicereajuste_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('NM Mês de reajuste', 'nm_mesreajuste_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Último reajuste', 'dt_ultimoreajuste_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('FL Mês fechado', 'fl_mesfechado_con', 'slocontrato'); ?>
+                    <?= $this->context->linhatabela('Data de Início', 'dt_inicio_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Data de Fim', 'dt_fim_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Valor do Aluguel', 'vl_aluguel_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Taxa Adm', 'tx_adm_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Taxa Adm (valor fixo)', 'fl_txadmvalorfixo_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Dia do Vencimento', 'nm_diavencimento_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Taxa de Locação', 'tx_locacao_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Índice de reajuste', 'id_indicereajuste_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('NM Mês de reajuste', 'nm_mesreajuste_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Último reajuste', 'dt_ultimoreajuste_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('FL Mês fechado', 'fl_mesfechado_con', 'slocontrato', '1234'); ?>
                 </table>
             </div>
             <div class="col-md-6 divs-contrato">
                 <table class="kv-grid-table table table-bordered table-striped kv-table-wrap">
-                    <?= $this->context->linhatabela('Id Conta Banco', 'id_contabanco_cb', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Dia fixo do repasse', 'fl_diafixorepasse_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('Dia do repasse', 'nm_diarepasse_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('FL Mês vencido', 'fl_mesvencido_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('FL Dimob', 'fl_dimob_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('ID Filial', 'id_filial_fil', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('ST Observação', 'st_observacao_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('NM Repasse Garantido', 'nm_repassegarantido_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('FL Garantia', 'fl_garantia_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('FL Seguro-Incêndio', 'fl_seguroincendio_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('FL Endereço de Cobrança', 'fl_endcobranca_con', 'slocontrato'); ?>
+                    <?= $this->context->linhatabela('Id Conta Banco', 'id_contabanco_cb', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Dia fixo do repasse', 'fl_diafixorepasse_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('Dia do repasse', 'nm_diarepasse_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('FL Mês vencido', 'fl_mesvencido_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('FL Dimob', 'fl_dimob_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('ID Filial', 'id_filial_fil', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('ST Observação', 'st_observacao_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('NM Repasse Garantido', 'nm_repassegarantido_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('FL Garantia', 'fl_garantia_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('FL Seguro-Incêndio', 'fl_seguroincendio_con', 'slocontrato', '1234'); ?>
+                    <?= $this->context->linhatabela('FL Endereço de Cobrança', 'fl_endcobranca_con', 'slocontrato', '1234'); ?>
                 </table>
             </div>
             <div class="col-md-12 divs-pretendente">
@@ -360,17 +387,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
         ]);?>
         <br />
         <br />
-        <div id="progressando" style="display: none">
-            <?php
-                use kartik\spinner\Spinner;
-                echo '<div class="">';
-                    echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
-                    echo '<div class="clearfix"></div>';
-                echo '</div>';
-            ?>
-        </div>
     </div>
-    <div class="clearfix"></div>
 </div>
 <?php
     $this->registerJs("

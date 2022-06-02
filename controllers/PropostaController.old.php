@@ -615,150 +615,102 @@ class PropostaController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public function actionAddtosuperlogica ($id) {
-        $proposta = $this->findModel($id);
-        $proprietario = $this->superlogicaproprietario($proposta->codigo_imovel);
-        $propostajet = $this->superlogicaimovel($proposta,  $proprietario['superlogica']);
+    public function superlogicaproprietario($codigo_imovel) {
 
-        // Add Imóvel ao Propríetário no Superlógica
-        // estamos aqui ó
-        
-        if ($propostajet["resultado"] == 'sucesso') {
-            Yii::$app->session->setFlash('success', 'Proprietário e Imóvel cadastrado/atualizado com sucesso no Superlógica!');
-            return $this->redirect(Yii::$app->request->referrer);
-        } else {
-            Yii::$app->session->setFlash('warning', 'Algo deu errado, solicite o suporte e mostre isso: <hr>'.$propostajet["conteudo"].'<hr>'.$proprietario['conteudo'].'<hr>');
-            return $this->redirect(Yii::$app->request->referrer);
-        }
-    }
-    # Array para Objetos
-    public function arrtoobj ($arr) {
-        return json_decode(json_encode($arr), false);
-    }
-    ####################################################################################################################
-    ############################################# NOVO SISTEMA DE DISPAROS #############################################
-    #------------------------------------------------------------------------------------------------------------------#
-    public function actionSuperlogicacompleto () {
-        echo '<pre>';
-        print_r($_REQUEST);
-        echo '</pre>';
-        $request_proprietario = $this->arrtoobj($_REQUEST['prop1']);
-        $request_imovel = $this->arrtoobj($_REQUEST['imovelinfo']);
-        $request_pretendente = $this->arrtoobj($_REQUEST['pretendente']);
-        $request_contrato = $this->arrtoobj($_REQUEST['slocontrato']);
+         $proprietario = \app\models\Proprietario::find()->where([
+             'codigo_imovel' => $codigo_imovel,
+         ])->one();
 
-        $proprietario = $this->superlogicaproprietario($request_proprietario);
-        # => NÍVEL DO PROPRIETÁRIO =============================================================================================
-        if ($proprietario['resultado'] == 'sucesso') {
-            $imovel = $this->superlogicaimovel($request_imovel, $proprietario['superlogica']);
-            # => NÍVEL DO IMÓVEL ===============================================================================================
-            if ($imovel['resultado'] == 'sucesso') {
-                $pretendente = $this->superlogicapretendente($request_pretendente, $imovel['superlogica_imovel']);
-                # => NÍVEL DO PRETENDENTE ======================================================================================
-                if ($pretendente['resultado'] == 'sucesso') {
-                    # => NÍVEL DO CONTRATO =====================================================================================
-                    $contrato = $this->superlogicacontrato($request_pretendente, $imovel['superlogica_imovel'], $pretendente['superlogica_locatario']);
-                    if ($contrato['resultado'] == 'sucesso') {
-                        Yii::$app->session->setFlash('success', 'TUDO CERTO, Proprietário, Imóvel, Locatário e Contrato adicionados ao Superlógica');
-                        return $this->redirect(Yii::$app->request->referrer);
-                    } else {
-                        Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Contrato, solicite o suporte e mostre isso: <hr>'.$pretendente["contrato"].'<hr>'.$pretendente['contrato'].'<hr>');
-                        return $this->redirect(Yii::$app->request->referrer);
-                    }
-                } else {
-                    Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Pretendente/Locatário, solicite o suporte e mostre isso: <hr>'.$pretendente["resultado"].'<hr>'.$pretendente['conteudo'].'<hr>');
-                    return $this->redirect(Yii::$app->request->referrer);
-                }
-            } else {
-                Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Imóvel, solicite o suporte e mostre isso: <hr>'.$imovel["resultado"].'<hr>'.$imovel['conteudo'].'<hr>');
-                return $this->redirect(Yii::$app->request->referrer);
-            }
-        } else {
-            Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Poprietário, solicite o suporte e mostre isso: <hr>'.$proprietario["resultado"].'<hr>'.$proprietario['conteudo'].'<hr>');
-            return $this->redirect(Yii::$app->request->referrer);
+        $jatem_superlogica = "";
+        if ($proprietario->superlogica != "") {
+            $jatem_superlogica = '"ID_PESSOA_PES": "'.$proprietario->superlogica.'",';
         }
 
-    }
-    /**
-     * SUPERLÓGICA PROPRIETÁRIO
-     */
-    public function superlogicaproprietario($arr) {
-
-        // Define o JSON a enviar à API
-        $a_enviar = json_encode('{
-            "ST_NOME_PES": "'.$arr->proprietario_nome.'",
-            "ST_FANTASIA_PES": "'.$arr->proprietario_nomefantasia.'",
-            "ST_CNPJ_PES": "'.$arr->proprietario_cnpj.'",
-            "ST_CELULAR_PES": "'.$this->clean($arr->proprietario_celular).'",
-            "ST_TELEFONE_PES": "'.$this->clean($arr->proprietario_telefone).'",
-            "ST_EMAIL_PES": "'.$arr->proprietario_email.'",
-            "ST_RG_PES": "'.$arr->proprietario_rg.'",
-            "ST_ORGAO_PES": "'.$arr->proprietario_orgao.'",
-            "ST_SEXO_PES": "'.($arr->proprietario_sexo == 'M'?1:2).'",
-            "DT_NASCIMENTO_PES": "'.$arr->proprietario_datanascimento.'",
-            "ST_NACIONALIDADE_PES": "'.$arr->proprietario_nacionalidade.'",
-            "ST_CEP_PES": "'.$this->clean($arr->proprietario_cep).'",
-            "ST_ENDERECO_PES": "'.$arr->proprietario_endereco.'",
-            "ST_NUMERO_PES": "'.$arr->proprietario_numero.'",
-            "ST_COMPLEMENTO_PES": "'.$arr->proprietario_complemento.'",
-            "ST_BAIRRO_PES":"'.$arr->proprietario_bairro.'",
-            "ST_CIDADE_PES": "'.$arr->proprietario_cidade.'",
-            "ST_ESTADO_PES": "'.$arr->proprietario_estado.'",
-            "ST_OBSERVACAO_PES": "Cadastro pelo sistema em '.date('d/m/Y \à\s H:i:s').'"
-        }');
-
-        // echo '<hr>';
-        // echo $arr->proprietario_nome;
-        // echo '<pre>';
-        // print_r($arr);
-        // echo '</pre>';
-        // echo '<hr>';
-        // echo '<pre>';
-        // print_r(json_decode($a_enviar));
-        // echo '</pre>';
-        // exit();
         $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/proprietarios/put");
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
-       
-       curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
 
-       curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-           "Content-Type: application/json",
-           "app_token: 86f34537-5693-3c40-a60d-754b3c5b9fa8",
-           "access_token: d615ff2c-35bc-3855-8a44-c231c920fc4c"
-       ));
+        $model = $proprietario;
 
-       $response = curl_exec($ch);
-       curl_close($ch);
+        $a_enviar = json_encode('{
+            '.$jatem_superlogica.'
+            "ST_NOME_PES": "'.$model->nome.'",
+            "ST_FANTASIA_PES": "'.$model->nome.'",
+            "ST_CNPJ_PES": "'.$model->cpf_cnpj.'",
+            "ST_CELULAR_PES": "'.$this->clean($model->celular).'",
+            "ST_TELEFONE_PES": "'.$this->clean($model->telefone).'",
+            "ST_EMAIL_PES": "'.$model->email.'",
+            "ST_RG_PES": "'.$model->rg.'",
+            "ST_ORGAO_PES": "'.$model->orgao.'",
+            "ST_SEXO_PES": "'.($model->sexo == 'M'?1:2).'",
+            "DT_NASCIMENTO_PES": "'.date("m/d/Y", strtotime($model->data_nascimento)).'",
+            "ST_NACIONALIDADE_PES": "'.$model->nacionalidade.'",
+            "ST_CEP_PES": "'.$this->clean($model->cep).'",
+            "ST_ENDERECO_PES": "'.$model->endereco.'",
+            "ST_NUMERO_PES": "'.$model->numero.'",
+            "ST_COMPLEMENTO_PES": "'.$model->complemento.'",
+            "ST_BAIRRO_PES":"'.$model->bairro.'",
+            "ST_CIDADE_PES": "'.$model->cidade.'",
+            "ST_ESTADO_PES": "'.$this->returnEstado($model->estado, 'sigla').'",
+            "ST_OBSERVACAO_PES": "Cadastro pelo sistema em '.date().'"
+        }');
+        
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
 
-       $retorno = json_decode($response);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "app_token: 86f34537-5693-3c40-a60d-754b3c5b9fa8",
+            "access_token: d615ff2c-35bc-3855-8a44-c231c920fc4c"
+        ));
 
-       if ($retorno->data[0]->status == '200') {
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $retorno = json_decode($response);
+
+        // echo '<pre>';
+        // print_r($a_enviar);
+        // echo '<pre>';
+        // echo '<hr>';
+        // echo '<pre>';
+        // print_r($retorno);
+        // echo '<pre>';
+        // echo '<hr>';
+        // exit();
+        
+        // if ($retorno->data[0]->msg == 'Sucesso') {
+        //     $retorna_id_proprietario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
+        //     $proprietario->superlogica = (int)$retorna_id_proprietario_superlogica;
+        //     $proprietario->save();
+        //     return $retorna_id_proprietario_superlogica;
+        // }
+
+        if ($retorno->data[0]->status == '200') {
             $retorna_id_proprietario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
             $proprietario->superlogica = (int)$retorna_id_proprietario_superlogica;
             $proprietario->save();
+            // return $retorna_id_proprietario_superlogica;
             return [
                 'superlogica' => $retorna_id_proprietario_superlogica,
                 'conteudo' => $retorno->data[0]->msg,
                 'resultado' => 'sucesso'
             ];
         } else {
+            // return $proprietario->superlogica;
             return [
-                'superlogica' => '',
+                'superlogica' => $proposta->superlogica,
                 'conteudo' => $retorno->data[0]->msg,
                 'resultado' => 'erro'
             ];
         }
 
     }
-    /**
-     * SUPERLÓGICA IMÓVEL
-     */
-    public function superlogicaimovel($arr, $proprietario) {
-        
+
+    public function superlogicaimovel($proposta, $proprietario) {
+        // está criando
+        $jatem_superlogica = "";
         $proprietarios_beneficiados = '"PROPRIETARIOS_BENEFICIARIOS": [
             {
                 "ID_PESSOA_PES": "'.$proprietario.'",
@@ -766,30 +718,48 @@ class PropostaController extends Controller
                 "NM_FRACAO_PRB": "100.00"
             }
         ],';
-        $identificador_imovel = '"ST_IDENTIFICADOR_IMO": "'.$arr->codigo_imovel.'",';
-        
+        $identificador_imovel = '"ST_IDENTIFICADOR_IMO": "'.$proposta->codigo_imovel.'",';
+        // está editando
+        if ($proposta->superlogica_imovel != "") {
+            // echo '<br><hr>Edita<hr><br>';
+            $ch = curl_init();
+            
+            curl_setopt($ch, CURLOPT_URL, "http://apps.superlogica.net/imobiliaria/api/imoveis");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($ch, CURLOPT_HEADER, FALSE);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            $jatem_superlogica = '"ID_IMOVEL_IMO": "'.$proposta->superlogica_imovel.'",';
+            // $identificador_imovel = '';
+            // $proprietarios_beneficiados = '';
+        } 
         // está criando um novo
-        $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/imoveis/put");
+        else {
+            // echo '<br><hr>Cria<hr><br>';
+            $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/imoveis/put");
     
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
-        
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_POST, true);
+        }
+
+
         $tipo_imovel = 4;
-        $complemento = $arr->infoimovel_subtipo;
+        $model_infoimovel = json_decode($proposta->imovel_info,true);
+        $complemento = 'Apartamento';
 
         $a_enviar = json_encode('{
+            '.$jatem_superlogica.'
             "ST_TIPO_IMO": "'.$tipo_imovel.'",
-            "ST_CEP_IMO": "'.$this->clean($arr->infoimovel_cep).'",
-            "ST_ENDERECO_IMO": "'.$arr->infoimovel_endereco.'",
-            "ST_NUMERO_IMO": "'.$arr->infoimovel_numero.'",
+            "ST_CEP_IMO": "'.$this->clean($model_infoimovel['cep']).'",
+            "ST_ENDERECO_IMO": "'.$model_infoimovel['endereco'].'",
+            "ST_NUMERO_IMO": "'.$model_infoimovel['numero'].'",
             "ST_COMPLEMENTO_IMO": "'.$complemento.'",
-            "ST_BAIRRO_IMO":"'.$arr->infoimovel_bairro.'",
-            "ST_CIDADE_IMO": "'.$arr->infoimovel_cidade.'",
-            "ST_ESTADO_IMO": "'.$arr->infoimovel_estado.'",
+            "ST_BAIRRO_IMO":"'.$model_infoimovel['bairro'].'",
+            "ST_CIDADE_IMO": "'.$model_infoimovel['cidade'].'",
+            "ST_ESTADO_IMO": "'.$this->returnEstado($model_infoimovel['estado'], 'sigla').'",
             '.$proprietarios_beneficiados.'
             '.$identificador_imovel.'
-            "VL_ALUGUEL_IMO": "'.$arr->infoimovel_aluguel.'",
+            "VL_ALUGUEL_IMO": "'.$model_infoimovel['aluguel'].'",
             "VL_VENDA_IMO": "0",
             "TX_ADM_IMO": "0"
         }');
@@ -806,9 +776,21 @@ class PropostaController extends Controller
         curl_close($ch);
 
         $retorno = json_decode($response);
+
+        // echo '<pre>';
+        // print_r(json_decode($a_enviar));
+        // echo '<pre>';
+        // echo '<hr>';
+        // echo '<pre>';
+        // print_r($retorno);
+        // echo '<pre>';
+        // echo '<hr>';
        
         if ($retorno->data[0]->status == '200') {
             $retorna_id_imovel_superlogica = $retorno->data[0]->data->id_imovel_imo;
+            $proposta->superlogica_imovel = (int)$retorna_id_imovel_superlogica;
+            $proposta->save();
+            // return $retorna_id_imovel_superlogica;
             return [
                 'superlogica_imovel' => $retorna_id_imovel_superlogica,
                 'conteudo' => $retorno->data[0]->msg,
@@ -816,202 +798,42 @@ class PropostaController extends Controller
             ];
         } else {
             return [
-                'superlogica_imovel' => '',
+                'superlogica_imovel' => $proposta->superlogica_imovel,
                 'conteudo' => $retorno->data[0]->msg,
                 'resultado' => 'erro'
             ];
         }
-    }
-    /**
-     * SUPERLÓGICA PRETENDENTE/LOCATÁRIO
-     */
-    public function superlogicapretendente($arr, $imovel) {
         
-        $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/locatarios/put");
-    
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
-
-        /**
         
-        \"ST_NOME_PES\": \"Giovani Siqueira\",
-        \"ST_FANTASIA_PES\": \"Giovani Siqueira\",
-        \"ST_CNPJ_PES\": \"22911385056\",
-        \"ST_CELULAR_PES\": \"19983080917\",
-        \"ST_TELEFONE_PES\": \"1938547119\",
-        \"ST_EMAIL_PES\": \"giovani.siqueira@imobiliarias.com\",
-        \"ST_RG_PES\": \"480476506\",
-        \"ST_ORGÃO_PES\": \"SSP\",
-        \"ST_SEXO_PES\": \"Masculino\",
-        \"DT_NASCIMENTO_PES\": \"09/01/1996\",
-        \"ST_NACIONALIDADE_PES\": \"Brasileira\",
-        \"ST_CEP_PES\": \"13180220\"
-        \"ST_ENDERECO_PES\": \"Rua Benedito Matheus\"
-        \"ST_NUMERO_PES\": \"100\"
-        \"ST_COMPLEMENTO_PES\": \"Casa\"
-        \"ST_BAIRRO_PES\": \"Jardim Santa Terezinha (Nova Veneza)\"
-        \"ST_CIDADE_PES\": \"Sumaré\"
-        \"ST_ESTADO_PES\": \"SP\"
-        \"ST_OBSERVACAO_PES\" : \"Obs\" 
+   }
+
+    public function actionAddtosuperlogica ($id) {
+        $proposta = $this->findModel($id);
+        $proprietario = $this->superlogicaproprietario($proposta->codigo_imovel);
+        $propostajet = $this->superlogicaimovel($proposta,  $proprietario['superlogica']);
+
+        // Add Imóvel ao Propríetário no Superlógica
+        // estamos aqui ó
         
-        */
-        $a_enviar = json_encode('{
-            "ST_NOME_PES": "'.$arr->nome.'",
-            "ST_FANTASIA_PES": "'.$arr->nome_fantasia.'",
-            "ST_CNPJ_PES": "'.$this->clean($arr->cnpj).'",
-            "ST_CELULAR_PES": "'.$this->clean($arr->celular).'",
-            "ST_TELEFONE_PES": "'.$this->clean($arr->telefone).'",
-            "ST_EMAIL_PES": "'.$arr->email.'",
-            "ST_RG_PES": "'.$arr->rg.'",
-            "ST_ORGÃO_PES": "'.$arr->orgao.'",
-            "ST_SEXO_PES": "'.($arr->sexo == 'M'?1:2).'",
-            "DT_NASCIMENTO_PES": "'.$arr->data_nascimento.'",
-            "ST_NACIONALIDADE_PES": "'.$arr->nacionalidade.'",
-            "ST_CEP_PES": "'.$this->clean($arr->cep).'",
-            "ST_ENDERECO_PES": "'.$arr->endereco.'",
-            "ST_NUMERO_PES": "'.$arr->numero.'",
-            "ST_COMPLEMENTO_PES": "'.$arr->numero.'",
-            "ST_BAIRRO_PES": "'.$arr->bairro.'",
-            "ST_CIDADE_PES": "'.$arr->cidade.'",
-            "ST_ESTADO_PES": "'.$arr->estado.'",
-            "ST_OBSERVACAO_PES": "Cadastro pelo sistema em '.date('d/m/Y \à\s H:i:s').'",
-        }');
-       
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Content-Type: application/json",
-            "app_token: 86f34537-5693-3c40-a60d-754b3c5b9fa8",
-            "access_token: d615ff2c-35bc-3855-8a44-c231c920fc4c"
-        ));
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $retorno = json_decode($response);
-       
-        if ($retorno->data[0]->status == '200') {
-            $retorna_id_locatario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
-            return [
-                'superlogica_locatario' => $retorna_id_locatario_superlogica,
-                'conteudo' => $retorno->data[0]->msg,
-                'resultado' => 'sucesso'
-            ];
+        if ($propostajet["resultado"] == 'sucesso') {
+            Yii::$app->session->setFlash('success', 'Proprietário e Imóvel cadastrado/atualizado com sucesso no Superlógica!');
+            return $this->redirect(Yii::$app->request->referrer);
         } else {
-            return [
-                'superlogica_locatario' => '',
-                'conteudo' => $retorno->data[0]->msg,
-                'resultado' => 'erro'
-            ];
+            Yii::$app->session->setFlash('warning', 'Algo deu errado, solicite o suporte e mostre isso: <hr>'.$propostajet["conteudo"].'<hr>'.$proprietario['conteudo'].'<hr>');
+            return $this->redirect(Yii::$app->request->referrer);
         }
     }
-    /**
-     * SUPERLÓGICA CONTRATO
-     */
-    public function superlogicacontrato($arr, $imovel, $locatario) {
-        
-        $ch = curl_init("http://apps.superlogica.net/imobiliaria/api/contratos/put");
-    
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
 
-        /**
-        \"ID_IMOVEL_IMO\": \"364\",
-        \"ID_TIPO_CON\": \"1\",
-        \"DT_INICIO_CON\": \"06/28/2019\",
-        \"DT_FIM_CON\": \"12/27/2021\",
-        \"VL_ALUGUEL_CON\": \"1800\",
-        \"TX_ADM_CON\": \"10\",
-        \"FL_TXADMVALORFIXO_CON\": \"0\",
-        \"NM_DIAVENCIMENTO_CON\": \"25\",
-        \"TX_LOCACAO_CON\": \"0\",
-        \"ID_INDICEREAJUSTE_CON\": \"1\",
-        \"NM_MESREAJUSTE_CON\": \"6\",
-        \"DT_ULTIMOREAJUSTE_CON\": \"06/01/2019\",
-        \"FL_MESFECHADO_CON\": \"0\",
-        \"ID_CONTABANCO_CB\": \"1\",
-        \"FL_DIAFIXOREPASSE_CON\": \"0\",
-        \"NM_DIAREPASSE_CON\": \"5\",
-        \"FL_MESVENCIDO_CON\": \"0\",
-        \"FL_DIMOB_CON\": \"0\",
-        \"ID_FILIAL_FIL\": \"0\",
-        \"ST_OBSERVACAO_CON\": \"Contrato cadastrado via API\",
-        \"NM_REPASSEGARANTIDO_CON\": \"0\",
-        \"FL_GARANTIA_CON\": \"0\",
-        \"FL_SEGUROINCENDIO_CON\": \"0\",
-        \"FL_ENDCOBRANCA_CON\": \"0\",
-        \"INQUILINOS\"
-        
-        */
+    public function actionSuperlogicacompleto () {
+        echo '<pre>';
+        print_r($_REQUEST);
+        echo '</pre>';
+        $request_proprietario = $_REQUEST['prop1'];
+        $request_imovel = $_REQUEST['imovelinfo'];
+        $request_pretendente = $_REQUEST['pretendente'];
+        $request_contrato = $_REQUEST['slocontrato'];
 
-        $inquilinos = '"INQUILINOS": [
-            {
-                "ID_PESSOA_PES": "'.$locatario.'",
-                "FL_PRINCIPAL_INQ": "1",
-                "NM_FRACAO_INQ": "100.00"
-            }
-        ],';
-        
-        $a_enviar = json_encode('{
-            "ID_IMOVEL_IMO": "'.$imovel.'",
-            "ID_TIPO_CON": "'.$arr->id_tipo_con.'",
-            "DT_INICIO_CON": "'.$arr->dt_inicio_con.'",
-            "DT_FIM_CON": "'.$arr->dt_fim_con.'",
-            "VL_ALUGUEL_CON": "'.$arr->vl_aluguel_con.'",
-            "TX_ADM_CON": "'.$arr->tx_adm_con.'",
-            "FL_TXADMVALORFIXO_CON": "'.$arr->fl_txadmvalorfixo_con.'",
-            "NM_DIAVENCIMENTO_CON": "'.$arr->nm_diavencimento_con.'",
-            "TX_LOCACAO_CON": "'.$arr->tx_locacao_con.'",
-            "ID_INDICEREAJUSTE_CON": "'.$arr->id_indicereajuste_con.'",
-            "NM_MESREAJUSTE_CON": "'.$arr->nm_mesreajuste_con.'",
-            "DT_ULTIMOREAJUSTE_CON": "'.$arr->dt_ultimoreajuste_con.'",
-            "FL_MESFECHADO_CON": "'.$arr->fl_mesfechado_con.'",
-            "ID_CONTABANCO_CB": "'.$arr->id_contabanco_cb.'",
-            "FL_DIAFIXOREPASSE_CON": "'.$arr->fl_diafixorepasse_con.'",
-            "NM_DIAREPASSE_CON": "'.$arr->nm_diarepasse_con.'",
-            "FL_MESVENCIDO_CON": "'.$arr->fl_mesvencido_con.'",
-            "FL_DIMOB_CON": "'.$arr->fl_dimob_con.'",
-            "ID_FILIAL_FIL": "'.$arr->id_filial_fil.'",
-            "ST_OBSERVACAO_CON": "'.$arr->st_observacao_con.'",
-            "NM_REPASSEGARANTIDO_CON": "'.$arr->nm_repassegarantido_con.'",
-            "FL_GARANTIA_CON": "'.$arr->fl_garantia_con.'",
-            "FL_SEGUROINCENDIO_CON": "'.$arr->fl_seguroincendio_con.'",
-            "FL_ENDCOBRANCA_CON": "'.$arr->fl_endcobranca.'",
-            '.$inquilinos.'
-        }');
-       
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Content-Type: application/json",
-            "app_token: 86f34537-5693-3c40-a60d-754b3c5b9fa8",
-            "access_token: d615ff2c-35bc-3855-8a44-c231c920fc4c"
-        ));
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $retorno = json_decode($response);
-       
-        if ($retorno->data[0]->status == '200') {
-            $retorna_id_locatario_superlogica = $retorno->data[0]->data->id_pessoa_pes;
-            return [
-                'superlogica_locatario' => $retorna_id_locatario_superlogica,
-                'conteudo' => $retorno->data[0]->msg,
-                'resultado' => 'sucesso'
-            ];
-        } else {
-            return [
-                'superlogica_locatario' => '',
-                'conteudo' => $retorno->data[0]->msg,
-                'resultado' => 'erro'
-            ];
-        }
     }
-    ####################################################################################################################
-
 
     public function actionTrazprops () {
         $ch = curl_init();

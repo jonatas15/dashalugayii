@@ -50,7 +50,6 @@ class PropostaSearch extends SloProposta
             'pagination' => [
                 'pageSize' => 10,
             ],
-            'attributes' => ['nome','endereco','cidade'],
             'sort' => [
                 'defaultOrder' => [
                     'data_inicio' => SORT_DESC 
