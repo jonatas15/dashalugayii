@@ -1906,7 +1906,10 @@ class PropostaController extends Controller
             $valore = $this->format_telefone($valor);
         }
 
-        $retorno = '<label>'.$title.'</label><br />';
+        $retorno = '';
+        if ($col_md != "0") {
+            $retorno .= "<label>$title</label><br />";
+        }
         $retorno .= Editable::widget([
             'language' => 'pt_BR',
             'name'=> $campo, 
@@ -1932,10 +1935,14 @@ class PropostaController extends Controller
             ],
             'valueIfNull' => 'valor alterado'
         ]);
-        $retorno .= "<br>";
-        $retorno .= "<br>";
-        $retorno .= "<br>";
-        return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
+        if ($col_md != "0") {
+            $retorno .= "<br>";
+            $retorno .= "<br>";
+            $retorno .= "<br>";
+            return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
+        } else {
+            return 'aaaa '.$retorno.'';
+        }
     }
     
     public function imprime_campo($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {

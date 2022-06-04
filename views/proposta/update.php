@@ -406,7 +406,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                         default: $etapa_atual = '0%';   break;
                     }
                 }
-                $complementando = '/'.$model->id.'X'.$model->codigo;
+                $complementando = '/'.$model->id.'X'.$model->proprietario_info;
                 $linkcp = ($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').''.$complementando;
             ?>
 
@@ -659,7 +659,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 Modal::begin([
                                     // 'header' => 'Disparar mensagem pelo Whats',
                                     'toggleButton' => [
-                                        'label' => '<i class="fa fa-whatsapp"></i> Avisar pelo Whatsapp Sim',
+                                        'label' => '<i class="fa fa-whatsapp"></i> Avisar pelo Whatsapp',
                                         'class' => 'btn btn-success',
                                         'style' => 'font-weight: bolder',
                                         'disabled' => ((count($disparos_whats) > 0 or $model->apibotsubs == '') ? true : false)
@@ -1037,6 +1037,11 @@ $this->params['breadcrumbs'][] = 'Editar';
 
     <div class="clearfix"></div>
     <br>
+    <div class="col-md-12">
+        <?php 
+            echo $this->context->imprime_campo_editavel('12', 'SloProposta', 'codigo_imovel', '<b>Definir Código do Imóvel</b>', $model->codigo_imovel, $model->id);
+        ?>
+    </div>
     <div class="col-md-12">
         <?php
             echo Tabs::widget([
