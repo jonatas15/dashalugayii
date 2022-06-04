@@ -127,8 +127,12 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
         <!-- <div class="row"> -->
         <!-- <div class="col-md-4"> -->
             <?php $form = ActiveForm::begin([
-                'action' => ['proposta/superlogicacompleto']
+                'action' => ['proposta/superlogicacompleto'],
+                'options' => [
+                    'id' => 'formulario-pro-superlogica'
+                ]
             ]); ?>
+            <input type="hidden" name="proposta_id" value="<?=$model->id?>">
             <div class="col-md-12 divs-proprietario">
                 <h3><strong>Dados do Proprietário</strong></h3><hr style="margin-top:0px;margin-bottom:0px !important;">
                 <?= $form->field($model, 'proprietario')->widget(Select2::classname(), [
@@ -313,16 +317,47 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             <div class="col-md-6 divs-contrato">
                 <table class="kv-grid-table table table-bordered table-striped kv-table-wrap">
                     <?= $this->context->linhatabela('text','Id Conta Banco', 'id_contabanco_cb', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('text','Dia fixo do repasse', 'fl_diafixorepasse_con', 'slocontrato'); ?>
+                    <?= $this->context->linhatabela('select','Dia fixo do repasse', 'fl_diafixorepasse_con', 'slocontrato', "0", [
+                        "0" => "Dias úteis após pagamento do aluguel",
+                        "1" => "Dia fixo",
+                        "2" => "Dias corridos após pagamento do aluguel"
+                    ]); ?>
                     <?= $this->context->linhatabela('text','Dia do repasse', 'nm_diarepasse_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('text','FL Mês vencido', 'fl_mesvencido_con', 'slocontrato'); ?>
+                    <?= $this->context->linhatabela('select','FL Mês vencido', 'fl_mesvencido_con', 'slocontrato', "0", [
+                        "0" => "Mês vencido",
+                        "1" => "Mês a vencer"
+                    ]); ?>
                     <?= $this->context->linhatabela('text','FL Dimob', 'fl_dimob_con', 'slocontrato'); ?>
                     <?= $this->context->linhatabela('text','ID Filial', 'id_filial_fil', 'slocontrato'); ?>
                     <?= $this->context->linhatabela('text','ST Observação', 'st_observacao_con', 'slocontrato', 'Contrato adicionado via API'); ?>
-                    <?= $this->context->linhatabela('text','NM Repasse Garantido', 'nm_repassegarantido_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('text','FL Garantia', 'fl_garantia_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('text','FL Seguro-Incêndio', 'fl_seguroincendio_con', 'slocontrato'); ?>
-                    <?= $this->context->linhatabela('text','FL Endereço de Cobrança', 'fl_endcobranca_con', 'slocontrato'); ?>
+                    <?= $this->context->linhatabela('select','NM Repasse Garantido', 'nm_repassegarantido_con', 'slocontrato', "0", [
+                        "-1" => "Garantido por todo o contrato",
+                        "0" => "Sem repasse garantido",
+                        "1" => "1 Mês",
+                        "2" => "2 Meses",
+                        "3" => "3 Meses",
+                        "4" => "4 Meses",
+                        "5" => "5 Meses",
+                        "6" => "6 Meses",
+                        "7" => "7 Meses",
+                        "8" => "8 Meses",
+                        "9" => "9 Meses",
+                        "10" => "10 Meses",
+                        "11" => "11 Meses",
+                        "12" => "12 Meses"
+                    ]); ?>
+                    <?= $this->context->linhatabela('select','FL Garantia', 'fl_garantia_con', 'slocontrato', "0", [
+                        "0" => "Não possui garantia",
+                        "1" => "Possui garantia"
+                    ]); ?>
+                    <?= $this->context->linhatabela('select','FL Seguro-Incêndio', 'fl_seguroincendio_con', 'slocontrato', "0", [
+                        "0" => "Não possui seguro-incêndio",
+                        "1" => "Possui seguro-incêndio"
+                    ]); ?>
+                    <?= $this->context->linhatabela('select','FL Endereço de Cobrança', 'fl_endcobranca_con', 'slocontrato', "1", [
+                        "1" => "Usar endereço do imóvel locado",
+                        "2" => "Usar endereço do locatário"
+                    ]); ?>
                 </table>
             </div>
             <div class="col-md-12 divs-pretendente">
@@ -367,7 +402,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             </div>
             <div class="col-md-12">
                 <hr>
-                <?= Html::submitButton('Enviar Dados', ['class' => 'btn btn-success']) ?>
+                <?= Html::submitButton('Enviar Dados', ['class' => 'btn btn-success', 'id' => 'enviaraosuperlogica']) ?>
             </div>
             <?php ActiveForm::end(); ?>
             
@@ -395,6 +430,14 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
         $('.divs-imovel').hide();
         $('.divs-contrato').hide();
         $('.divs-pretendente').hide();
+
+        $('#enviaraosuperlogica').prop('disabled', true);
+
+        valida_prop = false;
+        valida_imov = false;
+        valida_pretd = false;
+        valida_cntr = false;
+
         $('#div-prop-id').on('click', function(){
             $('.divs-proprietario').show();
             $('.divs-imovel').hide();
@@ -415,6 +458,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             if (conta_campos == conta_campos_cheios) {
                 tacheio = '(Completo)';
                 $(this).addClass('btn-success');
+                valida_prop = true;
             } else {
                 $(this).removeClass('btn-success');
             }
@@ -442,6 +486,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             if (conta_campos_2 == conta_campos_cheios_2) {
                 tacheio_2 = '(Completo)';
                 $(this).addClass('btn-success');
+                valida_imov = true;
             } else {
                 $(this).removeClass('btn-success');
             }
@@ -466,9 +511,17 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                     conta_campos_cheios_3++;
                 }
             });
+            $( \".divs-contrato select\" ).each(function( index ) {
+                // console.log( index + \": \" + $( this ).val() );
+                conta_campos_3++;
+                if ($( this ).val() != '') {
+                    conta_campos_cheios_3++;
+                }
+            });
             if (conta_campos_3 == conta_campos_cheios_3) {
                 tacheio_3 = '(Completo)';
                 $(this).addClass('btn-success');
+                valida_cntr = true;
             } else {
                 $(this).removeClass('btn-success');
             }
@@ -496,6 +549,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             if (conta_campos_4 == conta_campos_cheios_4) {
                 tacheio_4 = '(Completo)';
                 $(this).addClass('btn-success');
+                valida_pretd = true;
             } else {
                 $(this).removeClass('btn-success');
             }
@@ -504,5 +558,13 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             $(this).addClass('botao-ativo-agora');
         });
         // $('#div-pret-id').on('click', function(){});
+        
+        $('#formulario-pro-superlogica').on('mouseover', function() {
+            if (valida_prop == true && valida_imov == true && valida_pretd == true && valida_cntr == true) {
+                $('#enviaraosuperlogica').prop('disabled', false);
+            } else {
+                $('#enviaraosuperlogica').prop('disabled', true);
+            }
+        });
     ");
 ?>

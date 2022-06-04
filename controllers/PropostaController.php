@@ -639,9 +639,9 @@ class PropostaController extends Controller
     ############################################# NOVO SISTEMA DE DISPAROS #############################################
     #------------------------------------------------------------------------------------------------------------------#
     public function actionSuperlogicacompleto () {
-        echo '<pre>';
-        print_r($_REQUEST);
-        echo '</pre>';
+        // echo '<pre>';
+        // print_r($_REQUEST);
+        // echo '</pre>';
         $request_proprietario = $this->arrtoobj($_REQUEST['prop1']);
         $request_imovel = $this->arrtoobj($_REQUEST['imovelinfo']);
         $request_pretendente = $this->arrtoobj($_REQUEST['pretendente']);
@@ -650,46 +650,61 @@ class PropostaController extends Controller
         // TESTE OBJETIVO
         /**
          * 
-         */
-            $contrato = $this->superlogicacontrato($request_contrato, 530, 744);
-            if ($contrato['resultado'] == 'sucesso') {
-                echo 'Feito';
+         $contrato = $this->superlogicacontrato($request_contrato, 530, 744);
+         if ($contrato['resultado'] == 'sucesso') {
+             echo 'Feito';
             } else {
                 echo ' Não Feito: <br><hr>'.$contrato['conteudo'];
             }
             exit();
+        */
 
+        $id_model = $_REQUEST['proposta_id'];
+        $model = new \app\models\Superlogica();
+        $model->id_proposta = $id_model;
+
+        $retorno = "";
+        
+            
         $proprietario = $this->superlogicaproprietario($request_proprietario);
         # => NÍVEL DO PROPRIETÁRIO =============================================================================================
         if ($proprietario['resultado'] == 'sucesso') {
+            // Vai pro banco:
+            $model->id_sl_proprietario = $proprietario['superlogica'];
             $imovel = $this->superlogicaimovel($request_imovel, $proprietario['superlogica']);
             # => NÍVEL DO IMÓVEL ===============================================================================================
             if ($imovel['resultado'] == 'sucesso') {
+                // Vai pro banco:
+                $model->id_sl_imovel = $imovel['superlogica_imovel'];
                 $pretendente = $this->superlogicapretendente($request_pretendente);
                 # => NÍVEL DO PRETENDENTE ======================================================================================
                 if ($pretendente['resultado'] == 'sucesso') {
+                    // Vai pro banco:
+                    $model->id_sl_locatario = $pretendente['superlogica_locatario'];
                     # => NÍVEL DO CONTRATO =====================================================================================
                     $contrato = $this->superlogicacontrato($request_contrato, $imovel['superlogica_imovel'], $pretendente['superlogica_locatario']);
                     if ($contrato['resultado'] == 'sucesso') {
+                        // Vai pro banco:
+                        $model->id_sl_contrato = $contrato['superlogica_contrato'];
                         Yii::$app->session->setFlash('success', 'TUDO CERTO, Proprietário, Imóvel, Locatário e Contrato adicionados ao Superlógica');
-                        return $this->redirect(Yii::$app->request->referrer);
+                
                     } else {
                         Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Contrato, solicite o suporte e mostre isso: <hr>'.$contrato["resultado"].'<hr>'.$contrato['conteudo'].'<hr>');
-                        return $this->redirect(Yii::$app->request->referrer);
+                
                     }
                 } else {
                     Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Pretendente/Locatário, solicite o suporte e mostre isso: <hr>'.$pretendente["resultado"].'<hr>'.$pretendente['conteudo'].'<hr>');
-                    return $this->redirect(Yii::$app->request->referrer);
+            
                 }
             } else {
                 Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Imóvel, solicite o suporte e mostre isso: <hr>'.$imovel["resultado"].'<hr>'.$imovel['conteudo'].'<hr>');
-                return $this->redirect(Yii::$app->request->referrer);
+        
             }
         } else {
             Yii::$app->session->setFlash('warning', 'Algo deu errado no cadastro do Poprietário, solicite o suporte e mostre isso: <hr>'.$proprietario["resultado"].'<hr>'.$proprietario['conteudo'].'<hr>');
-            return $this->redirect(Yii::$app->request->referrer);
         }
-
+        $model->save();
+        return $this->redirect(Yii::$app->request->referrer);
     }
     /**
      * SUPERLÓGICA PROPRIETÁRIO
@@ -916,26 +931,21 @@ class PropostaController extends Controller
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
 
-        $inquilinos = '"INQUILINOS": [
-            {
+        $inquilinos = '"INQUILINOS": [{
                 "ID_PESSOA_PES": "'.$locatario.'",
                 "FL_PRINCIPAL_INQ": "1",
-                "NM_FRACAO_INQ": "100.00"
-            }
-        ],';
+                "NM_FRACAO_INQ": "100"
+            }]';
         
-        
-        echo '<hr>';
-        echo strval($arr->id_tipo_con);
-        echo date("m/d/Y", strtotime($arr->dt_inicio_con));
-        echo '<br>Dt_inicio_con - '.$arr->dt_inicio_con;
-        echo '<hr>';
+        $dt_inicio_con = $this->formatar_data_pro_banco($arr->dt_inicio_con);
+        $dt_fim_con = $this->formatar_data_pro_banco($arr->dt_fim_con);
+        $dt_ultimoreajuste_con = $this->formatar_data_pro_banco($arr->dt_ultimoreajuste_con);
 
         $a_enviar = json_encode('{
             "ID_IMOVEL_IMO": "'.$imovel.'",
             "ID_TIPO_CON": "'.$arr->id_tipo_con.'",
-            "DT_INICIO_CON": "'.date("m/d/Y", strtotime($arr->dt_inicio_con)).'",
-            "DT_FIM_CON": "'.date("m/d/Y", strtotime($arr->dt_fim_con)).'",
+            "DT_INICIO_CON": "'.date("m/d/Y", strtotime($dt_inicio_con)).'",
+            "DT_FIM_CON": "'.date("m/d/Y", strtotime($dt_fim_con)).'",
             "VL_ALUGUEL_CON": "'.$arr->vl_aluguel_con.'",
             "TX_ADM_CON": "'.$arr->tx_adm_con.'",
             "FL_TXADMVALORFIXO_CON": "'.$arr->fl_txadmvalorfixo_con.'",
@@ -943,7 +953,7 @@ class PropostaController extends Controller
             "TX_LOCACAO_CON": "'.$arr->tx_locacao_con.'",
             "ID_INDICEREAJUSTE_CON": "'.$arr->id_indicereajuste_con.'",
             "NM_MESREAJUSTE_CON": "'.$arr->nm_mesreajuste_con.'",
-            "DT_ULTIMOREAJUSTE_CON": "'.date("m/d/Y", strtotime($arr->dt_ultimoreajuste_con)).'",
+            "DT_ULTIMOREAJUSTE_CON": "'.date("m/d/Y", strtotime($dt_ultimoreajuste_con)).'",
             "FL_MESFECHADO_CON": "'.$arr->fl_mesfechado_con.'",
             "ID_CONTABANCO_CB": "'.$arr->id_contabanco_cb.'",
             "FL_DIAFIXOREPASSE_CON": "'.$arr->fl_diafixorepasse_con.'",
@@ -959,12 +969,12 @@ class PropostaController extends Controller
             '.$inquilinos.'
         }');
        
-        echo '<hr>';
-        echo 'CONTRATO ==================================================> ';
-        echo '<hr>';
-        echo '<pre>';
-        print_r(json_decode($a_enviar));
-        echo '</pre>';
+        // echo '<hr>';
+        // echo 'CONTRATO =======================================================================================================> ';
+        // echo '<hr>';
+        // echo '<pre>';
+        // print_r(json_decode($a_enviar));
+        // echo '</pre>';
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_decode($a_enviar));
 
@@ -978,9 +988,15 @@ class PropostaController extends Controller
         curl_close($ch);
 
         $retorno = json_decode($response);
+
+        // echo '<hr>';
+        // echo '<pre>';
+        // print_r($retorno);
+        // echo '</pre>';
+        // echo '<hr>';
        
         if ($retorno->data[0]->status == '200') {
-            $retorna_id_contrato_superlogica = $retorno->data[0]->data->id_pessoa_pes;
+            $retorna_id_contrato_superlogica = $retorno->data[0]->data->id_contrato_con;
             return [
                 'superlogica_contrato' => $retorna_id_contrato_superlogica,
                 'conteudo' => $retorno->data[0]->msg,
@@ -994,6 +1010,8 @@ class PropostaController extends Controller
             ];
         }
     }
+    ####################################################################################################################
+    ############################    FIM    #############################################################################
     ####################################################################################################################
 
 
@@ -1274,7 +1292,7 @@ class PropostaController extends Controller
         $msg.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
         $msg.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
         $msg.= '</p>';
-        $msg.= '<img src="https://alugadigital.com.br/img/logo_a_empresa.f21cb89d.png" width="100">';
+        $msg.= '<img src="https://alugadigital.com.br/img/AlugaDigital-02.png" width="100">';
         $msg.= '</center>';
             
         $assunto = $titulo_email;    
@@ -2226,9 +2244,9 @@ class PropostaController extends Controller
         if ($tipo == 'data') {
             $valor = $this->formatar_data_pra_tela($valor);
         }
-        if (!$valor) {
-            $valor = '1';
-        }
+        // if (!$valor) {
+        //     $valor = '1';
+        // }
         if ($tipo == 'select' and $opcoes) {
             $select_content = '';
             foreach ($opcoes as $key => $value) {

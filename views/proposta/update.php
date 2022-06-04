@@ -659,10 +659,10 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 Modal::begin([
                                     // 'header' => 'Disparar mensagem pelo Whats',
                                     'toggleButton' => [
-                                        'label' => '<i class="fa fa-whatsapp"></i> Avisar pelo Whatsapp',
+                                        'label' => '<i class="fa fa-whatsapp"></i> Avisar pelo Whatsapp Sim',
                                         'class' => 'btn btn-success',
                                         'style' => 'font-weight: bolder',
-                                        'disabled' => count($disparos_whats) > 0 ? true : false
+                                        'disabled' => ((count($disparos_whats) > 0 or $model->apibotsubs == '') ? true : false)
                                     ]
                                 ]);
                                 $msg_html2 = '<p>';
@@ -675,6 +675,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                             ?>
                             <button id="botao-whats" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Disparar</button>
                             <?php Modal::end(); ?>
+                            
                             <?php 
                                 Modal::begin([
                                     // 'header' => 'Disparar mensagem pelo Email',
@@ -692,7 +693,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 $msg_html3.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
                                 $msg_html3.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
                                 $msg_html3.= '</p>';
-                                $msg_html3.= '<img src="https://alugadigital.com.br/img/logo_a_empresa.f21cb89d.png" width="100">';
+                                $msg_html3.= '<img src="https://alugadigital.com.br/img/AlugaDigital-02.png" width="100">';
                                 $msg_html3.= '</center>';
                                 echo $msg_html.$msg_html3;
                                 echo '<br>';
@@ -715,10 +716,56 @@ $this->params['breadcrumbs'][] = 'Editar';
                         <div class="col-md-6" style="text-align: center !important;">
                             <h4><strong>Cadastrar essas Informações no Superlógica</strong></h4>
                             <?php
+                            $superlogica = app\models\Superlogica::find()->where([
+                                'id_proposta' => $model->id
+                            ])->one();
+                            if ($superlogica):
+
+                                $estilos_links_superlogica = [
+                                    'color' => 'darkgreen',
+                                    'text-align' => 'center !important',
+                                    'border' => '1px solid'
+                                ];
+
+                                echo '<h4><strong>Registro já encontra-se no Superlógica, deseja editar?</strong></h4>';
+                                
+                                echo Html::a('Proprietário: '.$superlogica->id_sl_proprietario,
+                                    'https://apps.superlogica.net/imobiliaria/proprietarios/id/'.$superlogica->id_sl_proprietario
+                                , [
+                                    'target'=>'_blank', 
+                                    'class' => 'btn btn-link',
+                                    'style' => $estilos_links_superlogica,
+                                    'title' => 'Ver no Superlógica'
+                                ]);
+                                echo Html::a('Imóvel: '.$superlogica->id_sl_imovel, 
+                                    'https://apps.superlogica.net/imobiliaria/imoveis/id/'.$superlogica->id_sl_imovel
+                                , [
+                                    'target'=>'_blank', 
+                                    'class' => 'btn btn-link',
+                                    'style' => $estilos_links_superlogica,
+                                    'title' => 'Ver no Superlógica'
+                                ]);
+                                echo Html::a('Locatário: '.$superlogica->id_sl_locatario, 
+                                    'https://apps.superlogica.net/imobiliaria/locatarios/id/'.$superlogica->id_sl_locatario
+                                , [
+                                    'target'=>'_blank', 
+                                    'class' => 'btn btn-link',
+                                    'style' => $estilos_links_superlogica,
+                                    'title' => 'Ver no Superlógica'
+                                ]);
+                                echo Html::a('Contrato: '.$superlogica->id_sl_contrato, 
+                                    'https://apps.superlogica.net/imobiliaria/contratos/id/'.$superlogica->id_sl_contrato
+                                , [
+                                    'target'=>'_blank', 
+                                    'class' => 'btn btn-link',
+                                    'style' => $estilos_links_superlogica,
+                                    'title' => 'Ver no Superlógica'
+                                ]);
+                            else:
                             Modal::begin([
                                 'size' => 'modal-lg',
                                 'toggleButton' => [
-                                    'label' => '<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',
+                                    'label' => '<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Cadastro Completo',
                                     'class' => 'btn btn-primary',
                                     'style' => 'font-weight: bolder'
                                 ]
@@ -741,6 +788,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 ]);
                             ?>
                             <?php Modal::end(); ?>
+                            <?php endif; ?>
                             <br />
                             <br />
                             <div id="progressando" style="display: none">
@@ -757,10 +805,10 @@ $this->params['breadcrumbs'][] = 'Editar';
                         <div class="col-md-12">
                             <div class="col-md-3"></div>
                             <div class="col-md-6" style="text-align: center !important;">
-                                <button id="botao-cadastra-subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Add Cliente ao Botconversa</button>
+                                <button id="botao-cadastra-subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Add este Cliente ao Botconversa</button>
                             </div>
                             <div class="col-md-3">
-                                <button id="retorna_subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Retorna Cliente</button>
+                                <!-- <button id="retorna_subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Retorna Cliente</button> -->
                             </div>
                         </div>
                         <?php endif; ?>
