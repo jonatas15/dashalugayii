@@ -48,7 +48,7 @@ class VisitaSearch extends Visita
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 1000,
+                'pageSize' => 10,
             ],
             'sort' => [
                 'defaultOrder' => [
@@ -89,7 +89,7 @@ class VisitaSearch extends Visita
             'YEAR(data_visita)' => $this->ano,
             'hora_visita' => $this->hora_visita,
             'id_corretor' => $this->id_corretor,
-            'contrato' => $this->contrato,
+            'contrato' => 'locação',
             'convertido' => $this->convertido,
         ]);
 

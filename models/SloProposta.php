@@ -116,7 +116,7 @@ class SloProposta extends \yii\db\ActiveRecord
             [['usuario_id', 'dormitorios', 'aluguel', 'iptu', 'condominio', 'agua', 'luz', 'gas_encanado', 'total', 'numero', 'etapa_andamento', 'conj_num_dependentes', 'superlogica_cliente', 'superlogica_imovel', 'apibotsubs'], 'integer'],
             [['data_inicio', 'data_nascimento', 'documento_data_emissao', 'data_admissao', 'conj_data_nascimento'], 'safe'],
             [['prazo_responder', 'proprietario', 'atvc_data_constituicao', 'id_slogica'], 'string', 'max' => 45],
-            [['codigo_imovel'], 'string', 'max' => 5],
+            [['codigo_imovel'], 'string', 'max' => 15],
             [['imovel_valores', 'nome', 'email', 'naoLocalizado', 'condicao_do_imovel', 'conj_nome', 'conj_email', 'conj_profissao'], 'string', 'max' => 245],
             [['tipo_imovel', 'endereco', 'bairro', 'cidade', 'estado', 'atvc_contato'], 'string', 'max' => 255],
             [['complemento', 'atvc_telefone', 'cnpj'], 'string', 'max' => 25],
