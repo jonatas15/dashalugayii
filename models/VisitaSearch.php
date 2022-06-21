@@ -48,7 +48,7 @@ class VisitaSearch extends Visita
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 10,
+                'pageSize' => 400,
             ],
             'sort' => [
                 'defaultOrder' => [
@@ -77,7 +77,7 @@ class VisitaSearch extends Visita
         }
 
         $ano_recebido = filter_input(INPUT_GET, 'ano', FILTER_SANITIZE_STRING);
-        $this->ano = ($ano_recebido !='' ? $ano_recebido : '2021');
+        $this->ano = ($ano_recebido !='' ? $ano_recebido : '2022');
 
 
         // grid filtering conditions

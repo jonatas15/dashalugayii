@@ -27,20 +27,25 @@ $this->params['breadcrumbs'][] = $this->title;
 </style>
 <div class="visita-index">
     <?php
-        $ano_ativo = $_REQUEST['ano']!=''?$_REQUEST['ano']:'2021';
+        $ano_ativo = $_REQUEST['ano']!=''?$_REQUEST['ano']:'2022';
 
     ?>
     <h3><img src="<?=Yii::$app->homeUrl.'icones/visita.png'?>" alt="" height="50" /><?= Html::encode($this->title) ?></h3>
     <div class="clearfix"></div>
     <div class="col-md-12" style="text-align: center;">
-        <a href="?ano=2018" style="<?= ($ano_ativo == '2018'?'background-color: lightgray; color: #000; ':'color: gray; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-dafault col-md-3"><h4>2018</h4></a>
-        <a href="?ano=2019" style="<?= ($ano_ativo == '2019'?'background-color: lightgray; color: #000; ':'color: gray; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-dafault col-md-3"><h4>2019</h4></a>
-        <a href="?ano=2020" style="<?= ($ano_ativo == '2020'?'background-color: lightgray; color: #000; ':'color: gray; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-dafault col-md-3"><h4>2020</h4></a>
-        <a href="?ano=2021" style="<?= ($ano_ativo == '2021'?'background-color: lightgray; color: #000; ':'color: gray; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-dafault col-md-3"><h4>2021</h4></a>
+      <div class="col-md-1"></div>
+      <a href="?ano=2018" style="<?= ($ano_ativo == '2018'?'background-color: green; color: #FFF; ':'color: #FFF; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-primary col-md-2"><h4 style="font-weight: 900 !important;">2018</h4></a>
+      <a href="?ano=2019" style="<?= ($ano_ativo == '2019'?'background-color: green; color: #FFF; ':'color: #FFF; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-primary col-md-2"><h4 style="font-weight: 900 !important;">2019</h4></a>
+      <a href="?ano=2020" style="<?= ($ano_ativo == '2020'?'background-color: green; color: #FFF; ':'color: #FFF; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-primary col-md-2"><h4 style="font-weight: 900 !important;">2020</h4></a>
+      <a href="?ano=2021" style="<?= ($ano_ativo == '2021'?'background-color: green; color: #FFF; ':'color: #FFF; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-primary col-md-2"><h4 style="font-weight: 900 !important;">2021</h4></a>
+      <a href="?ano=2022" style="<?= ($ano_ativo == '2022'?'background-color: green; color: #FFF; ':'color: #FFF; ') ?>border-radius: 0px !important; border: 1px solid lightgray;" class="btn btn-primary col-md-2"><h4 style="font-weight: 900 !important;">2022</h4></a>
+      <div class="col-md-1"></div>
     </div>
-    <br>
-    <br>
-    <br>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
     <div class="clearfix"></div>
     <?php
     $categorias = [];
@@ -451,7 +456,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
       yii\bootstrap\Modal::end();
       ?>
-      <?php
+      <?php /*
       yii\bootstrap\Modal::begin([
           'header' => '<h4>Nova Visita para Venda</h4>',
           'toggleButton' => [
@@ -470,16 +475,17 @@ $this->params['breadcrumbs'][] = $this->title;
       ]);
 
       yii\bootstrap\Modal::end();
+      */
       ?>
     <p>
       <?= Html::a(Yii::t('app', 'Cadastrar Visitas em Sequência: Alugar'), ['create',[
         'contrato' => 'Locação'
       ]], ['class' => 'btn btn-success',]) ?>
-
+      <?php /*
       <?= Html::a(Yii::t('app', 'Cadastrar Visitas em Sequência: Venda'), ['create',[
         'contrato' => 'Venda'
       ]], ['class' => 'btn btn-success',]) ?>
-
+      */ ?>
       <?= Html::a(Yii::t('app', 'Limpar Filtros'), ['index'], ['class' => 'btn btn-warning']) ?>
         <?php
         if ($_REQUEST['VisitaSearch']['data_visita'] and $_REQUEST['VisitaSearch']['data_visita'] != ''):
@@ -509,8 +515,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             [
               'attribute'=>'data_visita',
+              'headerOptions' => ['style' => 'width: 10% !important;'],
               'filter' => '<div class="input-group drp-container">'.DateRangePicker::widget([
-                'language'=>'pt',
+                'language'=>'ptBR',
                 'name' => 'VisitaSearch[data_visita]',
                 'value'=> empty($_REQUEST['VisitaSearch']['data_visita'])?'':$_REQUEST['VisitaSearch']['data_visita'],
                 'convertFormat'=>true,
@@ -545,13 +552,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 return '<strong style="color: '.$data->idCorretor->cor.';">'.$data->idCorretor->nome.' '.$retorna.'</strong>';
               }
             ],
-            [
-              'headerOptions' => ['style' => 'width:10%'],
-              'attribute' => 'contrato',
-              'filter' => ['Venda'=>'Venda','Locação'=>'Locação']
-            ],
+            // [
+            //   'headerOptions' => ['style' => 'width:10%'],
+            //   'attribute' => 'contrato',
+            //   'filter' => ['Venda'=>'Venda','Locação'=>'Locação']
+            // ],
             [
               'attribute'=> 'codigo_imovel',
+              'headerOptions' => ['style' => 'width: 10% !important;'],
               'contentOptions' => ['style'=>'vertical-align: middle;white-space: nowrap;'],
             ],
             [
@@ -559,7 +567,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'contentOptions' => ['style'=>'vertical-align: middle;white-space: nowrap;'],
               'format' => 'raw',
               'value' => function($data){
-                return '<span  title="'.$data->nome_cliente.'">'.substr($data->nome_cliente, 0, 20).' (...)</span>';
+                return '<span  title="'.$data->nome_cliente.'">'.substr($data->nome_cliente, 0, 30).' (...)</span>';
               }
             ],
             [
@@ -612,7 +620,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             [
-              'headerOptions' => ['style' => 'width:20% !important;'],
+              'headerOptions' => ['style' => 'width:30% !important;'],
               'attribute'=>'observacoes',
               'format'=>'raw',
               'contentOptions' => ['style'=>'vertical-align: middle;white-space: nowrap;cursor:pointer;'],

@@ -236,4 +236,116 @@ class VisitaController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    /**
+     * Imprime campos editávels
+     */
+    public function imprime_campo_editavel($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
+      $input = Editable::INPUT_TEXT;
+      $editableoptions = [
+              'class'=>'form-control',
+      ];
+      $widgetClass = '';
+      $valore = $valor;
+      $data = [];
+      $displayValueConfig = [];
+
+      if (in_array($campo,['data', 'data_nascimento', 'cnj_data_nascimento', 'data_expedicao', 'documento_data_emissao', 'data_admissao'])) {
+          $input = Editable::INPUT_WIDGET;
+          $editableoptions = [
+              'class' => 'form-control',
+              'mask' => '99/99/9999'
+          ];
+          $widgetClass = MaskedInput::className();
+          $valore = date('d/m/Y', strtotime($valor));
+      }
+      if (in_array($campo,['cpf', 'conj_cpf'])) {
+          $input = Editable::INPUT_WIDGET;
+          $editableoptions = [
+              'class' => 'form-control',
+              'mask' => '999.999.999-99',
+              'value' => $valor
+          ];
+          $widgetClass = MaskedInput::className();
+      }
+      if (in_array($campo,['cep', 'end_cep'])) {
+          $input = Editable::INPUT_WIDGET;
+          $editableoptions = [
+              'class' => 'form-control',
+              'mask' => '99.999-999'
+          ];
+          $widgetClass = MaskedInput::className();
+      }
+      if (in_array($campo,['cpf_cnpj'])) {
+          // XX. XXX. XXX/0001-XX
+          $input = Editable::INPUT_WIDGET;
+          $editableoptions = [
+              'class' => 'form-control',
+              'mask' => ['999.999.999-99', '99.999.999/9999-99'],
+              'value' => $valor
+          ];
+          $widgetClass = MaskedInput::className();
+          if (strlen($this->clean($valor)) == 11) {
+              $valore = $this->format_doc($valor, 'cpf');
+          } else {
+              $valore = $this->format_doc($valor, 'cnpj');
+          }
+      }
+      if (in_array($campo,['celular', 'telefone_celular', 'whatsapp', 'telefone', 'fone', 'telefone_residencial','fone_residencial', 'fone_celular'])) {
+          $input = Editable::INPUT_WIDGET;
+          $editableoptions = [
+              'class' => 'form-control',
+              'mask' => ['(99)9999-9999','(99)99999-9999']
+          ];
+          $widgetClass = MaskedInput::className();
+          $valore = $this->format_telefone($valor);
+      }
+      if (in_array($campo,['sexo'])) {
+          $input = Editable::INPUT_DROPDOWN_LIST;
+          $data = ['M' => 'Masculino', 'F' => 'Feminino', 'I' => 'Indefinido'];
+          switch ($valor) {
+              case 'M': $valore = "Masculino"; break;
+              case 'F': $valore = "Feminino"; break;
+              case 'I': $valore = "Indefinido"; break;
+              default: $valore = "Masculino"; break;
+          }
+          $displayValueConfig = [
+              'M' => "Masculino",
+              'F' => "Feminino",
+              'I' => "Indefinido"
+          ];
+      }
+      if ($title) {
+          $retorno = '<label>'.$title.'</label><br />';
+      }
+      $retorno .= Editable::widget([
+          'language' => 'pt_BR',
+          'name'=> $campo, 
+          'asPopover' => false,
+          'value' => $valor,
+          'displayValue' => $valore,
+          'header' => 'Name',
+          'size'=>'md',
+          'options' => $editableoptions,
+          'inputType' => $input,
+          'widgetClass' => $widgetClass,
+          'data' => $data,
+          'displayValueConfig'=> $displayValueConfig,
+          'id' => ($conj?'conjuge_':'').$tabela.'_invisivel_'.$campo.'_'.$id,
+          'formOptions' => [
+              'action' => [
+                  'editcampo',
+                  'id' => $id,
+                  'tabela' => $tabela,
+                  'campo' => $campo
+              ]
+          ],
+          'valueIfNull' => 'valor alterado'
+      ]);
+      if ($title) {
+          $retorno .= "<br>";
+          $retorno .= "<br>";
+          $retorno .= "<br>";
+      }
+      return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
+  }
 }

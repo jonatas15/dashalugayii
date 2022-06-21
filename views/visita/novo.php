@@ -34,18 +34,21 @@ $estiloativo = '';
     <div class="col-md-6">
       <div class="form-group field-visita-id_corretor has-success">
         <?php //= $form->field($model, 'data_visita')->textInput()
-          echo '<label class="control-label">Data</label>';
-          echo DatePicker::widget([
-            'language'=>'pt',
-            'name' => 'Visita[data_visita]',
-            'type' => DatePicker::TYPE_COMPONENT_PREPEND,
-            'value' => $model->isNewRecord ? '':date('d-m-Y', strtotime($model->data_visita)),
-            'pluginOptions' => [
-                'autoclose'=>true,
-                'format' => 'dd-mm-yyyy'
-            ]
-          ]);
+          // echo '<label class="control-label">Data</label>';
+          // echo DatePicker::widget([
+          //   'language'=>'pt',
+          //   'name' => 'Visita[data_visita]',
+          //   'type' => DatePicker::TYPE_COMPONENT_PREPEND,
+          //   'value' => $model->isNewRecord ? '':date('d-m-Y', strtotime($model->data_visita)),
+          //   'pluginOptions' => [
+          //       'autoclose'=>true,
+          //       'format' => 'dd-mm-yyyy'
+          //   ]
+          // ]);
         ?>
+        <?= $form->field($model, 'data_visita')->widget(\yii\widgets\MaskedInput::class, [
+            'mask' => '99/99/9999',
+        ]) ?>
         <div class="help-block"></div>
       </div>
     </div>
