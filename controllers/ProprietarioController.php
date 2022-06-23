@@ -13,6 +13,7 @@ use kartik\editable\Editable;
 use yii\widgets\MaskedInput;
 
 use yii\filters\AccessControl;
+use kartik\mpdf\Pdf;
 
 /**
  * ProprietarioController implements the CRUD actions for Proprietario model.
@@ -22,6 +23,69 @@ class ProprietarioController extends Controller
     /**
      * {@inheritdoc}
      */
+    public $arr_campos_retirados_docs_conj = [
+        'id_conjuge_pretendente',
+        'slo_pretendente_id',
+        'id',
+        'selfie_documento',
+        'endereco_atual',
+        'endereco',
+        'end_numero',
+        'end_cidade',
+        'end_cep',
+        'end_complemento',
+        'end_bairro',
+        'end_estado',
+        'estado_civil',
+        'nome_conjuge',
+        'selfie_documento',
+        'frente_documento',
+        'verso_documento',
+        'selfie_com_documento',
+        'outros_comprovantes',
+        'id',
+        'superlogica',
+        'nome',
+        'documento_tipo',
+        'documento_numero',
+        'estado_civil',
+        'nome_fantasia',
+        'conta_deposito',
+        'banco',
+        'agencia',
+        'operacao',
+        'nome_titular',
+        'cpf_titular',
+        'codigo_imovel',
+        'logradouro',
+        'inicio_locacao',
+        'mais_informacoes',
+        'celular',
+        'telefone',
+        'email',
+        'cpf_cnpj',
+        'cpf',
+        'usuario_id',
+        'rg',
+        'orgao',
+        'sexo',
+        'data_nascimento',
+        'nacionalidade',
+        'cep',
+        'endereco',
+        'numero',
+        'complemento',
+        'bairro',
+        'cidade',
+        'estado',
+        'proposta_id',
+        'iptu',
+        'condominio',
+        'foto_rg',
+        'foto_cpf ',
+        'cnj_foto_rg',
+        'cnj_foto_cpf'
+    ];
     public function behaviors() {
       return [
           'access'=> [
@@ -29,9 +93,14 @@ class ProprietarioController extends Controller
               //'only' => ['create','delete','update'],
               'rules' => [
                     ['actions' => ['update'],       'allow' => true,   'roles' => ['faturas-update']],
-                    ['actions' => ['editcampo'],    'allow' => true,   'roles' => ['faturas-update']],
+                    ['actions' => ['editcampo','report'],    'allow' => true,   'roles' => ['faturas-update']],
                     ['actions' => ['create'],       'allow' => true,   'roles' => ['faturas-create']],
-                    ['actions' => ['novo'],         'allow' => true,   'roles' => ['faturas-create']],
+                    ['actions' => [
+                        'novo',
+                        'report'
+                    ],
+                    'allow' => true,
+                    'roles' => ['faturas-create']],
                     ['actions' => ['index'],        'allow' => true,   'roles' => ['faturas-indexa']],
                     ['actions' => ['view'],         'allow' => true,   'roles' => ['faturas-indexa']],
                     ['actions' => ['cruzamento'],   'allow' => true,   'roles' => ['faturas-indexa']],
@@ -190,9 +259,9 @@ class ProprietarioController extends Controller
             case 'data_expedicao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'documento_data_emissao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'data_admissao': $model->$campo = $this->formatar_data_pro_banco($valor); break;
-            case 'conj_data_nascimento': $model->$campo = $this->formatar_data_pro_banco($valor); break;
+            case 'cnj_data_nascimento': $model->$campo = $this->formatar_data_pro_banco($valor); break;
             case 'cpf': $model->$campo = $this->clean($valor); break;
-            case 'conj_cpf': $model->$campo = $this->clean($valor); break;
+            case 'cnj_cpf': $model->$campo = $this->clean($valor); break;
             case 'cep': $model->$campo = $this->clean($valor); break;
             case 'end_cep': $model->$campo = $this->clean($valor); break;
             case 'celular': $model->$campo = $this->clean($valor); break;
@@ -221,7 +290,7 @@ class ProprietarioController extends Controller
             ];
             $widgetClass = MaskedInput::className();
         }
-        if (in_array($campo,['cpf', 'conj_cpf'])) {
+        if (in_array($campo,['cpf', 'cnj_cpf'])) {
             $input = Editable::INPUT_WIDGET;
             $editableoptions = [
                 'class' => 'form-control',
@@ -309,7 +378,7 @@ class ProprietarioController extends Controller
             $widgetClass = MaskedInput::className();
             $valore = date('d/m/Y', strtotime($valor));
         }
-        if (in_array($campo,['cpf', 'conj_cpf'])) {
+        if (in_array($campo,['cpf', 'cnj_cpf'])) {
             $input = Editable::INPUT_WIDGET;
             $editableoptions = [
                 'class' => 'form-control',
@@ -398,5 +467,158 @@ class ProprietarioController extends Controller
             $retorno .= "<br>";
         }
         return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
+    }
+
+    /**
+     * Exportar PDF
+     * E gera campos de PDF
+    **/
+    private function campopdf($label, $valor) {
+        return '<exp style="font-size: 10px; color: blue">'.$label.':</exp><br><strong>'.$valor.'</strong><br><br>';
+    }
+    public function actionReport($id) {
+        // get your HTML raw content without any layouts or scripts
+        $content = '<br>';
+        // echo $id;
+        // exit();
+        
+        $proposta = $this->findModel($id);
+        
+        $content .= '<div style="width: 100%">';
+        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
+            $content .= $this->campopdf('Nome', $proposta->nome);
+            $content .= $this->campopdf('Tipo de Documento', $proposta->documento_tipo);
+            $content .= $this->campopdf('Data de Nascimento', date('d/m/Y', strtotime($proposta->data_nascimento)));
+            $content .= $this->campopdf('Celular (whats)', $this->format_telefone($proposta->celular));
+            $content .= $this->campopdf('CPF', $this->format_doc($proposta->cpf,'cpf'));
+            $content .= $this->campopdf('Email', $proposta->email);
+        $content .= '</div>';
+        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
+            $content .= $this->campopdf('Tipo de Documento', $proposta->documento_tipo);
+            $content .= $this->campopdf('Nº do Documento', $proposta->documento_numero);
+            $content .= $this->campopdf('Órgão Emissor', $proposta->orgao);
+            $content .= $this->campopdf('Telefone Residencial', $this->format_telefone($proposta->telefone));
+        $content .= '</div>';
+        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
+            $content .= $this->campopdf('Nacionalidade', $proposta->nacionalidade);
+            $content .= $this->campopdf('Estado Civil', $proposta->estado_civil);
+        $content .= '</div>';
+        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
+            // $content .= $this->campopdf('Renda', 'R$ '.number_format($proposta->renda, 2, ',', '.'));
+            $content .= $this->campopdf('Endereço', "{$proposta->endereco} - {$proposta->numero}, {$proposta->bairro}<br>{$proposta->cidade} - {$proposta->estado}");
+            $content .= $this->campopdf('CEP', $proposta->cep);
+        $content .= '</div>';
+        if ($proposta->estado_civil == 'Casado') {
+            $content .= '<hr>';
+            $content .= '<h4>Cônjuge: '.$proposta->cnj_nome.'</h4>';
+            $content .= '<div style="width: 30%; float: left; padding: 1%;">';
+            
+            $i = 1;
+            foreach ($proposta as $key => $value) {
+                if (!in_array($key,$this->arr_campos_retirados_docs_conj)):
+                    switch ($key) {
+                        case 'cnj_cpf': $valor = $this->format_doc($value,'cpf'); break;
+                        case 'celular': $valor = $this->format_telefone($value); break;
+                        case 'fone_celular': $valor = $this->format_telefone($value); break;
+                        case 'fone_residencial': $valor = $this->format_telefone($value); break;
+                        case 'data_nascimento': $valor = date('d/m/Y',strtotime($value)); break;
+                        case 'data_expedicao': $valor = date('d/m/Y',strtotime($value)); break;
+                        case 'genero': $valor = $value=='M'?'Masculino':'Feminino'; break;
+                        case 'renda': $valor = 'R$ '.number_format($value, 2, ',', '.'); break;
+                        default: $valor = $value; break;
+                    }
+                    $content .= $this->campopdf($proposta->getAttributeLabel($key), $valor);
+                    if ($i%5 == 0) {
+                        $content .= '</div>';
+                        $content .= '<div style="width: 30%; float: left; padding: 1%;">';
+                    }
+                    $i++;
+                endif;
+            }
+            $content .= '</div>';
+        }
+        $content .= '</div>';
+        
+        if ($proposta->foto_rg) :
+            
+            $prefixo_nome_arquivo = $this->clean($proposta->cpf);
+            $frente_doc = Yii::$app->homeUrl.'/uploads/_frente_'.$prefixo_nome_arquivo.'_'.$proposta->foto_rg;
+            $verso_doc = Yii::$app->homeUrl.'/uploads/_verso_'.$prefixo_nome_arquivo.'_'.$proposta->foto_cpf;
+            $cnj_frente_doc = Yii::$app->homeUrl.'/uploads/_cnj_frente_'.$prefixo_nome_arquivo.'_'.$proposta->cnj_foto_rg;
+            $cnj_verso_doc = Yii::$app->homeUrl.'/uploads/_cnj_verso_'.$prefixo_nome_arquivo.'_'.$proposta->cnj_foto_cpf;
+
+            $content .= '<pagebreak />';
+            $localfolder = Yii::$app->homeUrl;
+            $content .= '<br>';
+            $content .= '<br>';
+            $content .= '<div style="width: 100%; top:100px">';
+            if (pathinfo($frente_doc, PATHINFO_EXTENSION) != 'pdf') {
+                $content .= '<div style="width: 47%; float: left; padding: 1%;">';
+                // $content .= '<hr>';
+                $content .= '<strong>Frente do Documento</strong>';
+                $content .= "<img src='".$frente_doc."'/>";
+                $content .= '<br>';
+                $content .= '</div>';
+            }
+            if (pathinfo($verso_doc, PATHINFO_EXTENSION) != 'pdf') {
+                $content .= '<div style="width: 47%; float: left; padding: 1%;">';
+                // $content .= '<hr>';
+                $content .= '<strong>Verso do Documento</strong>';
+                $content .= "<img src='".$verso_doc."'/>";
+                $content .= '<br>';
+                $content .= '</div>';
+            }
+            if ($proposta->estado_civil == 'Casado') {
+                $content .= '<hr>';
+                if (pathinfo($cnj_frente_doc, PATHINFO_EXTENSION) != 'pdf') {
+                    $content .= '<div style="width: 47%; float: left; padding: 1%;">';
+                    // $content .= '<hr>';
+                    $content .= '<strong>Cônjuge: Frente do Documento</strong>';
+                    $content .= "<img src='".$cnj_frente_doc."'/>";
+                    $content .= '<br>';
+                    $content .= '</div>';
+                }
+                if (pathinfo($cnj_verso_doc, PATHINFO_EXTENSION) != 'pdf') {
+                    $content .= '<div style="width: 47%; float: left; padding: 1%;">';
+                    // $content .= '<hr>';
+                    $content .= '<strong>Cônjuge: Verso do Documento</strong>';
+                    $content .= "<img src='".$cnj_verso_doc."'/>";
+                    $content .= '<br>';
+                    $content .= '</div>';
+                }
+            
+            }
+        endif;
+        $content .= '</div>';
+        $content .= '</div>';
+        
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE, 
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4, 
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER, 
+            // your html content input
+            'content' => $content,  
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting 
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:18px}', 
+             // set mPDF properties on the fly
+            'options' => ['title' => 'Krajee Report Title'],
+             // call mPDF methods on the fly
+            'methods' => [ 
+                'SetHeader'=>['<img src="'.Yii::$app->homeUrl.'icones/logo-alugadigital.png" width="70" />'], 
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+        
+        // return the pdf output as per the destination setting
+        return $pdf->render(); 
     }
 }

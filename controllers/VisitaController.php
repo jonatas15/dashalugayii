@@ -84,7 +84,7 @@ class VisitaController extends Controller
         $model = new Visita();
 
         if ($model->load(Yii::$app->request->post())) {
-
+            $model->data_visita = $this->formatar_data_pro_banco($model->data_visita);
 
           $model->data_visita = date("Y-m-d H:i:s", strtotime($model->data_visita));
           $os = Corretor::find()->select('idcorretor')->asArray()->all();
@@ -121,12 +121,18 @@ class VisitaController extends Controller
         }
     }
 
+    public function formatar_data_pro_banco($data) {
+        $arr = explode('/',$data);
+        return $arr[2].'-'.$arr[1].'-'.$arr[0];
+    }
+
     public function actionNovo()
     {
         $model = new Visita();
 
         if ($model->load(Yii::$app->request->post())) {
-
+          
+            $model->data_visita = $this->formatar_data_pro_banco($model->data_visita);
 
           $model->data_visita = date("Y-m-d H:i:s", strtotime($model->data_visita));
           $os = Corretor::find()->select('idcorretor')->asArray()->all();
@@ -170,6 +176,7 @@ class VisitaController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            $model->data_visita = $this->formatar_data_pro_banco($model->data_visita);
             $model->data_visita = date("Y-m-d H:i:s", strtotime($model->data_visita));
             $os = Corretor::find()->select('idcorretor')->asArray()->all();
             $corretores = [];

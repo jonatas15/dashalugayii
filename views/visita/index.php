@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
           'id_corretor' => $row->attributes['id_corretor'],
           'data_visita' => $row->attributes['data_visita'],
           'convertido' => $row->attributes['convertido'],
-          'contrato' => $row->attributes['contrato'],
+          'contrato' => 'locação',
           'ano' => $ano_da_parada2
       ];
 
@@ -158,9 +158,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
           if ($_REQUEST['VisitaSearch']['contrato']) {
-            $arr_pesquisa['contrato'] = $val['contrato'];
-            $arr_mesdata['contrato'] = $val['contrato'];
           }
+          $arr_pesquisa['contrato'] = 'locação';
+          $arr_mesdata['contrato'] = 'locação';
+          
           if ($_REQUEST['VisitaSearch']['convertido']) {
             $arr_pesquisa['convertido'] = $val['convertido'];
             $arr_mesdata['convertido'] = $val['convertido'];
@@ -362,30 +363,6 @@ $this->params['breadcrumbs'][] = $this->title;
         [
           'label'   => 'Gráficos Complementares',
           'content' =>
-            '<div class="col-md-12"><div class="col-md-6">'.Highcharts::widget([
-               'options' => [
-                'type' => 'pie',
-                  'title' => ['text' => 'Relação de Visitas por Contrato'],
-                  'chart' => [
-                        'height' => 300,
-                        'zoomType' => 'x',
-                  ],
-                  'series' => [
-                    [
-                        'name' => 'Visitas por Contrato',
-                        'data' => [
-                          ['name'=>'Venda: '.$visitas_venda_porcento.' %','y'=>$visitas_venda,'color'=>'blue'],
-                          ['name'=>'Locação: '.$visitas_aluga_porcento.' %','y'=>$visitas_aluga,'color'=>'orange']
-                        ],
-                        'type' => 'pie',
-                        'showInLegend' => true,
-                        'dataLabels' => [
-                            'enabled' => false,
-                        ],
-                    ],
-                  ]
-               ]
-            ]).'</div>'.
             '<div class="col-md-6">'.Highcharts::widget([
                'options' => [
                   'title' => ['text' => 'Relação de Visitas por Corretor'],
