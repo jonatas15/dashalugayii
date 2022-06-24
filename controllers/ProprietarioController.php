@@ -82,9 +82,9 @@ class ProprietarioController extends Controller
         'iptu',
         'condominio',
         'foto_rg',
-        'foto_cpf ',
+        'foto_cpf',
         'cnj_foto_rg',
-        'cnj_foto_cpf'
+        'cnj_foto_cpf',
     ];
     public function behaviors() {
       return [
@@ -197,6 +197,7 @@ class ProprietarioController extends Controller
     }
 
     public function format_telefone($fone){
+        $fone = $this->clean($fone);
         $f = str_split($fone,1);
         $ddd = $f[0].$f[1];
         $g1 = '';
@@ -485,33 +486,30 @@ class ProprietarioController extends Controller
         $proposta = $this->findModel($id);
         
         $content .= '<div style="width: 100%">';
-        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
-            $content .= $this->campopdf('Nome', $proposta->nome);
-            $content .= $this->campopdf('Tipo de Documento', $proposta->documento_tipo);
-            $content .= $this->campopdf('Data de Nascimento', date('d/m/Y', strtotime($proposta->data_nascimento)));
-            $content .= $this->campopdf('Celular (whats)', $this->format_telefone($proposta->celular));
-            $content .= $this->campopdf('CPF', $this->format_doc($proposta->cpf,'cpf'));
-            $content .= $this->campopdf('Email', $proposta->email);
-        $content .= '</div>';
-        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
-            $content .= $this->campopdf('Tipo de Documento', $proposta->documento_tipo);
-            $content .= $this->campopdf('Nº do Documento', $proposta->documento_numero);
-            $content .= $this->campopdf('Órgão Emissor', $proposta->orgao);
-            $content .= $this->campopdf('Telefone Residencial', $this->format_telefone($proposta->telefone));
-        $content .= '</div>';
-        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
-            $content .= $this->campopdf('Nacionalidade', $proposta->nacionalidade);
-            $content .= $this->campopdf('Estado Civil', $proposta->estado_civil);
-        $content .= '</div>';
-        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
-            // $content .= $this->campopdf('Renda', 'R$ '.number_format($proposta->renda, 2, ',', '.'));
-            $content .= $this->campopdf('Endereço', "{$proposta->endereco} - {$proposta->numero}, {$proposta->bairro}<br>{$proposta->cidade} - {$proposta->estado}");
-            $content .= $this->campopdf('CEP', $proposta->cep);
+            $content .= '<div style="width: 48%; float: left; padding: 1%;">';
+                $content .= $this->campopdf('Nome', $proposta->nome);
+                $content .= $this->campopdf('Data de Nascimento', date('d/m/Y', strtotime($proposta->data_nascimento)));
+                $content .= $this->campopdf('Celular (whats)', $this->format_telefone($proposta->celular));
+                $content .= $this->campopdf('Email', $proposta->email);
+                $content .= $this->campopdf('Estado Civil', $proposta->estado_civil);
+                $content .= $this->campopdf('<b>Imóvel:</b> Valor do IPTU', $proposta->iptu);
+                $content .= $this->campopdf('<b>Imóvel:</b> Condomínio', $proposta->condominio);
+            $content .= '</div>';
+            $content .= '<div style="width: 48%; float: left; padding: 1%;">';
+                $content .= $this->campopdf('CPF', $this->format_doc($proposta->cpf_cnpj,'cpf'));
+                // $content .= $this->campopdf('Tipo de Documento', $proposta->documento_tipo);
+                $content .= $this->campopdf('Nº do Documento '."($proposta->documento_tipo)", $proposta->documento_numero);
+                $content .= $this->campopdf('Órgão Emissor', $proposta->orgao);
+                $content .= $this->campopdf('<b>Dados Bancários</b> - Banco', $proposta->banco);
+                $content .= $this->campopdf('Agência', $proposta->agencia);
+                $content .= $this->campopdf('Operação', $proposta->operacao);
+                $content .= $this->campopdf('Conta', $proposta->conta_deposito);
+            $content .= '</div>';
         $content .= '</div>';
         if ($proposta->estado_civil == 'Casado') {
             $content .= '<hr>';
             $content .= '<h4>Cônjuge: '.$proposta->cnj_nome.'</h4>';
-            $content .= '<div style="width: 30%; float: left; padding: 1%;">';
+            $content .= '<div style="width: 48%; float: left; padding: 1%;">';
             
             $i = 1;
             foreach ($proposta as $key => $value) {
@@ -522,6 +520,7 @@ class ProprietarioController extends Controller
                         case 'fone_celular': $valor = $this->format_telefone($value); break;
                         case 'fone_residencial': $valor = $this->format_telefone($value); break;
                         case 'data_nascimento': $valor = date('d/m/Y',strtotime($value)); break;
+                        case 'cnj_data_nascimento': $valor = date('d/m/Y',strtotime($value)); break;
                         case 'data_expedicao': $valor = date('d/m/Y',strtotime($value)); break;
                         case 'genero': $valor = $value=='M'?'Masculino':'Feminino'; break;
                         case 'renda': $valor = 'R$ '.number_format($value, 2, ',', '.'); break;
@@ -530,7 +529,7 @@ class ProprietarioController extends Controller
                     $content .= $this->campopdf($proposta->getAttributeLabel($key), $valor);
                     if ($i%5 == 0) {
                         $content .= '</div>';
-                        $content .= '<div style="width: 30%; float: left; padding: 1%;">';
+                        $content .= '<div style="width: 48%; float: left; padding: 1%;">';
                     }
                     $i++;
                 endif;
@@ -541,11 +540,11 @@ class ProprietarioController extends Controller
         
         if ($proposta->foto_rg) :
             
-            $prefixo_nome_arquivo = $this->clean($proposta->cpf);
-            $frente_doc = Yii::$app->homeUrl.'/uploads/_frente_'.$prefixo_nome_arquivo.'_'.$proposta->foto_rg;
-            $verso_doc = Yii::$app->homeUrl.'/uploads/_verso_'.$prefixo_nome_arquivo.'_'.$proposta->foto_cpf;
-            $cnj_frente_doc = Yii::$app->homeUrl.'/uploads/_cnj_frente_'.$prefixo_nome_arquivo.'_'.$proposta->cnj_foto_rg;
-            $cnj_verso_doc = Yii::$app->homeUrl.'/uploads/_cnj_verso_'.$prefixo_nome_arquivo.'_'.$proposta->cnj_foto_cpf;
+            $prefixo_nome_arquivo = $this->clean($proposta->codigo_imovel);
+            $frente_doc = Yii::$app->homeUrl.'/uploads/_file_rg_proprietario_'.$prefixo_nome_arquivo.'_'.$proposta->foto_rg;
+            $verso_doc = Yii::$app->homeUrl.'/uploads/_file_cpf_proprietario_'.$prefixo_nome_arquivo.'_'.$proposta->foto_cpf;
+            $cnj_frente_doc = Yii::$app->homeUrl.'/uploads/_cnj_file_foto_rg_proprietario_'.$prefixo_nome_arquivo.'_'.$proposta->cnj_foto_rg;
+            $cnj_verso_doc = Yii::$app->homeUrl.'/uploads/_cnj_file_foto_cpf_proprietario_'.$prefixo_nome_arquivo.'_'.$proposta->cnj_foto_cpf;
 
             $content .= '<pagebreak />';
             $localfolder = Yii::$app->homeUrl;

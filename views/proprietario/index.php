@@ -15,6 +15,16 @@ $this->params['breadcrumbs'][] = $this->title;
     .kv-editable-value {
         color: darkblue !important;
     }
+    .btn-ativa-docs {
+        padding: 8% 43% !important;
+        /* border-radius: 15% !important; */
+        font-size: 15px !important;
+        text-transform: capitalize !important;
+    }
+    th {
+        /* font-weight: bold !important; */
+        font-size: 13px !important;
+    }
 </style>
 <div class="proprietario-index">
 
@@ -29,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <!-- <br /> -->
     </p>
 
-    <?php Pjax::begin(); ?>
+    <?php Pjax::begin(['id' => 'samle2424243333', 'linkSelector' => 'a:not(.target-blank)']); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     
     <?= GridView::widget([
@@ -131,6 +141,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 // 'title' => 'Editar',
                 'header'=>'Docs',
                 'format' => 'raw',
+                'headerOptions' => ['style' => 'width: 5%'],
                 'value' => function($data) {
                     $proprietario = \app\models\Proprietario::find()->where([
                         'id' => $data->id
@@ -138,7 +149,23 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $this->render('/proprietario/_modalverfiles', [
                         'model' => $proprietario,
                         'proposta' => $data->id,
-                        'action' => 'update'
+                        'action' => 'update',
+                        'classe' => ' btn-ativa-docs'
+                    ]);
+                }
+            ],
+            [
+                // 'title' => 'Editar',
+                'header'=>'PDF',
+                'format' => 'raw',
+                'headerOptions' => ['style' => 'width: 5%'],
+                'value' => function($data) {
+                    $proprietario = \app\models\Proprietario::find()->where([
+                        'id' => $data->id
+                    ])->one();
+                    return Html::a("<i class='fa fa-print'></i>", ['report', 'id' => $data->id], [
+                        'class' => 'btn btn-info target-blank btn-ativa-docs',
+                        'target'=>'_blank'
                     ]);
                 }
             ]

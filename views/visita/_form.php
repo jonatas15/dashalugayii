@@ -45,6 +45,7 @@ if($_REQUEST['cadastra_mais'] and $_REQUEST['cadastra_mais'] == 1){
             //       'format' => 'dd-mm-yyyy'
             //   ]
             // ]);
+            $model->data_visita = date('d-m-Y', strtotime($model->data_visita));
           ?>
           <?= $form->field($model, 'data_visita')->widget(\yii\widgets\MaskedInput::class, [
             'mask' => '99/99/9999',

@@ -6,7 +6,7 @@ Modal::begin([
     'size' => 'modal-lg',
     'toggleButton' => [
         'label' => "<i class='fa fa-file'></i>",
-        'class' => 'btn btn-primary'
+        'class' => "btn btn-primary $classe"
     ],
     'options' => ['tabindex' => true],
 ]);
@@ -19,6 +19,7 @@ Modal::begin([
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'sexo', 'Sexo: ', $model->sexo, $model->id) ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'documento_numero', 'Documento: '.$model->documento_tipo, $model->cnj_documento_numero, $model->id) ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'cpf_cnpj', 'Cpf/Cnpj', $model->cpf_cnpj, $model->id) ?>
+    <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'orgao', 'Órgão Emissor', $model->orgao, $model->id) ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'data_nascimento', $model->getAttributeLabel('data_nascimento'), $model->data_nascimento, $model->id) ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'celular', $model->getAttributeLabel('celular'), $model->celular, $model->id) ?>
     <?= $this->context->imprime_campo_editavel('6', 'Proprietario', 'email', $model->getAttributeLabel('email'), $model->email, $model->id) ?>
