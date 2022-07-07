@@ -14,6 +14,7 @@ use yii\widgets\MaskedInput;
 
 use yii\filters\AccessControl;
 use kartik\mpdf\Pdf;
+use yii\helpers\Html;
 
 /**
  * ProprietarioController implements the CRUD actions for Proprietario model.
@@ -619,5 +620,45 @@ class ProprietarioController extends Controller
         
         // return the pdf output as per the destination setting
         return $pdf->render(); 
+    }
+
+    public function mostrafiledoc($readarquivo) {
+        header('Cache-control: private');
+        header('Content-Type: application/octet-stream');
+        $ext_imagens = [
+            'JPG',
+            'JPEG',
+            'PNG',
+            'PNEG',
+            'BMP',
+            'jpg',
+            'jpeg',
+            'png',
+            'pneg',
+            'bmp',
+        ];
+        $ext_pdfs = [
+            'PDF',
+            'pdf',
+        ];
+        $readarquivo = urldecode($readarquivo);
+        if (in_array(pathinfo($readarquivo, PATHINFO_EXTENSION), $ext_pdfs)):
+            return '<div>
+                <object data="'.$readarquivo.'" type="application/pdf" width="250" height="300">
+                    alt : <a href="'.$readarquivo.'">test.pdf</a>
+                </object>
+            </div>';
+        elseif (in_array(pathinfo($readarquivo, PATHINFO_EXTENSION), $ext_imagens)):
+            return Html::img($readarquivo, [
+                'alt' => 'Frente',
+                'style' => 'width: auto; max-width: 100%; max-height: 300px;'
+            ]);
+        else:
+            return '<div>
+                <a href="'.$readarquivo.'">
+                    Baixar Documento
+                </a>
+            </div>';
+        endif;
     }
 }

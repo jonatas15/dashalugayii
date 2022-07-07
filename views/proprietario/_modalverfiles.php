@@ -58,17 +58,11 @@ Modal::begin([
     <h3>Documentos do Proprietário</h3>
     <div class="col-md-6" style="text-align: center; ">
         <h4><strong>Documento de <?=$model->documento_tipo?>: Frente</strong></h4>
-        <?= Html::img('@web/uploads/_file_rg_proprietario_'.$model->codigo_imovel.'_'.$model->foto_rg, [
-            'alt' => 'Frente',
-            'style' => 'width: auto; max-width: 100%; max-height: 300px;'
-        ]); ?>
+        <?= $this->context->mostrafiledoc(Yii::$app->homeUrl.'/uploads/_file_rg_proprietario_'.$model->codigo_imovel.'_'.$model->foto_rg); ?>
     </div>
     <div class="col-md-6" style="text-align: center; ">
         <h4><strong>Documento de <?=$model->documento_tipo?>: Verso</strong></h4>
-        <?= Html::img('@web/uploads/_file_cpf_proprietario_'.$model->codigo_imovel.'_'.$model->foto_cpf, [
-            'alt' => 'Verso',
-            'style' => 'width: auto; max-width: 100%; max-height: 300px;'
-        ]); ?>
+        <?= $this->context->mostrafiledoc(Yii::$app->homeUrl.'/uploads/_file_cpf_proprietario_'.$model->codigo_imovel.'_'.$model->foto_cpf); ?>
     </div>
 </div>
 <div class="clearfix"></div>
@@ -78,17 +72,11 @@ Modal::begin([
         <h3>Documentos do Cônjuge</h3>
         <div class="col-md-6" style="text-align: center; ">
             <h4><strong>Documento de <?=$model->cnj_documento_tipo?>: Frente</strong></h4>
-            <?= Html::img('@web/uploads/_cnj_file_foto_rg_proprietario_'.$model->codigo_imovel.'_'.$model->cnj_foto_rg, [
-                'alt' => 'Frente',
-                'style' => 'width: auto; max-width: 100%; max-height: 300px;'
-            ]); ?>
+            <?= $this->context->mostrafiledoc(Yii::$app->homeUrl.'/uploads/_cnj_file_foto_rg_proprietario_'.$model->codigo_imovel.'_'.$model->cnj_foto_rg); ?>
         </div>
         <div class="col-md-6" style="text-align: center; ">
             <h4><strong>Documento de <?=$model->cnj_documento_tipo?>: Verso</strong></h4>
-            <?= Html::img('@web/uploads/_cnj_file_foto_cpf_proprietario_'.$model->codigo_imovel.'_'.$model->cnj_foto_cpf, [
-                'alt' => 'Verso',
-                'style' => 'width: auto; max-width: 100%; max-height: 300px;'
-            ]); ?>
+            <?= $this->context->mostrafiledoc(Yii::$app->homeUrl.'/uploads/_cnj_file_foto_cpf_proprietario_'.$model->codigo_imovel.'_'.$model->cnj_foto_cpf); ?>
         </div>
     </div>
     <div class="clearfix"></div>
