@@ -51,8 +51,10 @@ use yii\helpers\Html;
         ]); ?>    
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" type="text/javascript"></script>
+
 <script>
-    $(document).ready(function() {
+    // $(document).ready(function() {
     $().ready(function() {
         $sidebar = $('.sidebar');
 
@@ -220,7 +222,7 @@ use yii\helpers\Html;
 
         });
     });
-    });
+    // });
 </script>
 <script>
     $(document).ready(function() {

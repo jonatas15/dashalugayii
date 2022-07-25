@@ -38,6 +38,9 @@ use dmstr\widgets\Alert;
         text-align: center !important;
         font-weight: bold;
     }
+    .tab-content {
+        border-top: 1px solid lightgray !important;
+    }
 </style>
 <div class="tooltip">Hover over me
   <span class="tooltiptext">Tooltip text</span>
@@ -783,9 +786,10 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 //         $(this).addClass(\'disabled\');
                                 //     '
                                 // ]);
-                                echo $this->render('_superlogica', [
-                                    'model' => $model,
-                                ]);
+                                // MODAL DO SUPERLOGICS CONTEUDO
+                                // echo $this->render('_superlogica', [
+                                //     'model' => $model,
+                                // ]);
                             ?>
                             <?php Modal::end(); ?>
                             <?php endif; ?>
@@ -979,7 +983,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                         // document.location.reload(true);x
                     } else {
                         alert('Ocorreu algum erro neste Json:' + response);
-                        // console.log(response);
+                        console.log(response);
                     }
                 });
             });
@@ -1039,13 +1043,24 @@ $this->params['breadcrumbs'][] = 'Editar';
     <br>
     <div class="col-md-12">
         <?php 
-            echo $this->context->imprime_campo_editavel('12', 'SloProposta', 'codigo_imovel', '<b>Definir Código do Imóvel</b>', $model->codigo_imovel, $model->id);
+            // echo $this->context->imprime_campo_editavel('12', 'SloProposta', 'codigo_imovel', '<b>Definir Código do Imóvel</b>', $model->codigo_imovel, $model->id);
         ?>
     </div>
     <div class="col-md-12">
         <?php
             echo Tabs::widget([
                 'items' => [
+                    [
+                        'label' => 'Informações do Imóvel',
+                        'content' => 
+                        // '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
+                        '<div style="background-color: white !important">'.
+                                $this->render('_imovel', [
+                                    'model' => $model,
+                                ]).
+                            '</div>',
+                        'active' => true
+                    ],
                     [
                         'label' => 'Registro: Pretendente',
                         'content' => '<div style="background-color: white !important">'.
@@ -1054,20 +1069,8 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'id' => $id,
                         ]).
                         '</div>',
-                        'active' => true 
+                        'active' => false 
                     ],
-                    // [
-                    //     'label' => 'Integrar ao Superlógica',
-                    //     'content' => 
-                    //     // '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
-                    //     '<div style="background-color: white !important">'.
-                    //             $this->render('_imovel', [
-                    //                 'model' => $model,
-                    //             ]).
-                    //         '</div>',
-                    //     'active' => true
-                    // ],
-                    // 'nome',
                     [
                         'label' => 'Histórico',
                         'content' => $this->render('timeline', [
@@ -1075,6 +1078,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'pretendente_id' => $model->id,
                         ]),
                     ],
+                    // 'nome',
                     // [
                     //     'label' => 'Resumo',
                     //     // 'content' => '<div class="col-md-12">Resumo</div>',

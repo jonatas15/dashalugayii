@@ -1,4 +1,3 @@
-$(document).ready(function() {
 $().ready(function() {
     $sidebar = $('.sidebar');
 
@@ -165,7 +164,6 @@ $().ready(function() {
     }, 1000);
 
     });
-});
 });
 
 $(document).ready(function() {

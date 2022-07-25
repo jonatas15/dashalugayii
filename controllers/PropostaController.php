@@ -1107,6 +1107,7 @@ class PropostaController extends Controller
                 $imovel['iptu'] = $e->valor_iptu;
                 $imovel['condominio'] = $e->valor_condominio;
                 $imovel['codigo'] = $e->codigo;
+                $imovel['imagem'] = $e->imagens[0]->link_thumb;
 
                 break;
             }
@@ -1149,6 +1150,7 @@ class PropostaController extends Controller
                 $imovel['iptu'] = $e->valor_iptu;
                 $imovel['condominio'] = $e->valor_condominio;
                 $imovel['codigo'] = $e->codigo;
+                $imovel['imagem'] = $e->imagens[0]->link_thumb;
 
                 break;
             }
