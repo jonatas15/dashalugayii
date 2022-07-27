@@ -18,6 +18,7 @@ use yii\helpers\Url;
 
 use dmstr\widgets\Alert;
 
+use kartik\spinner\Spinner;
 /* @var $this yii\web\View */
 /* @var $model app\models\SloProposta */
 ?>
@@ -505,6 +506,15 @@ $this->params['breadcrumbs'][] = 'Editar';
                         // echo '</center>';
                     ?>
                     <?php Card::end(); ?>
+                    <div class="col-md-12" style="text-align: center !important; box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%); padding: 2%">
+                        <h3><strong>Gerar PDF</strong></h3>
+                        <p>
+                            <label>Informações do Imóvel, da proposta e do proponente. Inclui documentos.</label>
+                        </p>
+                        <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        <i style="font-size: 20px; padding: 5px;" class="fa fa-file"></i> Gerar Documento PDF
+                        </a>
+                    </div>
                 </div>
                 <div class="col-md-8">
                     <div class="col-md-12" style="text-align: center">
@@ -710,111 +720,110 @@ $this->params['breadcrumbs'][] = 'Editar';
                     </div>
                     <div class="col-md-12">
                         <hr>
-                        <div class="col-md-6" style="text-align: center !important;">
-                            <h4><strong>Gerar PDF com essas Informações</strong></h4>
-                            <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style = 'width: 100%'>
-                            <i style="font-size: 20px; padding: 5px;" class="fa fa-file"></i> Gerar Documento PDF
-                            </a>
-                        </div>
-                        <div class="col-md-6" style="text-align: center !important;">
-                            <h4><strong>Cadastrar essas Informações no Superlógica</strong></h4>
-                            <?php
-                            $superlogica = app\models\Superlogica::find()->where([
-                                'id_proposta' => $model->id
-                            ])->one();
-                            if ($superlogica):
-
-                                $estilos_links_superlogica = [
-                                    'color' => 'darkgreen',
-                                    'text-align' => 'center !important',
-                                    'border' => '1px solid'
-                                ];
-
-                                echo '<h4><strong>Registro já encontra-se no Superlógica, deseja editar?</strong></h4>';
-                                
-                                echo Html::a('Proprietário: '.$superlogica->id_sl_proprietario,
-                                    'https://apps.superlogica.net/imobiliaria/proprietarios/id/'.$superlogica->id_sl_proprietario
-                                , [
-                                    'target'=>'_blank', 
-                                    'class' => 'btn btn-link',
-                                    'style' => $estilos_links_superlogica,
-                                    'title' => 'Ver no Superlógica'
-                                ]);
-                                echo Html::a('Imóvel: '.$superlogica->id_sl_imovel, 
-                                    'https://apps.superlogica.net/imobiliaria/imoveis/id/'.$superlogica->id_sl_imovel
-                                , [
-                                    'target'=>'_blank', 
-                                    'class' => 'btn btn-link',
-                                    'style' => $estilos_links_superlogica,
-                                    'title' => 'Ver no Superlógica'
-                                ]);
-                                echo Html::a('Locatário: '.$superlogica->id_sl_locatario, 
-                                    'https://apps.superlogica.net/imobiliaria/locatarios/id/'.$superlogica->id_sl_locatario
-                                , [
-                                    'target'=>'_blank', 
-                                    'class' => 'btn btn-link',
-                                    'style' => $estilos_links_superlogica,
-                                    'title' => 'Ver no Superlógica'
-                                ]);
-                                echo Html::a('Contrato: '.$superlogica->id_sl_contrato, 
-                                    'https://apps.superlogica.net/imobiliaria/contratos/id/'.$superlogica->id_sl_contrato
-                                , [
-                                    'target'=>'_blank', 
-                                    'class' => 'btn btn-link',
-                                    'style' => $estilos_links_superlogica,
-                                    'title' => 'Ver no Superlógica'
-                                ]);
-                            else:
-                            Modal::begin([
-                                'size' => 'modal-lg',
-                                'toggleButton' => [
-                                    'label' => '<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Cadastro Completo',
-                                    'class' => 'btn btn-primary',
-                                    'style' => 'font-weight: bolder'
-                                ]
-                            ]);
-                            ?>
-                            <?php
-                                // echo Html::a('<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
-                                //     'class' => 'btn btn-primary',
-                                //     'style' => 'width: 100%',
-                                //     'onClick' => '
-                                //         $("body").css("cursor", "wait");
-                                //         $(this).css("cursor", "wait");
-                                //         $("#progressando").show();
-                                //         // $(this).addAttribute(\'disabled\');
-                                //         $(this).addClass(\'disabled\');
-                                //     '
-                                // ]);
-                                // MODAL DO SUPERLOGICS CONTEUDO
-                                // echo $this->render('_superlogica', [
-                                //     'model' => $model,
-                                // ]);
-                            ?>
-                            <?php Modal::end(); ?>
-                            <?php endif; ?>
-                            <br />
-                            <br />
-                            <div id="progressando" style="display: none">
-                                <?php
-                                    use kartik\spinner\Spinner;
-                                    echo '<div class="">';
-                                    echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
-                                    echo '<div class="clearfix"></div>';
-                                    echo '</div>';
-                                    ?>
-                            </div>
-                        </div>
-                        <?php if ($model->apibotsubs == ''): ?>
-                        <div class="col-md-12">
+                        
+                        <?php if ($model->etapa_andamento >= 4) : ?>
                             <div class="col-md-3"></div>
                             <div class="col-md-6" style="text-align: center !important;">
-                                <button id="botao-cadastra-subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Add este Cliente ao Botconversa</button>
+                                <h4><strong>Cadastrar essas Informações no Superlógica</strong></h4>
+                                <?php
+                                $superlogica = app\models\Superlogica::find()->where([
+                                    'id_proposta' => $model->id
+                                ])->one();
+                                if ($superlogica):
+
+                                    $estilos_links_superlogica = [
+                                        'color' => 'darkgreen',
+                                        'text-align' => 'center !important',
+                                        'border' => '1px solid'
+                                    ];
+
+                                    echo '<h4><strong>Registro já encontra-se no Superlógica, deseja editar?</strong></h4>';
+                                    
+                                    echo Html::a('Proprietário: '.$superlogica->id_sl_proprietario,
+                                        'https://apps.superlogica.net/imobiliaria/proprietarios/id/'.$superlogica->id_sl_proprietario
+                                    , [
+                                        'target'=>'_blank', 
+                                        'class' => 'btn btn-link',
+                                        'style' => $estilos_links_superlogica,
+                                        'title' => 'Ver no Superlógica'
+                                    ]);
+                                    echo Html::a('Imóvel: '.$superlogica->id_sl_imovel, 
+                                        'https://apps.superlogica.net/imobiliaria/imoveis/id/'.$superlogica->id_sl_imovel
+                                    , [
+                                        'target'=>'_blank', 
+                                        'class' => 'btn btn-link',
+                                        'style' => $estilos_links_superlogica,
+                                        'title' => 'Ver no Superlógica'
+                                    ]);
+                                    echo Html::a('Locatário: '.$superlogica->id_sl_locatario, 
+                                        'https://apps.superlogica.net/imobiliaria/locatarios/id/'.$superlogica->id_sl_locatario
+                                    , [
+                                        'target'=>'_blank', 
+                                        'class' => 'btn btn-link',
+                                        'style' => $estilos_links_superlogica,
+                                        'title' => 'Ver no Superlógica'
+                                    ]);
+                                    echo Html::a('Contrato: '.$superlogica->id_sl_contrato, 
+                                        'https://apps.superlogica.net/imobiliaria/contratos/id/'.$superlogica->id_sl_contrato
+                                    , [
+                                        'target'=>'_blank', 
+                                        'class' => 'btn btn-link',
+                                        'style' => $estilos_links_superlogica,
+                                        'title' => 'Ver no Superlógica'
+                                    ]);
+                                else:
+                                Modal::begin([
+                                    'size' => 'modal-lg',
+                                    'toggleButton' => [
+                                        'label' => '<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Cadastro Completo',
+                                        'class' => 'btn btn-primary',
+                                        'style' => 'font-weight: bolder'
+                                    ]
+                                ]);
+                                ?>
+                                <?php
+                                    // echo Html::a('<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
+                                    //     'class' => 'btn btn-primary',
+                                    //     'style' => 'width: 100%',
+                                    //     'onClick' => '
+                                    //         $("body").css("cursor", "wait");
+                                    //         $(this).css("cursor", "wait");
+                                    //         $("#progressando").show();
+                                    //         // $(this).addAttribute(\'disabled\');
+                                    //         $(this).addClass(\'disabled\');
+                                    //     '
+                                    // ]);
+                                    // MODAL DO SUPERLOGICS CONTEUDO
+                                    // echo $this->render('_superlogica', [
+                                    //     'model' => $model,
+                                    // ]);
+                                ?>
+                                <?php Modal::end(); ?>
+                                <?php endif; ?>
+                                <br />
+                                <br />
+                                <div id="progressando" style="display: none">
+                                    <?php
+                                        
+                                        echo '<div class="">';
+                                        echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
+                                        echo '<div class="clearfix"></div>';
+                                        echo '</div>';
+                                        ?>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <!-- <button id="retorna_subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Retorna Cliente</button> -->
+                            <div class="col-md-3"></div>
+                        <?php endif; ?>
+                        <?php if ($model->apibotsubs == ''): ?>
+                            <div class="col-md-12">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6" style="text-align: center !important;">
+                                    <button id="botao-cadastra-subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Add este Cliente ao Botconversa</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <!-- <button id="retorna_subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Retorna Cliente</button> -->
+                                </div>
                             </div>
-                        </div>
                         <?php endif; ?>
                     </div>
                 </div>

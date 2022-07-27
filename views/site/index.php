@@ -400,7 +400,8 @@ foreach ($visitas_grafico as $key => $val) {
                         'header' =>'Início',
                         'attribute' => 'data_inicio',
                         'value' => function($data) {
-                            return date('d/m/Y H:i:s', strtotime($data->data_inicio));
+                            $dataregistro = date('d/m/Y H:i:s', strtotime($data->data_inicio)  - 60 * 60 * 3);
+                            return $dataregistro;
                         }
                     ],
                     [
