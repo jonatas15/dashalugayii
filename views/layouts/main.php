@@ -50,6 +50,13 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/deyraka/yii2
             .main-panel {
                 width: calc(100% - 220px);
             }
+            .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+                padding: 4px 8px !important;
+            }
+            .bmd-form-group input {
+                margin-top: 1px !important;
+                background-color: white;
+            }
         </style>
         <?php $this->beginBody() ?>
             <div class="wrapper">

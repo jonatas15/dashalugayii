@@ -81,8 +81,7 @@ use kartik\spinner\Spinner;
     ########################### PRA HTML ###################################################
     $titulo_email = "Cadastro recebido. Em análise.";
         $textos_email = "<p>Ual! Ficamos felizes em conhecer você 😍 </p>
-            <p>A partir de agora seu cadastro está <strong>em análise</strong>! Em até 1 dia útil retornamos com o
-            <br>resultado 🙌 🤝 </p>
+            <p>A partir de agora seu cadastro está <strong>em análise</strong>! Em até 1 dia útil retornamos com o resultado 🙌 🤝 </p>
             <p>Qualquer dúvida não hesite em nos contatar.</p>";
         if ($model->tipo == "Credpago") {
             $credpagoouseg = "Credpago";
@@ -151,14 +150,14 @@ use kartik\spinner\Spinner;
                 default:
                     $titulo_email = "Cadastro recebido. Em análise.";
                     $textos_email = "<p>Ual! Ficamos felizes em conhecer você 😍 </p>
-                        <p>A partir de agora seu cadastro está <strong>em análise</strong>! Em até 1 dia útil retornamos com o
-                        <br>resultado 🙌 </p>
+                        <p>A partir de agora seu cadastro está <strong>em análise</strong>! Em até 1 dia útil retornamos com o resultado 🙌 </p>
                         <p>Qualquer dúvida não hesite em nos contatar. 🤝 </p>";
 
                     $msg_whats = "\\n*Cadastro recebido. Em análise.* \\n \\n";
                     $msg_whats.= "Ual! Ficamos felizes em conhecer você 😍 \\n";
-                    $msg_whats.= "A partir de agora seu cadastro está *em análise*! Em até 1 dia útil retornamos com o \\n";
-                    $msg_whats.= "resultado 🙌 \\n";
+                    $msg_whats.= "\\n";
+                    $msg_whats.= "A partir de agora seu cadastro está *em análise*! Em até 1 dia útil retornamos com o resultado 🙌 \\n";
+                    $msg_whats.= "\\n";
                     $msg_whats.= "Qualquer dúvida não hesite em nos contatar. 🤝 \\n \\n";
                     break;
             }
@@ -274,6 +273,22 @@ use kartik\spinner\Spinner;
     // $msg_whats .= "\\n ".'https://alugadigital.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').'/'.$model->id;
 
 ?>
+<script>
+    function myFunction() {
+        /* Get the text field */
+        var copyText = document.getElementById("myInput");
+    
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* For mobile devices */
+    
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+    
+        /* Alert the copied text */
+        alert("Copied the text: " + copyText.value);
+    }
+</script>
 <?php
 $this->title = 'Proposta: ' . $model->tipo .' pelo Imóvel '. $model->codigo_imovel;
 $this->params['breadcrumbs'][] = ['label' => 'Propostas', 'url' => ['/site/indexlocacao']];
@@ -466,7 +481,7 @@ $this->params['breadcrumbs'][] = 'Editar';
             <br />
             <div class="clearfix"></div>
             <div class="row">
-	            <div class="col-md-4" style="">
+	            <div class="col-md-6" style="">
                     <?php
                         Card::begin([  
                             'id' => 'card1', 
@@ -479,44 +494,41 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'options' => [
                                 'style' => 'z-index: 1049 !important;',
                             ],
-                            'footerContent' => 'Clique nos botões pra ver as diferentes fases desse processo',
+                            'footerContent' => 'Pré-visualizações',
                         ]);
                     ?>
-                    <img id="preview-site" src="<?=Yii::$app->homeUrl.'uploads/capturas-tela/credpago_'.$model->etapa_andamento.'.png';?>" style="width: 100%; height: auto"/>
+                    
+                    <?php if((int)$model->etapa_andamento == 2) : ?>
+                        <!-- Tem que vir aqui !!!!!!!!!!!!!!!!! -->
+                        <img id="preview-site" src="<?=Yii::$app->homeUrl.'uploads/capturas-tela/credpago_'.$model->etapa_andamento.'_'.$model->opcoes.'.png';?>" style="width: 100%; height: auto"/>
+                    <?php else: ?>
+                        <img id="preview-site" src="<?=Yii::$app->homeUrl.'uploads/capturas-tela/credpago_'.$model->etapa_andamento.'.png';?>" style="width: 100%; height: auto"/>
+                    <?php endif; ?>
                     <?php 
                         // echo '<center style="outline: 1px solid">';
-                        for($i=1;$i<=$quant_etapas;$i++) {
-                            Modal::begin([
-                                // 'header' => '<h3 style="text-align: center">Visualizar etapa '.$i.' no Site</h3>',
-                                'size' => 'modal-lg',
-                                'toggleButton' => [
-                                    'id' => $i,
-                                    // 'label' => '<strong>'.$i.' <i class="fa fa-eye"></i></strong>',
-                                    'label' => '<strong>'.$i.'</strong>',
-                                    'title' => 'Visualizar etapa '.$i,
-                                    'alt' => 'Visualizar etapa '.$i,
-                                    'class' => 'btn btn-info',
-                                    'style' => 'padding: 0 !important;font-size: 13px; font-weight: bolder; position: relative; left: '.(($i*5)).'px; border-radius: 50%;width:40px;height:40px'
-                                ]
-                            ]);
-                            echo '<h3 style="text-align: center">Visualizar etapa '.$i.' no Site</h3>';
-                            echo '<img src="'.Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo."_$i.png".'" style="width: 100%"/>';
-                            Modal::end();
-                        }
+                        // for($i=1;$i<=$quant_etapas;$i++) {
+                        //     Modal::begin([
+                        //         // 'header' => '<h3 style="text-align: center">Visualizar etapa '.$i.' no Site</h3>',
+                        //         'size' => 'modal-lg',
+                        //         'toggleButton' => [
+                        //             'id' => $i,
+                        //             // 'label' => '<strong>'.$i.' <i class="fa fa-eye"></i></strong>',
+                        //             'label' => '<strong>'.$i.'</strong>',
+                        //             'title' => 'Visualizar etapa '.$i,
+                        //             'alt' => 'Visualizar etapa '.$i,
+                        //             'class' => 'btn btn-info',
+                        //             'style' => 'padding: 0 !important;font-size: 13px; font-weight: bolder; position: relative; left: '.(($i*5)).'px; border-radius: 50%;width:40px;height:40px'
+                        //         ]
+                        //     ]);
+                        //     echo '<h3 style="text-align: center">Visualizar etapa '.$i.' no Site</h3>';
+                        //     echo '<img src="'.Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo."_$i.png".'" style="width: 100%"/>';
+                        //     Modal::end();
+                        // }
                         // echo '</center>';
                     ?>
                     <?php Card::end(); ?>
-                    <div class="col-md-12" style="text-align: center !important; box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%); padding: 2%">
-                        <h3><strong>Gerar PDF</strong></h3>
-                        <p>
-                            <label>Informações do Imóvel, da proposta e do proponente. Inclui documentos.</label>
-                        </p>
-                        <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                        <i style="font-size: 20px; padding: 5px;" class="fa fa-file"></i> Gerar Documento PDF
-                        </a>
-                    </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="col-md-12" style="text-align: center">
                         <?php if ($model->etapa_andamento - 1 == 1): ?>
                         <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprop?resposta=0&etapa=3&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
@@ -648,7 +660,9 @@ $this->params['breadcrumbs'][] = 'Editar';
                         
                         <center>
                             <br>
-                            <label for=""><strong>Url original: </strong><?=$url?></label><br>
+                            <label for=""><strong>Url original: </strong>
+                                <?= "<a href='$url' target='blanck'>$url</a>"; ?>
+                            </label><br>
                             <!-- The text field -->
                             <input type="text" value="<?=$bitly->debug()?>" id="myInput" style="width: 50%">
                             <!-- The button used to copy the text -->
@@ -819,6 +833,15 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 <div class="col-md-3"></div>
                                 <div class="col-md-6" style="text-align: center !important;">
                                     <button id="botao-cadastra-subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Add este Cliente ao Botconversa</button>
+                                    <div id="progressando2" style="display: none">
+                                        <?php
+                                            
+                                            echo '<div class="">';
+                                            echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
+                                            echo '<div class="clearfix"></div>';
+                                            echo '</div>';
+                                            ?>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
                                     <!-- <button id="retorna_subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Retorna Cliente</button> -->
@@ -826,6 +849,11 @@ $this->params['breadcrumbs'][] = 'Editar';
                             </div>
                         <?php endif; ?>
                     </div>
+                </div>
+                <div class="col-md-12"></div>
+                <!-- <div class="col-md-6"></div> -->
+                <div class="col-md-6">
+                    
                 </div>
             </div>
             <?php /* 
@@ -888,37 +916,45 @@ $this->params['breadcrumbs'][] = 'Editar';
     <div class="clearfix"></div>
     <?php 
         $msg_whats.= $bitly->debug()."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
+        if ((int)$model->etapa_andamento == 2) {
+            $caminho_da_volta = Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'_'.$model->opcoes.'.png';
+        } else {
+            $caminho_da_volta = Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png';
+        }
         $this->registerJs("
-            $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png'."'});
+            $('#preview-site').attr({'src':'".$caminho_da_volta."'});
+            
             $('.item1').on('mouseover', function() {
                 $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_1.png'."'});
             }).on('mouseout', function() {
-                $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png'."'});
+                $('#preview-site').attr({'src':'".$caminho_da_volta."'});
             });
+
             $('.item2').on('mouseover', function() {
                 $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_2.png'."'});
             }).on('mouseout', function() {
-                $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png'."'});
+                $('#preview-site').attr({'src':'".$caminho_da_volta."'});
             });
+
             $('.item3').on('mouseover', function() {
                 $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_3.png'."'});
             }).on('mouseout', function() {
-                $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png'."'});
+                $('#preview-site').attr({'src':'".$caminho_da_volta."'});
             });
             $('.item4').on('mouseover', function() {
                 $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_4.png'."'});
             }).on('mouseout', function() {
-                $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png'."'});
+                $('#preview-site').attr({'src':'".$caminho_da_volta."'});
             });
             $('.item5').on('mouseover', function() {
                 $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_5.png'."'});
             }).on('mouseout', function() {
-                $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png'."'});
+                $('#preview-site').attr({'src':'".$caminho_da_volta."'});
             });
             $('.item6').on('mouseover', function() {
                 $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_6.png'."'});
             }).on('mouseout', function() {
-                $('#preview-site').attr({'src':'".Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png'."'});
+                $('#preview-site').attr({'src':'".$caminho_da_volta."'});
             });
 
             var settings = {
@@ -977,6 +1013,7 @@ $this->params['breadcrumbs'][] = 'Editar';
 
             // ADD subscriber
             $('#botao-cadastra-subscriber').on('click', function() {
+                // $(this).attr('disabled', true);
                 $.ajax(settings_subs).done(function (response) {
                     // console.log(response);
                     if(response == 1 || response == '1') {
@@ -988,11 +1025,21 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 'telefone': '{$model->telefone_celular}'
                             }
                         });
-                        alert('Usuário cadastrado com sucesso!');
-                        // document.location.reload(true);x
+                        $('#progressando2').show();
+                        createAutoClosingAlert('Usuário cadastrado com sucesso!', 2000);
+                        document.location.reload(true);
                     } else {
-                        alert('Ocorreu algum erro neste Json:' + response);
-                        console.log(response);
+                        $.ajax({
+                            'url': '".Yii::$app->homeUrl."proposta/apibotget',
+                            'method': 'POST',
+                            'data': {
+                                'proposta': '{$model->id}',
+                                'telefone': '{$model->telefone_celular}'
+                            }
+                        });
+                        $('#progressando2').show();
+                        createAutoClosingAlert('Registro já encontrado, atualizando Sistema!', 2000);
+                        document.location.reload(true);
                     }
                 });
             });
@@ -1081,6 +1128,10 @@ $this->params['breadcrumbs'][] = 'Editar';
                         'active' => false 
                     ],
                     [
+                        'label' => 'Operações',
+                        'content' => "Botões de exportação aqui",
+                    ],
+                    [
                         'label' => 'Histórico',
                         'content' => $this->render('timeline', [
                             'model' => $model,
@@ -1102,6 +1153,21 @@ $this->params['breadcrumbs'][] = 'Editar';
             //     'model' => $model
             // ]);
         ?>
+    </div>
+    <div class="clearfix"></div>
+    <hr>
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="col-md-12" style="text-align: center !important; box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%); padding: 2%">
+                <h3><strong>Gerar PDF</strong></h3>
+                <p>
+                    <label>Informações do Imóvel, da proposta e do proponente. Inclui documentos.</label>
+                </p>
+                <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                <i style="font-size: 20px; padding: 5px;" class="fa fa-file"></i> Gerar Documento PDF
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 <?php //$this->endContent(); ?>

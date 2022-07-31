@@ -267,7 +267,8 @@ class SloProposta extends \yii\db\ActiveRecord
             'email',
             'etapa_andamento',
             'motivo_locacao',
-            'codigo'
+            'codigo',
+            'codigo_imovel'
         ];
     }
 }
