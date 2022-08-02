@@ -42,6 +42,12 @@ use kartik\spinner\Spinner;
     .tab-content {
         border-top: 1px solid lightgray !important;
     }
+    .btn-atividade-etapa-2 {
+        width: auto !important;
+    }
+    .estilo-card-caixa {
+        text-align: center !important; box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%); padding: 2% !important;
+    }
 </style>
 <div class="tooltip">Hover over me
   <span class="tooltiptext">Tooltip text</span>
@@ -120,7 +126,7 @@ use kartik\spinner\Spinner;
                         </p>";
 
                     $msg_whats = "\\n*Opa! Cadastro com pendências.* 😕 \\n \\n";
-                    $msg_whats.= "A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir as observações do seu processo através do link abaixo. \\n";
+                    $msg_whats.= "A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir as observações do seu processo através do link abaixo. \\n \\n";
                     $msg_whats.= " Qualquer dúvida estamos aqui à sua disposição! 😉 \\n \\n";
                     break;
                 case '2':
@@ -133,7 +139,7 @@ use kartik\spinner\Spinner;
                         </p>";
 
                     $msg_whats = "\\n*Opa! Cadastro com pendências.* 😕 \\n \\n";
-                    $msg_whats.= "A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir as observações do seu processo através do link abaixo. \\n";
+                    $msg_whats.= "A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir as observações do seu processo através do link abaixo. \\n \\n";
                     $msg_whats.= " Qualquer dúvida estamos aqui à sua disposição! 😉 \\n \\n";
                     break;
                 case '3':
@@ -491,9 +497,9 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'title' => '<strong style="font-size: 15px">Tela da Fase, no site:</strong>', 
                             'titleTextType' => Card::TYPE_PRIMARY, 
                             'showFooter' => true,
-                            'options' => [
-                                'style' => 'z-index: 1049 !important;',
-                            ],
+                            // 'options' => [
+                            //     'style' => 'z-index: 1049 !important;',
+                            // ],
                             'footerContent' => 'Pré-visualizações',
                         ]);
                     ?>
@@ -529,128 +535,88 @@ $this->params['breadcrumbs'][] = 'Editar';
                     <?php Card::end(); ?>
                 </div>
                 <div class="col-md-6">
-                    <div class="col-md-12" style="text-align: center">
+                    <div class="col-md-12 estilo-card-caixa" style="text-align: center">
+                        <h3 style="text-align: center"><strong>Opções da Etapa de Análise (2)</strong></h3>
                         <?php if ($model->etapa_andamento - 1 == 1): ?>
-                        <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprop?resposta=0&etapa=3&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
-                        <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=1&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '1' ? 'primary' : 'default')?>">Pendenciado</a>
-                        <?php 
-                            // Modal aqui
-                            if ($model->opcoes == '1' and $model->tipo == "Seguro Fiança"):
-                                Modal::begin([
-                                    // 'header' => 'Definir Documentos',
-                                    'size' => 'modal-md',
-                                    'toggleButton' => [
-                                        'label' => '<i class="fa fa-check-square"></i> Docs',
-                                        'class' => 'btn btn-success',
-                                        'style' => 'font-weight: bolder',
-                                    ]
-                                ]);
-                                echo "<h3><center>Definir Documentos</center></h3>";
-                                $docs_escolha = [
-                                    'CPF' => 'CPF',
-                                    'RG (frente)' => 'RG (frente)',
-                                    'RG (verso)' => 'RG (verso)',
-                                    'Extrato bancário' => 'Extrato bancário',
-                                    'Imposto de renda (completo)' => 'Imposto de renda (completo)',
-                                    'Comprovante de endereço' => 'Comprovante de endereço',
-                                    'Carteira de trabalho (registro do emprego)' => 'Carteira de trabalho (registro do emprego)',
-                                    'Extrato INSS' => 'Extrato INSS',
-                                ];
-                                // $k = 1;
-                                // echo '<div class="col-md-12" style="text-align: left">';
-                                // foreach ($docs_escolha as $val) {
-                                //     $valor = 0;
-                                //     if (preg_match($pattern, $tags)) {
-                                //         $valor = 1;
-                                //     }
-                                //     echo '<div class="col-md-6" style="text-align: left">';
-                                //     echo CheckboxX::widget([
-                                //         'name' => 'documento['.$val.']',
-                                //         'value' => $valor,
-                                //         'initInputType' => CheckboxX::INPUT_CHECKBOX,
-                                //         'pluginOptions' => [
-                                //             'threeState'=>false
-                                //         ],
-                                //         'pluginEvents' => [
-                                //             'change' => 'function() {
-                                //                 console.log("checkbox changed");
-                                //                 $.ajax({
-                                //                     method: "POST",
-                                //                     url: "definedocs",
-                                //                     data: {
-                                //                         ch: $(this).prop(\'checked\'),
-                                //                         id: '.$model->id.',
-                                //                         vl: '.$val.'
-                                //                     },
-                                //                 });
-                                //             }'
-                                //         ],
-                                //         'labelSettings' => [
-                                //             'label' => '',
-                                //             'position' => CheckboxX::LABEL_LEFT
-                                //         ],
-                                        
-                                //     ]).' <span class="" style="position: relative;top: -6px;">'.$val.'</span><br>';
-                                //     echo '</div>';
-                                //     $k++;
-                                // }
-                                // echo '</div>';
-                                // echo '<label class="control-label">Tag Multiple</label>';
-                                $form = ActiveForm::begin([
-                                    'options' => [
-                                    ],
-                                    'action' => [
-                                        'definedocs',
-                                        'id' => $model->id
-                                    ]
-                                ]);
-                                $preselect = explode(',', $model->motivo_locacao);
-                                echo Select2::widget([
-                                    'name' => 'motivo_locacao',
-                                    'value' => $preselect, // initial value
-                                    'data' => $docs_escolha,
-                                    'maintainOrder' => true,
-                                    'options' => [
-                                        'placeholder' => 'Selecione', 
-                                        'multiple' => true
-                                    ],
-                                    'pluginOptions' => [
-                                        'tags' => false,
-                                        'maximumInputLength' => 20
-                                    ],
-                                ]);
-                                echo '<br>';
-                                echo Html::submitButton('Confirmar  <i class="fas fa-angle-double-right"></i>', [
-                                    'class' => 'btn btn-primary btn-destaque', 
-                                    'style'=>'font-weight: bolder'
-                                ]);
-                                ActiveForm::end();
-                                echo '<div class="clearfix"></div>';
-                                Modal::end();
-                            endif;
-                        ?>
-                        <?php if($model->tipo == "Credpago"): ?>
-                            <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=2&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '2' ? 'primary' : 'default')?>">Precisa de Co-responsável</a>
-                        <?php endif; ?>
-                        <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=3&id='.$model->id ?>" class="btn btn-<?=($model->opcoes == '3' ? 'primary' : 'default')?>">Reprovado</a>
+                            <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprop?resposta=0&etapa=3&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
+                            <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=1&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '1' ? 'primary' : 'default')?>">Pendenciado</a>
+                            <?php 
+                                // Modal aqui
+                                if ($model->opcoes == '1' and $model->tipo == "Seguro Fiança"):
+                                    Modal::begin([
+                                        // 'header' => 'Definir Documentos',
+                                        'size' => 'modal-md',
+                                        'toggleButton' => [
+                                            'label' => '<i class="fa fa-check-square"></i> Docs',
+                                            'class' => 'btn-atividade-etapa-2 btn btn-success',
+                                            'style' => 'font-weight: bolder',
+                                        ]
+                                    ]);
+                                    echo "<h3><center>Definir Documentos</center></h3>";
+                                    $docs_escolha = [
+                                        'CPF' => 'CPF',
+                                        'RG (frente)' => 'RG (frente)',
+                                        'RG (verso)' => 'RG (verso)',
+                                        'Extrato bancário' => 'Extrato bancário',
+                                        'Imposto de renda (completo)' => 'Imposto de renda (completo)',
+                                        'Comprovante de endereço' => 'Comprovante de endereço',
+                                        'Carteira de trabalho (registro do emprego)' => 'Carteira de trabalho (registro do emprego)',
+                                        'Extrato INSS' => 'Extrato INSS',
+                                    ];
+                                    $form = ActiveForm::begin([
+                                        'options' => [
+                                        ],
+                                        'action' => [
+                                            'definedocs',
+                                            'id' => $model->id
+                                        ]
+                                    ]);
+                                    $preselect = explode(',', $model->motivo_locacao);
+                                    echo Select2::widget([
+                                        'name' => 'motivo_locacao',
+                                        'value' => $preselect, // initial value
+                                        'data' => $docs_escolha,
+                                        'maintainOrder' => true,
+                                        'options' => [
+                                            'placeholder' => 'Selecione', 
+                                            'multiple' => true
+                                        ],
+                                        'pluginOptions' => [
+                                            'tags' => false,
+                                            'maximumInputLength' => 20
+                                        ],
+                                    ]);
+                                    echo '<br>';
+                                    echo Html::submitButton('Confirmar  <i class="fas fa-angle-double-right"></i>', [
+                                        'class' => 'btn btn-primary btn-destaque', 
+                                        'style'=>'font-weight: bolder'
+                                    ]);
+                                    ActiveForm::end();
+                                    echo '<div class="clearfix"></div>';
+                                    Modal::end();
+                                endif;
+                            ?>
+                            <?php if($model->tipo == "Credpago"): ?>
+                                <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=2&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '2' ? 'primary' : 'default')?>">Precisa de Co-responsável</a>
+                            <?php endif; ?>
+                            <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=3&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '3' ? 'primary' : 'default')?>">Reprovado</a>
                         <?php else: ?>
-                        <?php 
-                            switch ($model->opcoes) {
-                                case '0': $resultado_analise_feita = 'Não há pendências'; break;
-                                case '1': $resultado_analise_feita = 'Precisa de fatura'; break;
-                                case '2': $resultado_analise_feita = 'Precisa de Co-responsável'; break;
-                                case '3': $resultado_analise_feita = 'Reprovado'; break;
-                                default: $resultado_analise_feita = 'A verificar'; break;
-                            }    
-                        ?>
-                        <label for=""><strong>Resultado da Análise: </strong><?=$resultado_analise_feita?></label>
+                            <?php 
+                                switch ($model->opcoes) {
+                                    case '0': $resultado_analise_feita = 'Não há pendências'; break;
+                                    case '1': $resultado_analise_feita = 'Precisa de fatura'; break;
+                                    case '2': $resultado_analise_feita = 'Precisa de Co-responsável'; break;
+                                    case '3': $resultado_analise_feita = 'Reprovado'; break;
+                                    default: $resultado_analise_feita = 'A verificar'; break;
+                                }    
+                            ?>
+                            <label for=""><strong>Resultado da Análise: </strong><?=$resultado_analise_feita?></label>
                         <?php endif; ?>
                     </div>
-                    <br />
-                    <br />
-                    <br />
                     <div class="clearfix"></div>
-                    <div class="col-md-12">
+                    <br />
+                    <br />
+                    <div class="col-md-12 estilo-card-caixa">
                         <?php 
                             $url = 'https://alugadigital.com.br/'.$linkcp;
                             // $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
@@ -659,6 +625,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                         ?>
                         
                         <center>
+                            <h3 style="text-align: center"><strong>Avisos e Url de Acompanhamento</strong></h3>
                             <br>
                             <label for=""><strong>Url original: </strong>
                                 <?= "<a href='$url' target='blanck'>$url</a>"; ?>
@@ -732,103 +699,10 @@ $this->params['breadcrumbs'][] = 'Editar';
                             <?= '<br>Já foram feitos '.count($disparos_email).' disparo(s) de email dessa Etapa!'; ?>
                         </center>
                     </div>
-                    <div class="col-md-12">
-                        <hr>
-                        
-                        <?php if ($model->etapa_andamento >= 4) : ?>
-                            <div class="col-md-3"></div>
-                            <div class="col-md-6" style="text-align: center !important;">
-                                <h4><strong>Cadastrar essas Informações no Superlógica</strong></h4>
-                                <?php
-                                $superlogica = app\models\Superlogica::find()->where([
-                                    'id_proposta' => $model->id
-                                ])->one();
-                                if ($superlogica):
-
-                                    $estilos_links_superlogica = [
-                                        'color' => 'darkgreen',
-                                        'text-align' => 'center !important',
-                                        'border' => '1px solid'
-                                    ];
-
-                                    echo '<h4><strong>Registro já encontra-se no Superlógica, deseja editar?</strong></h4>';
-                                    
-                                    echo Html::a('Proprietário: '.$superlogica->id_sl_proprietario,
-                                        'https://apps.superlogica.net/imobiliaria/proprietarios/id/'.$superlogica->id_sl_proprietario
-                                    , [
-                                        'target'=>'_blank', 
-                                        'class' => 'btn btn-link',
-                                        'style' => $estilos_links_superlogica,
-                                        'title' => 'Ver no Superlógica'
-                                    ]);
-                                    echo Html::a('Imóvel: '.$superlogica->id_sl_imovel, 
-                                        'https://apps.superlogica.net/imobiliaria/imoveis/id/'.$superlogica->id_sl_imovel
-                                    , [
-                                        'target'=>'_blank', 
-                                        'class' => 'btn btn-link',
-                                        'style' => $estilos_links_superlogica,
-                                        'title' => 'Ver no Superlógica'
-                                    ]);
-                                    echo Html::a('Locatário: '.$superlogica->id_sl_locatario, 
-                                        'https://apps.superlogica.net/imobiliaria/locatarios/id/'.$superlogica->id_sl_locatario
-                                    , [
-                                        'target'=>'_blank', 
-                                        'class' => 'btn btn-link',
-                                        'style' => $estilos_links_superlogica,
-                                        'title' => 'Ver no Superlógica'
-                                    ]);
-                                    echo Html::a('Contrato: '.$superlogica->id_sl_contrato, 
-                                        'https://apps.superlogica.net/imobiliaria/contratos/id/'.$superlogica->id_sl_contrato
-                                    , [
-                                        'target'=>'_blank', 
-                                        'class' => 'btn btn-link',
-                                        'style' => $estilos_links_superlogica,
-                                        'title' => 'Ver no Superlógica'
-                                    ]);
-                                else:
-                                Modal::begin([
-                                    'size' => 'modal-lg',
-                                    'toggleButton' => [
-                                        'label' => '<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Cadastro Completo',
-                                        'class' => 'btn btn-primary',
-                                        'style' => 'font-weight: bolder'
-                                    ]
-                                ]);
-                                ?>
-                                <?php
-                                    // echo Html::a('<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Proprietário e Imóvel',  ['proposta/addtosuperlogica', 'id' => $model->id], [
-                                    //     'class' => 'btn btn-primary',
-                                    //     'style' => 'width: 100%',
-                                    //     'onClick' => '
-                                    //         $("body").css("cursor", "wait");
-                                    //         $(this).css("cursor", "wait");
-                                    //         $("#progressando").show();
-                                    //         // $(this).addAttribute(\'disabled\');
-                                    //         $(this).addClass(\'disabled\');
-                                    //     '
-                                    // ]);
-                                    // MODAL DO SUPERLOGICS CONTEUDO
-                                    // echo $this->render('_superlogica', [
-                                    //     'model' => $model,
-                                    // ]);
-                                ?>
-                                <?php Modal::end(); ?>
-                                <?php endif; ?>
-                                <br />
-                                <br />
-                                <div id="progressando" style="display: none">
-                                    <?php
-                                        
-                                        echo '<div class="">';
-                                        echo Spinner::widget(['preset' => 'large', 'align' => 'center']);
-                                        echo '<div class="clearfix"></div>';
-                                        echo '</div>';
-                                        ?>
-                                </div>
-                            </div>
-                            <div class="col-md-3"></div>
-                        <?php endif; ?>
-                        <?php if ($model->apibotsubs == ''): ?>
+                    
+                    <?php if ($model->apibotsubs == ''): ?>
+                        <div class="col-md-12">
+                            <hr>
                             <div class="col-md-12">
                                 <div class="col-md-3"></div>
                                 <div class="col-md-6" style="text-align: center !important;">
@@ -847,8 +721,8 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     <!-- <button id="retorna_subscriber" class="btn btn-success" style='font-weight: bolder; font-size: 20px'><i class="fa fa-whatsapp"></i> Retorna Cliente</button> -->
                                 </div>
                             </div>
-                        <?php endif; ?>
-                    </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="col-md-12"></div>
                 <!-- <div class="col-md-6"></div> -->
@@ -915,7 +789,7 @@ $this->params['breadcrumbs'][] = 'Editar';
     <!-- <hr> -->
     <div class="clearfix"></div>
     <?php 
-        $msg_whats.= $bitly->debug()."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
+        $msg_whats.= "Acompanhe aqui seu processo 👉 ".$bitly->debug()."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
         if ((int)$model->etapa_andamento == 2) {
             $caminho_da_volta = Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'_'.$model->opcoes.'.png';
         } else {
@@ -989,7 +863,6 @@ $this->params['breadcrumbs'][] = 'Editar';
                 $.ajax(settings).done(function (response) {
                     console.log(response);
                     if(response == 1 || response == '1') {
-                        alert('Mensagem enviada com sucesso!');
                         $.ajax({
                             'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
                             'method': 'POST',
@@ -1003,10 +876,11 @@ $this->params['breadcrumbs'][] = 'Editar';
                                 'status': '{$model->opcoes}'
                             }
                         });
-                        // document.location.reload(true);
+                        createAutoClosingAlert('Mensagem enviada com sucesso!', 2000);
+                        document.location.reload(true);
                     } else {
-                        alert('Ocorreu algum erro no json:' + response.result);
                         console.log(response);
+                        document.location.reload(true);
                     }
                 });
             });
@@ -1107,7 +981,7 @@ $this->params['breadcrumbs'][] = 'Editar';
             echo Tabs::widget([
                 'items' => [
                     [
-                        'label' => 'Informações do Imóvel',
+                        'label' => '🏠 Informações do Imóvel',
                         'content' => 
                         // '<img src="'.Yii::$app->homeUrl.'img/construcao.jpg" alt="">'
                         '<div style="background-color: white !important">'.
@@ -1115,24 +989,28 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     'model' => $model,
                                 ]).
                             '</div>',
-                        'active' => true
+                        'active' => false
                     ],
                     [
-                        'label' => 'Registro: Pretendente',
+                        'label' => '👤 Registro: Pretendente',
                         'content' => '<div style="background-color: white !important">'.
                         $this->render('proponente', [
                             'model' => $model,
                             'id' => $id,
                         ]).
                         '</div>',
-                        'active' => false 
+                        'active' => true 
                     ],
                     [
-                        'label' => 'Operações',
-                        'content' => "Botões de exportação aqui",
+                        'label' => '⚙️ Operações no registro',
+                        'content' => '<div style="background-color: white !important">'.
+                            $this->render('_operacoes', [
+                                'model' => $model,
+                            ]).
+                        '</div>',
                     ],
                     [
-                        'label' => 'Histórico',
+                        'label' => '🕛 Histórico',
                         'content' => $this->render('timeline', [
                             'model' => $model,
                             'pretendente_id' => $model->id,
@@ -1155,19 +1033,6 @@ $this->params['breadcrumbs'][] = 'Editar';
         ?>
     </div>
     <div class="clearfix"></div>
-    <hr>
-    <div class="col-md-12">
-        <div class="col-md-6">
-            <div class="col-md-12" style="text-align: center !important; box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%); padding: 2%">
-                <h3><strong>Gerar PDF</strong></h3>
-                <p>
-                    <label>Informações do Imóvel, da proposta e do proponente. Inclui documentos.</label>
-                </p>
-                <a href="<?=Yii::$app->homeUrl.'proposta/report?id='.$model->id?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-                <i style="font-size: 20px; padding: 5px;" class="fa fa-file"></i> Gerar Documento PDF
-                </a>
-            </div>
-        </div>
-    </div>
+    <!-- <hr> -->
 </div>
 <?php //$this->endContent(); ?>
