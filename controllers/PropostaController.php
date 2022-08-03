@@ -2107,7 +2107,7 @@ class PropostaController extends Controller
         }
 
     }
-
+    // Pega o ID do subscrito NO Bootconversa
     public function actionApibotget() {
         
         $proposta = $_REQUEST['proposta'];

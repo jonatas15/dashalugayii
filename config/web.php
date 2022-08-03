@@ -72,6 +72,11 @@ $config = [
                     'class' => 'yii\rest\UrlRule',
                     'pluralize' => false,
                     'controller' => 'api\proprietario'
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'pluralize' => false,
+                    'controller' => 'api\botconversa'
                 ]
             ],
         ],
