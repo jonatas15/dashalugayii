@@ -1,11 +1,10 @@
 <?php
 
 namespace app\modules\api\controllers;
-
 use yii\rest\ActiveController;
-
 use app\models\SloProposta as Proposta;
-
+use app\models\Bitly;
+use app\models\Mail;
 /**
  * Default controller for the `api` module
  */
@@ -43,6 +42,7 @@ class BotconversaController extends ActiveController
         
         $nome = $_REQUEST['nome'];
         $idproposta = $_REQUEST['idproposta'];
+        $tipo = $_REQUEST['tipo'];
         $mensagem = $_REQUEST['mensagem'];
         $nome_arr = explode(' ', $nome);
         $primeiro_nome = $nome_arr[0];
@@ -108,6 +108,17 @@ class BotconversaController extends ActiveController
                 //Torna Objeto para captura dos dados
                 $output = json_decode($output);
                 $proposta = Proposta::find()->where(['id'=>$idproposta])->one();
+                // URL - geração única, boraaa
+                $complementando = '/'.$idproposta.'X'.$proposta->proprietario_info;
+                $url = 'https://alugadigital.com.br/'.($proposta->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').$complementando;
+                
+                //Gera a URL encurtada!
+                $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
+                $bitly->shorten($url);
+
+                // Mais dados de URL
+                $proposta->url = $url;
+                $proposta->shorturl = $bitly->debug();
                 $proposta->apibotsubs = $output->id;
                 $proposta->save();
                 break;
@@ -128,7 +139,7 @@ class BotconversaController extends ActiveController
                     "Ual! Ficamos felizes em conhecer você 😍 \n \n".
                     "A partir de agora seu cadastro está em análise! Em até 1 dia útil retornamos com o resultado 🙌 \n \n".
                     "Qualquer dúvida não hesite em nos contatar. 🤝 \n \n".
-                    "Acompanhe aqui seu processo 👉 link_aqui \n \n"."[*Mensagem automática da AlugaDigital*] 📢";
+                    "Acompanhe aqui seu processo 👉 {$proposta->shorturl} \n \n"."[*Mensagem automática da AlugaDigital*] 📢";
 
                 $arr_enviar = [
                     "type" => "text",
@@ -154,6 +165,7 @@ class BotconversaController extends ActiveController
                 }
 
                 curl_close($curl);
+                $this->atualizaremail($proposta);
                 // echo '<pre>';
                 // echo "$subscriberid";
                 // print_r($response);
@@ -200,5 +212,167 @@ class BotconversaController extends ActiveController
         .$fone_arr[3].$fone_arr[4].$fone_arr[5].$fone_arr[6]    //retiramos o arr[2] ou terceiro número, que é o nono dígito
         .$fone_arr[7].$fone_arr[8].$fone_arr[9].$fone_arr[10];
         return $telefone_para_api;
+    }
+    public function atualizaremail ($model) {
+        // $model = Proposta:($id);
+        
+        $texto_status = 'Em análise';
+        switch ($model->opcoes) {
+            case '0': $texto_status = 'Não há pendências'; break;
+            case '1': $texto_status = 'Precisa de fatura'; break;
+            case '2': $texto_status = 'Precisa de Co-responsável'; break;
+            case '3': $texto_status = 'Reprovado'; break;
+        }
+        
+        $titulo_email = "Cadastro recebido. Em análise.";
+        $textos_email = "<p>Ual! Ficamos felizes em conhecer você 😍 </p>
+            <p>A partir de agora seu cadastro está <strong>em análise</strong>! Em até 1 dia útil retornamos com o resultado 🙌 🤝 </p>
+            <p>Qualquer dúvida não hesite em nos contatar.</p>";
+        if ($model->tipo == "Credpago") {
+            $credpagoouseg = "Credpago";
+        } else {
+            $credpagoouseg = "Seguradora";
+        }
+        if ($model->etapa_andamento >= 1):
+            switch ($model->opcoes) {
+                case '0':
+                    $titulo_email = "Tudo certo! 👏🙌";
+                    $textos_email = "
+                        <p>
+                        Nossa equipe vai começar a redigir seu contrato! 
+                        </p>
+                        <p>
+                        ⭐ Em até 24 horas seu contrato estará disponível para assinatura digital.
+                        </p>
+                        <p>                
+                        ⭐ Após assinado você já pode preparar sua mudança. Entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato).</p>
+                        <p>
+                        Viu só? tudo digital, rápido e sem burocracia né?! 😉
+                        </p>";
+                    break;
+                case '1':
+                    $titulo_email = "Opa! Cadastro com pendências. 😕";
+                    $textos_email = "
+                        <p>
+                        A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir seu processo através do botão abaixo.
+                        <br>
+                        Qualquer dúvida estamos aqui à sua disposição! 😉
+                        </p>";
+                    break;
+                case '2':
+                    $titulo_email = "Opa! Cadastro com pendências. 😕";
+                    $textos_email = "
+                        <p>
+                        A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir seu processo através do botão abaixo.
+                        <br>
+                        Qualquer dúvida estamos aqui à sua disposição! 😉
+                        </p>";
+                    break;
+                case '3':
+                    $titulo_email = "Ops, cadastro não aprovado 😕";
+                    $textos_email = "
+                        <strong>Não desanime!</strong><br>
+                        Nossa equipe de locações em breve fará contato contigo para melhor lhe atender! 😉
+                        </p>";
+                    break;
+            }
+        endif;
+        switch ($model->etapa_andamento) {
+            case '3':
+                $titulo_email = "Cadastro APROVADO 🥳";
+                $textos_email = "
+                    <p>
+                    Que felicidade 🙌😄 seu cadastro está aprovadíssimooo! 
+                    </p><p>
+                    Para finalizar precisamos de mais alguns dados, prometo que vai ser rápido. Favor acesse seu processo através do botão abaixo.
+                    </p><p>                    
+                    Qualquer dúvida estamos aqui à sua disposição! 😉
+                    </p>";
+                break;
+            case '4':
+                $titulo_email = "Tudo certo! 👏🙌";
+                $textos_email = "
+                    <p>
+                    Após sua confirmação, nossa equipe vai começar a redigir seu contrato! 
+                    </p>
+                    <p>
+                    ⭐ Em até 24 horas seu contrato estará disponível para assinatura digital.
+                    </p>
+                    <p>                
+                    ⭐ Após assinado, você já pode preparar sua mudança, entregaremos as chaves do seu imóvel em até 
+                    2 dias úteis (após assinatura do contrato).</p>
+                    <p>
+                    Viu só? tudo digital, rápido e sem burocracia né?! 😉
+                    </p>";
+                break;
+            case '5':
+                $titulo_email = "Contrato pronto para assinatura!";
+                $textos_email = "
+                    <p>
+                    Chegou a hora de você assinar seu contrato digital. Em breve você estará morando no seu novo imóvel 😊
+                    <p></p>
+                    Clique no botão abaixo para proceder com a assinatura.
+                    <p>
+                    Viu só? tudo digital, rápido e sem burocracia né?! 😉
+                    </p>";
+                break;
+            case '6':
+                $titulo_email = "Vistoria em andamento";
+                $textos_email = "
+                    <p>
+                    Parabéns 👏  seu contrato foi assinado com sucesso!
+                    <p></p>
+                    Agora é só aguardar a vistoria de entrada. Em até 2 dias úteis as chaves do seu novo imóvel estará disponível para retirada. 
+                    <p></p>
+                    Não se preocupe! Vamos lhe avisar assim que disponível.
+                    </p>";
+                break;
+        }
+
+        $msg = '<center>';
+        $msg.= "<h2>$titulo_email</h2>";
+        $msg.= '<hr>';
+        $msg.= '<p>';
+        // $msg.= 'Etapa: "<strong>'.$model->etapa_andamento.'</strong>"';
+        // $msg.= '</p>';
+        // $msg.= '<p>';
+        // $msg.= 'Status da negociação 😀: "'.$texto_status.'"';
+        $msg.= "<p>$textos_email</p>";
+        $msg.= '</p>';
+
+        $msg.= '<p>';
+        $msg.= '<a style="cursor: pointer" href="'.$model->shorturl.'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
+        $msg.= '<br /><br />Ou acesse "<a href="'.$model->shorturl.'">'.$model->shorturl.'</a>"';
+        $msg.= '</p>';
+        $msg.= '<img src="https://alugadigital.com.br/img/AlugaDigital-02.png" width="100">';
+        $msg.= '</center>';
+            
+        $assunto = $titulo_email;    
+            
+
+        // echo $assunto;
+        // echo '<br>';
+        // echo $msg;
+        // exit();
+
+        $mododisparo = [
+            'assinatura' => 'AlugaDigital <atendimento@alugadigital.com>'
+        ];
+
+        if(Mail::send($model->email, $assunto, $msg, $mododisparo)){
+            $alerta_enviado .= "Sucesso: Atualização enviada para {$usuario->nome} - {$usuario->email} <br>";//'enviou!';                            
+            // echo $model->email;
+            // exit();
+            $disparo = new \app\models\Historicodedisparos();
+            $disparo->data = date('Y-m-d h:i:s');
+            $disparo->proposta_id = $model->id;
+            $disparo->mensagem = utf8_encode($msg.'<p>Mensagem enviada para '.$model->email.'</p>');
+            $disparo->usuario_id = 1;
+            $disparo->etapa = $model->etapa_andamento;
+            $disparo->modo = 'email';
+
+            $disparo->save();
+
+        }
     }
 }

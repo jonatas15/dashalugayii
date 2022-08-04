@@ -3,17 +3,9 @@
 ################################################################################################
 ######################################## TOME NOTA!!! ##########################################
 /**
- * ATUALIZAR DADOS DO IMÓVEL PELO CÓDIGO NO PRIMEIRO ACESSO, CONFERINDO IMOVEL_INFO CASO VAZIO
- * AJUSTAR TABELA DA HOME
- * ADD ABA, OU ÁREA AQUI EM IMÓVEL, PARA RECEBER DADOS DO PROPRIETÁRIO
- * CRIAR FORMULÁRIO DO PROPRIETÁRIO PELO SITE ALUGA
- * REPLICAR O QUE PUDER PARA O CREDPAGO...
- * AJUSTAR DASH PROPRIETARIOS - VERSÃO 1
+ * 
  # ######################################## FALTA ##############################################
- * ADD ENVIO AO SUPERLÓGICA, SEI QUE TEM COMO, SÓ VER ESSE COMO E JÁ ERAS
- * ADD CAMPO PARA O CÓDIGO DO D4SIGN
- * AJUSTAR DASH PROPRIETARIOS - VERSÃO COMPLETA
- * Completar CREDPAGO (formulários)
+ * 
  */
 ################################################################################################
 ################################################################################################
@@ -175,10 +167,12 @@ $imoveis = $this->context->retorna_imoveis();
                                 $("#infoimovel_condominio").text(response.condominio);
                                 $("#infoimovel_codigo").text(response.codigo);
                                 $("#imagem-imovel-aqui").attr("src",response.imagem);
-                                $("#mostrador-imovel-codigo").content(response.codigo);
-                                $("#mostrador-imovel-endereco").content(response.endereco);
-                                $("#mostrador-imovel-aluguel").content(response.aluguel);
-                                $("#mostrador-imovel-dormitorios").content(response.dormitorios);
+                                $("#mostrador-imovel-codigo span").text(response.codigo);
+                                $("#mostrador-imovel-endereco span").text(response.endereco);
+                                $("#mostrador-imovel-aluguel span").text(response.aluguel);
+                                $("#mostrador-imovel-dormitorios span").text(response.dormitorios);
+
+                                document.location.reload(true);
 
                                 // console.log(response.aluguel);
 
@@ -291,10 +285,10 @@ $imoveis = $this->context->retorna_imoveis();
                 echo '<img src="'.$model_infoimovel['imagem'].'" id="imagem-imovel-aqui">';
             }
         ?>
-        <h3 id="mostrador-imovel-codigo"><strong>Código: <?=$model_infoimovel['codigo']?></strong></h3>
-        <h4 id="mostrador-imovel-endereco"><strong>Endereço: <?=$model_infoimovel['endereco'].' - '.$model_infoimovel['numero']?></strong></h4>
-        <h4 id="mostrador-imovel-aluguel"><strong>Valor de Locação: R$<?=number_format($model_infoimovel['aluguel'],2,",",".")?></strong></h4>
-        <h4 id="mostrador-imovel-dormitorios"><strong>Dormitórios: <?=$model_infoimovel['dormitorios']?></strong></h4>
+        <h3 id="mostrador-imovel-codigo"><strong>Código: <span><?=$model_infoimovel['codigo']?></span></strong></h3>
+        <h4 id="mostrador-imovel-endereco"><strong>Endereço: <span><?=$model_infoimovel['endereco'].' - '.$model_infoimovel['numero']?></span></strong></h4>
+        <h4 id="mostrador-imovel-aluguel"><strong>Valor de Locação: R$<span><?=number_format($model_infoimovel['aluguel'],2,",",".")?></span></strong></h4>
+        <h4 id="mostrador-imovel-dormitorios"><strong>Dormitórios: <span><?=$model_infoimovel['dormitorios']?></span></strong></h4>
         </center>
     </div>
     <div class="col-md-6 hidden" style="text-align: center">

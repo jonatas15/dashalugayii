@@ -75,7 +75,9 @@ use kartik\spinner\Spinner;
     $model_imovelinfo_ = json_decode($model->imovel_info);
     if (empty($model_imovelinfo_) or $model_imovelinfo_ == "") {
         echo '<span>Imóvel não definido/atualize a página</span>';
-        $this->context->cadastraimovelupdate($model->id, $model->codigo_imovel);
+        if($this->context->cadastraimovelupdate($model->id, $model->codigo_imovel)) {
+            echo '<script>document.location.reload(true);</script>';
+        }
     }
 
     // $msg_whats = "Teste de Msg\\n_Italico_ \\n*negrito*\\n~tachado~\\n```Monoespaçado```\\n😜";
@@ -431,8 +433,6 @@ $this->params['breadcrumbs'][] = 'Editar';
                         default: $etapa_atual = '0%';   break;
                     }
                 }
-                $complementando = '/'.$model->id.'X'.$model->proprietario_info;
-                $linkcp = ($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').''.$complementando;
             ?>
 
             <div class="progress" style="width: 101%">
@@ -617,21 +617,14 @@ $this->params['breadcrumbs'][] = 'Editar';
                     <br />
                     <br />
                     <div class="col-md-12 estilo-card-caixa">
-                        <?php 
-                            $url = 'https://alugadigital.com.br/'.$linkcp;
-                            // $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
-                            $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
-                            $bitly->shorten($url);
-                        ?>
-                        
                         <center>
                             <h3 style="text-align: center"><strong>Avisos e Url de Acompanhamento</strong></h3>
                             <br>
                             <label for=""><strong>Url original: </strong>
-                                <?= "<a href='$url' target='blanck'>$url</a>"; ?>
+                                <?= "<a href='$url' target='blanck'>$model->url</a>"; ?>
                             </label><br>
                             <!-- The text field -->
-                            <input type="text" value="<?=$bitly->debug()?>" id="myInput" style="width: 50%">
+                            <input type="text" value="<?=$model->shorturl?>" id="myInput" style="width: 50%">
                             <!-- The button used to copy the text -->
                             <button onclick="myFunction()">Copiar URL</button>
                             <br />
@@ -660,7 +653,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     ]
                                 ]);
                                 $msg_html2 = '<p>';
-                                $msg_html2.= '<br /><br />"Acompanhe seu processo: <a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
+                                $msg_html2.= '<br /><br />"Acompanhe seu processo: <a href="'.$model->shorturl.'">'.$model->shorturl.'</a>"';
                                 $msg_html2.= '</p>';
                                 $msg_html2.= '</center>';
                                 $msg_htmlW = str_replace('botão', 'link', $msg_html);
@@ -684,8 +677,8 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     // ]
                                 ]);
                                 $msg_html3 = '<p>';
-                                $msg_html3.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
-                                $msg_html3.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
+                                $msg_html3.= '<a style="cursor: pointer" href="'.$model->shorturl.'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
+                                $msg_html3.= '<br /><br />Ou acesse "<a href="'.$model->shorturl.'">'.$model->shorturl.'</a>"';
                                 $msg_html3.= '</p>';
                                 $msg_html3.= '<img src="https://alugadigital.com.br/img/AlugaDigital-02.png" width="100">';
                                 $msg_html3.= '</center>';
@@ -789,7 +782,7 @@ $this->params['breadcrumbs'][] = 'Editar';
     <!-- <hr> -->
     <div class="clearfix"></div>
     <?php 
-        $msg_whats.= "Acompanhe aqui seu processo 👉 ".$bitly->debug()."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
+        $msg_whats.= "Acompanhe aqui seu processo 👉 ".$model->shorturl."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
         if ((int)$model->etapa_andamento == 2) {
             $caminho_da_volta = Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'_'.$model->opcoes.'.png';
         } else {

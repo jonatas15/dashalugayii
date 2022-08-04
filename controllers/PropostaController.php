@@ -1091,6 +1091,8 @@ class PropostaController extends Controller
         // $json_imoveis = $this->get_content('http://www.jetimob.com/services/tZuuHuri8Q3ohAf7cvmMm8hTmWrXKJoEdes8ViSi/imoveis/',864000);
         $imoveis = json_decode($json_imoveis);
         $imovel = array();
+
+        $retorno = false;
         foreach ($imoveis as $e) {
             if ($e->codigo == $codigo && $e->contrato != 'Compra') {
 
@@ -1109,6 +1111,8 @@ class PropostaController extends Controller
                 $imovel['codigo'] = $e->codigo;
                 $imovel['imagem'] = $e->imagens[0]->link_thumb;
 
+                $retorno = true;
+
                 break;
             }
         }
@@ -1117,7 +1121,8 @@ class PropostaController extends Controller
         $atualizar = SloProposta::findOne($id);
         $atualizar->imovel_info = $dados_do_imovel;
         $atualizar->save();
-
+        
+        return $retorno;
     }
     // Retorna o Imóvel
     public function actionRetornaimovel(){
@@ -2042,7 +2047,7 @@ class PropostaController extends Controller
         /subscriber/{subscriber_id}/send_message/
         */
     }
-                    //    apibotsubscriber
+    // apibotsubscriber
     public function actionApibotsubscriber() {
         // MySql
         // alter table slo_proposta add apibotsubs int after id;
