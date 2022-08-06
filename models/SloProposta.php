@@ -268,7 +268,14 @@ class SloProposta extends \yii\db\ActiveRecord
             'etapa_andamento',
             'motivo_locacao',
             'codigo',
-            'codigo_imovel'
+            'codigo_imovel',
+            'recebeu_ultimafatura' => function(SloProposta $model) {
+                if ($model->maisarquivos->ultima_fatura) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         ];
     }
 }
