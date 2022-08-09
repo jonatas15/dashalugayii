@@ -156,16 +156,16 @@ $imoveis = $this->context->retorna_imoveis();
                                     },
                                 });
 
-                                $("#infoimovel_numero").text(response.numero);
-                                $("#infoimovel_bairro").text(response.bairro);
-                                $("#infoimovel_cidade").text(response.cidade);
-                                $("#infoimovel_estado").text(response.estado);
-                                $("#infoimovel_cep").text(response.cep);
-                                $("#infoimovel_dormitorios").text(response.dormitorios);
-                                $("#infoimovel_aluguel").text(response.aluguel);
-                                $("#infoimovel_iptu").text(response.iptu);
-                                $("#infoimovel_condominio").text(response.condominio);
-                                $("#infoimovel_codigo").text(response.codigo);
+                                $("#td_infoimovel_numero").text(response.numero);
+                                $("#td_infoimovel_bairro").text(response.bairro);
+                                $("#td_infoimovel_cidade").text(response.cidade);
+                                $("#td_infoimovel_estado").text(response.estado);
+                                $("#td_infoimovel_cep").text(response.cep);
+                                $("#td_infoimovel_dormitorios").text(response.dormitorios);
+                                $("#td_infoimovel_aluguel").text(response.aluguel);
+                                $("#td_infoimovel_iptu").text(response.iptu);
+                                $("#td_infoimovel_condominio").text(response.condominio);
+                                $("#td_infoimovel_codigo").text(response.codigo);
                                 $("#imagem-imovel-aqui").attr("src",response.imagem);
                                 $("#mostrador-imovel-codigo span").text(response.codigo);
                                 $("#mostrador-imovel-endereco span").text(response.endereco);
@@ -188,19 +188,19 @@ $imoveis = $this->context->retorna_imoveis();
                     <?php ActiveForm::end(); ?>    
                 </div>
                 <table class="kv-grid-table table table-bordered table-striped kv-table-wrap">
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Código:</td><td id="infoimovel_codigo"><?=$model_infoimovel['codigo']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Tipo:</td><td id="infoimovel_tipo"><?=$model_infoimovel['subtipo']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Endereço:</td><td id="infoimovel_endereco"><?=$model_infoimovel['endereco']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Número:</td><td id="infoimovel_numero"><?=$model_infoimovel['numero']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Bairro:</td><td id="infoimovel_bairro"><?=$model_infoimovel['bairro']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Cidade:</td><td id="infoimovel_cidade"><?=$model_infoimovel['cidade']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Estado:</td><td id="infoimovel_estado"><?=$model_infoimovel['estado']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Cep:</td><td id="infoimovel_cep"><?=$model_infoimovel['cep']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Dormitorios:</td><td id="infoimovel_dormitorios"><?=$model_infoimovel['dormitorios']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Aluguel:</td><td id="infoimovel_aluguel"><?=$model_infoimovel['aluguel']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Iptu:</td><td id="infoimovel_iptu"><?=$model_infoimovel['iptu']?></td></tr>
-                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Condominio:</td><td id="infoimovel_condominio"><?=$model_infoimovel['condominio']?></td></tr>
-                    <tr style="font-size: 15px !important;display:none !important;"><td style="font-weight: bolder !important">Imagem:</td><td id="infoimovel_imagem"><?=$model_infoimovel['imagem']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Código:</td><td id="td_infoimovel_codigo"><?=$model_infoimovel['codigo']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Tipo:</td><td id="td_infoimovel_tipo"><?=$model_infoimovel['subtipo']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Endereço:</td><td id="td_infoimovel_endereco"><?=$model_infoimovel['endereco']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Número:</td><td id="td_infoimovel_numero"><?=$model_infoimovel['numero']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Bairro:</td><td id="td_infoimovel_bairro"><?=$model_infoimovel['bairro']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Cidade:</td><td id="td_infoimovel_cidade"><?=$model_infoimovel['cidade']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Estado:</td><td id="td_infoimovel_estado"><?=$model_infoimovel['estado']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Cep:</td><td id="td_infoimovel_cep"><?=$model_infoimovel['cep']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Dormitorios:</td><td id="td_infoimovel_dormitorios"><?=$model_infoimovel['dormitorios']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Aluguel:</td><td id="td_infoimovel_aluguel"><?=$model_infoimovel['aluguel']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Iptu:</td><td id="td_infoimovel_iptu"><?=$model_infoimovel['iptu']?></td></tr>
+                    <tr style="font-size: 15px !important;"><td style="font-weight: bolder !important">Condominio:</td><td id="td_infoimovel_condominio"><?=$model_infoimovel['condominio']?></td></tr>
+                    <tr style="font-size: 15px !important;display:none !important;"><td style="font-weight: bolder !important">Imagem:</td><td id="td_infoimovel_imagem"><?=$model_infoimovel['imagem']?></td></tr>
                 </table>
 
                 <?php Card::end(); ?>

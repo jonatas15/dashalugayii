@@ -217,7 +217,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
             </div>
             <div class="col-md-12 divs-imovel">
                 <h3><strong>Dados do Imóvel</strong></h3><hr style="margin-top:0px;margin-bottom:0px !important;">
-                <?= $form->field($model, 'imoveis_jet')->widget(Select2::classname(), [
+                <?= $form->field($model, 'imoveis_jet_2')->widget(Select2::classname(), [
                     'data' => $imoveis,
                     'language' => 'pt',
                     'options' => [
@@ -255,7 +255,7 @@ $proprietario_ativo = \app\models\Proprietario::find()->where([
                             $("#infoimovel_condominio").val(response.condominio);
                             $("#infoimovel_codigo").val(response.codigo);
 
-                            // console.log(response.aluguel);
+                            console.log(response.codigo);
 
                         });'
                     ],

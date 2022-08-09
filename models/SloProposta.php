@@ -99,6 +99,7 @@ class SloProposta extends \yii\db\ActiveRecord
     public $imageFiles;
     public $ativo = false;
     public $imoveis_jet;
+    public $imoveis_jet_2;
 
     public static function tableName()
     {

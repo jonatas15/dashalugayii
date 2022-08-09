@@ -3,6 +3,7 @@ use yii\bootstrap\Modal;
 use kartik\checkbox\CheckboxX;
 use kartik\select2\Select2;
 use kartik\spinner\Spinner;
+use yii\helpers\Html;
 ?>
 
 <div class="col-md-12">
@@ -74,6 +75,9 @@ use kartik\spinner\Spinner;
                 else:
                 Modal::begin([
                     'size' => 'modal-lg',
+                    'options' => [
+                        'tabindex' => false,
+                    ],
                     'toggleButton' => [
                         'label' => '<i style="" class="fa fa-gear"></i> SUPERLÓGICA: Cadastro Completo',
                         'class' => 'btn btn-primary',
@@ -94,9 +98,9 @@ use kartik\spinner\Spinner;
                     //     '
                     // ]);
                     // MODAL DO SUPERLOGICS CONTEUDO
-                    // echo $this->render('_superlogica', [
-                    //     'model' => $model,
-                    // ]);
+                    echo $this->render('_superlogica', [
+                        'model' => $model,
+                    ]);
                 ?>
                 <?php Modal::end(); ?>
                 <?php endif; ?>

@@ -149,6 +149,19 @@ class PropostaController extends Controller
         'verso_documento',
         'selfie_com_documento',
         'outros_comprovantes',
+        'tipo',
+        'corresponsavel'
+    ];
+    public $arr_campos__conj = [
+        'conj_email',
+        'conj_cpf',
+        'conj_documento_tipo',
+        'conj_documento_numero',
+        'conj_nacionalidade',
+        'conj_data_nascimento',
+        'conj_telefone_celular',
+        'conj_profissao',
+        'conj_renda'
     ];
 
     public function behaviors()
@@ -1176,8 +1189,8 @@ class PropostaController extends Controller
         $url = 'https://alugadigital.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').$complementando;
         
         //Gera a URL encurtada!
-        $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
-        $bitly->shorten($url);
+        // $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
+        // $bitly->shorten($url);
         $titulo_email = "Cadastro recebido. Em análise.";
         $textos_email = "<p>Ual! Ficamos felizes em conhecer você 😍 </p>
             <p>A partir de agora seu cadastro está <strong>em análise</strong>! Em até 1 dia útil retornamos com o
@@ -1218,7 +1231,7 @@ class PropostaController extends Controller
                     $titulo_email = "Opa! Cadastro com pendências. 😕";
                     $textos_email = "
                         <p>
-                        A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir seu processo através do botão abaixo.
+                        A $credpagoouseg solicitou um co-responsável para dar seguimento no processo de análise do seu cadastro. Co-responsável é uma pessoa que vai participar junto do processo de locação com você (pode ser qualquer pessoa, familiar ou não, com idoneidade cadastral).
                         <br>
                         Qualquer dúvida estamos aqui à sua disposição! 😉
                         </p>";
@@ -1226,7 +1239,7 @@ class PropostaController extends Controller
                 case '3':
                     $titulo_email = "Ops, cadastro não aprovado 😕";
                     $textos_email = "
-                        <strong>Não desanime!</strong><br>
+                        <strong>Por algum motivo, seu cadastro não foi aprovado. Mas não desanime!</strong><br>
                         Nossa equipe de locações em breve fará contato contigo para melhor lhe atender! 😉
                         </p>";
                     break;
@@ -1237,18 +1250,22 @@ class PropostaController extends Controller
                 $titulo_email = "Cadastro APROVADO 🥳";
                 $textos_email = "
                     <p>
-                    Que felicidade 🙌😄 seu cadastro está aprovadíssimooo! 
-                    </p><p>
-                    Para finalizar precisamos de mais alguns dados, prometo que vai ser rápido. Favor acesse seu processo através do botão abaixo.
-                    </p><p>                    
-                    Qualquer dúvida estamos aqui à sua disposição! 😉
+                    Acesse o link {$model->shorturl} para completar seu cadastro. Após essa etapa nossa equipe vai começar a redigir seu contrato!!
+                    </p>
+                    <p>
+                    ⭐ Em até 24 horas seu contrato estará disponível para assinatura digital.
+                    </p>
+                    <p>                
+                    ⭐ Após assinado você já pode preparar sua mudança. Entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato).</p>
+                    <p>
+                    Viu só? tudo digital, rápido e sem burocracia né?! 😉
                     </p>";
                 break;
             case '4':
                 $titulo_email = "Tudo certo! 👏🙌";
                 $textos_email = "
                     <p>
-                    Após sua confirmação, nossa equipe vai começar a redigir seu contrato! 
+                    Nossa equipe vai começar a redigir seu contrato! 
                     </p>
                     <p>
                     ⭐ Em até 24 horas seu contrato estará disponível para assinatura digital.
@@ -1296,8 +1313,8 @@ class PropostaController extends Controller
         $msg.= '</p>';
 
         $msg.= '<p>';
-        $msg.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
-        $msg.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
+        $msg.= '<a style="cursor: pointer" href="'.$model->shorturl.'"><button style="cursor: pointer;background-color: white; color: black; font-weight: bolder; padding: 10px 20px; border: 5px solid black; border-radius: 0px;font-size: 20px">Acompanhe seu processo</button></a>';
+        $msg.= '<br /><br />Ou acesse "<a href="'.$model->shorturl.'">'.$model->shorturl.'</a>"';
         $msg.= '</p>';
         $msg.= '<img src="https://alugadigital.com.br/img/AlugaDigital-02.png" width="100">';
         $msg.= '</center>';
@@ -1324,6 +1341,7 @@ class PropostaController extends Controller
             $disparo->mensagem = utf8_encode($msg.'<p>Mensagem enviada para '.$model->email.'</p>');
             $disparo->usuario_id = Yii::$app->user->identity->id;
             $disparo->etapa = $model->etapa_andamento;
+            $disparo->status = $model->opcoes;
             $disparo->modo = 'email';
 
             $disparo->save();
@@ -1660,13 +1678,14 @@ class PropostaController extends Controller
             
             $i = 1;
                 foreach ($proposta as $key => $value) {
-                    if (!in_array($key,$this->arr_campos_retirados_docs_conj)):
+                    if (in_array($key,$this->arr_campos__conj)):
                         switch ($key) {
                             case 'conj_cpf': $valor = $this->format_doc($value,'cpf'); break;
                             case 'celular': $valor = $this->format_telefone($value); break;
                             case 'fone_celular': $valor = $this->format_telefone($value); break;
                             case 'fone_residencial': $valor = $this->format_telefone($value); break;
                             case 'data_nascimento': $valor = date('d/m/Y',strtotime($value)); break;
+                            case 'conj_data_nascimento': $valor = date('d/m/Y',strtotime($value)); break;
                             case 'data_expedicao': $valor = date('d/m/Y',strtotime($value)); break;
                             case 'genero': $valor = $value=='M'?'Masculino':'Feminino'; break;
                             case 'renda': $valor = 'R$ '.number_format($value, 2, ',', '.'); break;

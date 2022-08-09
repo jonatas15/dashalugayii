@@ -185,7 +185,7 @@ use kartik\spinner\Spinner;
                 $titulo_email = "Cadastro APROVADO 🥳";
                 $textos_email = "
                     <p>
-                    Acesse o link abaixo para completar seu cadastro. Após essa etapa nossa equipe vai começar a redigir seu contrato!!
+                    Acesse o link {$model->shorturl} para completar seu cadastro. Após essa etapa nossa equipe vai começar a redigir seu contrato!!
                     </p>
                     <p>
                     ⭐ Em até 24 horas seu contrato estará disponível para assinatura digital.
@@ -197,7 +197,7 @@ use kartik\spinner\Spinner;
                     </p>";
 
                     $msg_whats = "\\n*Cadastro APROVADO 🥳* \\n \\n";
-                    $msg_whats.= "Acesse o link abaixo para completar seu cadastro. Após essa etapa nossa equipe vai começar a redigir seu contrato!! \\n";
+                    $msg_whats.= "Acesse o link {$model->shorturl} para completar seu cadastro. Após essa etapa nossa equipe vai começar a redigir seu contrato!! \\n";
                     $msg_whats.= "⭐ Em até 24 horas seu contrato estará disponível para assinatura digital. \\n";
                     $msg_whats.= "⭐ Após assinado você já pode preparar sua mudança. Entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato). \\n \\n";
                     $msg_whats.= "Viu só? tudo digital, rápido e sem burocracia né?! 😉 \\n \\n";
