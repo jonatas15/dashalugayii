@@ -135,13 +135,13 @@ use kartik\spinner\Spinner;
                     $titulo_email = "Opa! Cadastro com pendências. 😕";
                     $textos_email = "
                         <p>
-                        A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir seu processo através do botão abaixo.
+                        A $credpagoouseg solicitou um co-responsável para dar seguimento no processo de análise do seu cadastro. Co-responsável é uma pessoa que vai participar junto do processo de locação com você (pode ser qualquer pessoa, familiar ou não, com idoneidade cadastral).
                         <br>
                         Qualquer dúvida estamos aqui à sua disposição! 😉
                         </p>";
 
                     $msg_whats = "\\n*Opa! Cadastro com pendências.* 😕 \\n \\n";
-                    $msg_whats.= "A $credpagoouseg solicitou mais alguns dados para completar sua análise. Favor acessar e conferir as observações do seu processo através do link abaixo. \\n \\n";
+                    $msg_whats.= "A $credpagoouseg solicitou um co-responsável para dar seguimento no processo de análise do seu cadastro. Co-responsável é uma pessoa que vai participar junto do processo de locação com você (pode ser qualquer pessoa, familiar ou não, com idoneidade cadastral). \\n \\n";
                     $msg_whats.= " Qualquer dúvida estamos aqui à sua disposição! 😉 \\n \\n";
                     break;
                 case '3':
@@ -185,10 +185,10 @@ use kartik\spinner\Spinner;
                 $titulo_email = "Cadastro APROVADO 🥳";
                 $textos_email = "
                     <p>
-                    Após sua confirmação, nossa equipe vai começar a redigir seu contrato! 
+                    Acesse o link abaixo para completar seu cadastro. Após essa etapa nossa equipe vai começar a redigir seu contrato!!
                     </p>
                     <p>
-                    ⭐ Em até 24 horas (após confirmação) seu contrato estará disponível para assinatura digital.
+                    ⭐ Em até 24 horas seu contrato estará disponível para assinatura digital.
                     </p>
                     <p>                
                     ⭐ Após assinado você já pode preparar sua mudança. Entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato).</p>
@@ -197,9 +197,9 @@ use kartik\spinner\Spinner;
                     </p>";
 
                     $msg_whats = "\\n*Cadastro APROVADO 🥳* \\n \\n";
-                    $msg_whats.= "Após sua confirmação, nossa equipe vai começar a redigir seu contrato! \\n";
-                    $msg_whats.= "⭐ Em até 24 horas (após confirmação) seu contrato estará disponível para assinatura digital. \\n";
-                    $msg_whats.= "⭐ Após assinado você já pode preparar sua mudança. Entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato). \\n";
+                    $msg_whats.= "Acesse o link abaixo para completar seu cadastro. Após essa etapa nossa equipe vai começar a redigir seu contrato!! \\n";
+                    $msg_whats.= "⭐ Em até 24 horas seu contrato estará disponível para assinatura digital. \\n";
+                    $msg_whats.= "⭐ Após assinado você já pode preparar sua mudança. Entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato). \\n \\n";
                     $msg_whats.= "Viu só? tudo digital, rápido e sem burocracia né?! 😉 \\n \\n";
 
                 break;
@@ -207,10 +207,10 @@ use kartik\spinner\Spinner;
                 $titulo_email = "Tudo certo! 👏🙌";
                 $textos_email = "
                     <p>
-                    Após sua confirmação, nossa equipe vai começar a redigir seu contrato! 
+                    Nossa equipe vai começar a redigir seu contrato!
                     </p>
                     <p>
-                    ⭐ Em até 24 horas seu contrato estará disponível para assinatura digital.
+                    ⭐ Em até 24 horas seu contrato estará disponível para assinatura digital (lhe avisaremos aqui no whatsapp).
                     </p>
                     <p>                
                     ⭐ Após assinado, você já pode preparar sua mudança, entregaremos as chaves do seu imóvel em até 
@@ -220,9 +220,9 @@ use kartik\spinner\Spinner;
                     </p>";
 
                     $msg_whats = "\\n*Tudo certo! 👏🙌* \\n \\n";
-                    $msg_whats.= "Após sua confirmação, nossa equipe vai começar a redigir seu contrato! \\n";
-                    $msg_whats.= "⭐ Em até 24 horas seu contrato estará disponível para assinatura digital. \\n";
-                    $msg_whats.= "⭐ Após assinado, você já pode preparar sua mudança, entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato). \\n";
+                    $msg_whats.= "Nossa equipe vai começar a redigir seu contrato! \\n";
+                    $msg_whats.= "⭐ Em até 24 horas seu contrato estará disponível para assinatura digital (lhe avisaremos aqui no whatsapp). \\n";
+                    $msg_whats.= "⭐ Após assinado, você já pode preparar sua mudança, entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato). \\n \\n";
                     $msg_whats.= "Viu só? tudo digital, rápido e sem burocracia né?! 😉 \\n \\n";
 
                 break;
@@ -244,7 +244,7 @@ use kartik\spinner\Spinner;
 
                 break;
             case '6':
-                $titulo_email = "Vistoria em andamento";
+                $titulo_email = "Contrato Assinado!! 🙌👊 ";
                 $textos_email = "
                     <p>
                     Parabéns 👏  seu contrato foi assinado com sucesso!
@@ -254,9 +254,9 @@ use kartik\spinner\Spinner;
                     Não se preocupe! Vamos lhe avisar assim que disponível.
                     </p>";
 
-                    $msg_whats = "\\n*Vistoria em andamento* \\n \\n";
+                    $msg_whats = "\\n*Contrato Assinado!! 🙌👊* \\n \\n";
                     $msg_whats.= "Parabéns 👏  seu contrato foi assinado com sucesso! \\n";
-                    $msg_whats.= "Agora é só aguardar a vistoria de entrada. Em até 2 dias úteis as chaves do seu novo imóvel estará disponível para retirada. \\n";
+                    $msg_whats.= "Agora é só aguardar a vistoria de entrada. Em até 2 dias úteis as chaves do seu novo imóvel estará disponível para retirada. \\n \\n";
                     $msg_whats.= "Não se preocupe! Vamos lhe avisar assim que disponível. \\n \\n";
 
                 break;
@@ -641,6 +641,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     'proposta_id' => $model->id,
                                     'modo' => 'email',
                                     'etapa' => $model->etapa_andamento,
+                                    'status' => $model->opcoes
                                 ])->all();
                                 // echo '<br>Já foram feitos '.count($disparos_email).' disparos de email dessa Etapa!<br>';
                                 Modal::begin([
@@ -653,7 +654,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     ]
                                 ]);
                                 $msg_html2 = '<p>';
-                                $msg_html2.= '<br /><br />"Acompanhe seu processo: <a href="'.$model->shorturl.'">'.$model->shorturl.'</a>"';
+                                $msg_html2.= '<br /><br />"Acompanhe seu processo  👉 <a href="'.$model->shorturl.'">'.$model->shorturl.'</a>"';
                                 $msg_html2.= '</p>';
                                 $msg_html2.= '</center>';
                                 $msg_htmlW = str_replace('botão', 'link', $msg_html);

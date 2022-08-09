@@ -275,7 +275,19 @@ class SloProposta extends \yii\db\ActiveRecord
                 } else {
                     return false;
                 }
-            }
+            },
+            'recebeu_corresponsavel' => function(SloProposta $model) {
+                if ($model->corresponsavel) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+            'datanascimento' => function(SloProposta $model) {
+                return date('d/m/Y', strtotime($model->data_nascimento));
+            },
+            'telefone_celular',
+            'documento_numero'
         ];
     }
 }

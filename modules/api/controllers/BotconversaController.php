@@ -189,12 +189,71 @@ class BotconversaController extends ActiveController
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
                 curl_setopt($curl, CURLOPT_URL, $url."$subscriberid/send_message/");
+                if ($proposta->opcoes == 2) {
+                    $mensagem1 = "📋 *Corresponsável: dados recebidos* 📋 \n \n".
+                        "Pretendente: {$proposta->nome} \n".
+                        "Ver no Sistema: https://alugadigital.com.br/adigitalsistema/proposta/update?id={$proposta->id} \n".
+                        "Url para o Cliente: {$proposta->shorturl} \n \n".
+                        "⚙️ [*Mensagem automática da AlugaDigital*] ⚙️";
+                } else {
+                    $mensagem1 = "📋 *Documentação recebida: Última Fatura* 📋 \n \n".
+                        "Pretendente: {$proposta->nome} \n".
+                        "Ver no Sistema: https://alugadigital.com.br/adigitalsistema/proposta/update?id={$proposta->id} \n".
+                        "Url para o Cliente: {$proposta->shorturl} \n \n".
+                        "⚙️ [*Mensagem automática da AlugaDigital*] ⚙️";
+                }
 
-                $mensagem1 = "📋 *Documentação recebida: Última Fatura* 📋 \n \n".
-                    "Pretendente: {$proposta->nome} \n".
-                    "Ver no Sistema: https://alugadigital.com.br/adigitalsistema/proposta/update?id={$proposta->id} \n".
-                    "Url para o Cliente: {$proposta->shorturl} \n \n".
-                    "⚙️ [*Mensagem automática da AlugaDigital*] ⚙️";
+                $arr_enviar = [
+                    "type" => "text",
+                    "value" => $mensagem1
+                ];
+                
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
+                
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                    "Content-Type: application/json",
+                    "API-KEY: $key",
+                ));
+
+                $response = curl_exec($curl);
+                $response = json_decode($response, true);
+
+                if ($error = curl_error($curl)) {
+                    throw new \Exception($error);
+                    $retorno = 0;
+                } else {
+                    $retorno = 1;
+                }
+
+                curl_close($curl);
+                $this->atualizaremail($proposta);
+                
+                break;
+            case 'send_dadosfinais':
+                $curl = curl_init();
+
+                $proposta = Proposta::findOne($idproposta);
+                # => ID botconversa do Cliente
+                // $subscriberid = $proposta->apibotsubs;
+                
+                # => ID botconversa da Aluga Digital
+                // $subscriberid = '12651452';
+                
+                # => ID botconversa do Webmaster Bonitão
+                $subscriberid = '33787259';
+
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_HEADER, true);
+                curl_setopt($curl, CURLOPT_POST, true);
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($curl, CURLOPT_URL, $url."$subscriberid/send_message/");
+                
+                $mensagem1 = "📋 *Formulário Recebido: dados para completar o cadastro* 📋 \n \n".
+                "Pretendente: {$proposta->nome} \n".
+                "Tipo: {$proposta->tipo} \n".
+                "Ver no Sistema: https://alugadigital.com.br/adigitalsistema/proposta/update?id={$proposta->id} \n".
+                "Url para o Cliente: {$proposta->shorturl} \n \n".
+                "⚙️ [*Mensagem automática da AlugaDigital*] ⚙️";
 
                 $arr_enviar = [
                     "type" => "text",
