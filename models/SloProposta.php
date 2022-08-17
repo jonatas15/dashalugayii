@@ -100,6 +100,7 @@ class SloProposta extends \yii\db\ActiveRecord
     public $ativo = false;
     public $imoveis_jet;
     public $imoveis_jet_2;
+    public $proprietario_2;
 
     public static function tableName()
     {

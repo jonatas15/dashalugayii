@@ -154,8 +154,12 @@ class ProprietarioController extends Controller
     {
         $model = new Proprietario();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            // return $this->redirect(['view', 'id' => $model->id]);
+            $model->data_nascimento = $this->formatar_data_pro_banco($model->data_nascimento);
+            if ($model->save()) {
+                $this->redirect(Yii::$app->request->referrer);
+            }
         }
 
         return $this->render('create', [

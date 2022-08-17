@@ -1,20 +1,28 @@
 <?php
 
-use yii\helpers\Html;
+// use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Proprietario */
 
-$this->title = 'Create Proprietario';
-$this->params['breadcrumbs'][] = ['label' => 'Proprietarios', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+
+use yii\bootstrap\Modal;
+use yii\helpers\Html;
+Modal::begin([
+    'header' => '',
+    'size' => 'modal-lg',
+    'toggleButton' => [
+        'label' => "Cadastrar novo Proprietário",
+        'class' => "btn btn-primary"
+    ],
+    'options' => [
+        'tabindex' => true
+    ],
+]);
 ?>
-<div class="proprietario-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
+        'codigo' => $codigo
     ]) ?>
 
-</div>
+<?php Modal::end(); ?>

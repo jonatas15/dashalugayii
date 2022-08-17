@@ -2272,6 +2272,20 @@ class PropostaController extends Controller
         return json_encode($arrP);
     }
 
+    public function actionAtribuiprop () {
+        $id = $_REQUEST['id'];
+        $codigo = $_REQUEST['codigo'];
+        $P = Proprietario::find()->where([
+            'id' => $id
+        ])->one();
+        $P->codigo_imovel = $codigo;
+        if($P->save()){
+            return $this->redirect(Yii::$app->request->referrer);
+        }
+
+        
+    }
+
     // INPUTS mais simples para o Disparo ao Superlógica
     public function linhatabela($tipo, $campo, $id_campo, $formulario, $valor = null, $opcoes = null) {
         if ($tipo == 'data') {

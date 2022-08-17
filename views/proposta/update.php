@@ -621,7 +621,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                             <h3 style="text-align: center"><strong>Avisos e Url de Acompanhamento</strong></h3>
                             <br>
                             <label for=""><strong>Url original: </strong>
-                                <?= "<a href='$url' target='blanck'>$model->url</a>"; ?>
+                                <?= "<a href='{$model->url}' target='blanck'>$model->url</a>"; ?>
                             </label><br>
                             <!-- The text field -->
                             <input type="text" value="<?=$model->shorturl?>" id="myInput" style="width: 50%">
@@ -983,7 +983,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     'model' => $model,
                                 ]).
                             '</div>',
-                        'active' => false
+                        'active' => true
                     ],
                     [
                         'label' => '👤 Registro: Pretendente',
@@ -993,7 +993,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'id' => $id,
                         ]).
                         '</div>',
-                        'active' => true 
+                        'active' => false 
                     ],
                     [
                         'label' => '⚙️ Operações no registro',

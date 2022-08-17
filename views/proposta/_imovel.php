@@ -70,18 +70,25 @@ $imoveis = $this->context->retorna_imoveis();
     <br />
     <div class="col-md-7">
         <div class="col-md-12">
+            <div class="col-md-12 estilo-card-caixa">
             <!-- <div class="row"> -->
+                <h3>
+                <strong style="font-size: 20px">Proprietário, Imóvel <?= $model->codigo_imovel ?></strong>
+                </h3>
             <?php
-                Card::begin([  
-                    'id' => 'cardproprietario', 
-                    'color' => Card::COLOR_PRIMARY, 
-                    'headerIcon' => 'person', 
-                    'collapsable' => true, 
-                    'title' => '<strong style="font-size: 20px">Proprietário</strong>', 
-                    'titleTextType' => Card::TYPE_PRIMARY, 
-                    'showFooter' => true,
-                    'footerContent' => 'Dados atualizados <sup>Março</sup> 2022',
-                ])
+                // Card::begin([  
+                //     'id' => 'cardproprietario', 
+                //     'color' => Card::COLOR_PRIMARY, 
+                //     'headerIcon' => 'person', 
+                //     'collapsable' => true, 
+                //     'title' => '<strong style="font-size: 20px">Proprietário; Imóvel '.$model->codigo_imovel.'</strong>', 
+                //     'titleTextType' => Card::TYPE_PRIMARY, 
+                //     'showFooter' => true,
+                //     'footerContent' => 'Dados atualizados <sup>Março</sup> 2022',
+                //     'options' => [
+                //         'style' => 'z-index: 1400 !important'
+                //     ]
+                // ])
             ?>
             <?php
                 $proprietario = \app\models\Proprietario::find()->where([
@@ -94,12 +101,30 @@ $imoveis = $this->context->retorna_imoveis();
                         'action' => 'update'
                     ]);
                 } else {
-                    echo '<h3><strong><i style="color: red;">';
-                    echo 'Cadastre um novo proprietário no site com o código '.$model->codigo_imovel;
-                    echo '</i></strong></h3>';
+                    echo '<div class="col-md-6">';
+                    echo '<h4>Cadastre um novo Proprietário pra esse Imóvel</h4>';
+                    echo '<br />';
+                    $proprietario = new \app\models\Proprietario();
+                    echo $this->render('/proprietario/create', [
+                        'proposta' => $model->id,
+                        'codigo' => $model->codigo_imovel,
+                        'action' => 'create',
+                        'model' => $proprietario
+                    ]);
+                    echo '</div>';
+                    echo '<div class="col-md-6">';
+                    echo '<h4>Ou selecione um existente</h4>';
+                    echo $this->render('/proprietario/_novo', [
+                        'proposta' => $model->id,
+                        'codigo' => $model->codigo_imovel,
+                        'model' => $model
+                    ]);
+                    echo '</div>';
                 }
+                echo '<br>';
             ?>
-            <?php Card::end(); ?>
+            <?php //Card::end(); ?>
+            </div>
         </div>
         <div class="col-md-12">
             <?php
