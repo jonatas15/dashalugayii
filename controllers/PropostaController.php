@@ -271,6 +271,7 @@ class PropostaController extends Controller
                 if ($_REQUEST['sloproposta-aluguel-disp']) {
                     $model->aluguel = $this->clean($_REQUEST['sloproposta-aluguel-disp']);
                 }
+                $model->atvc_telefone = $this->clean($model->atvc_telefone);
                 $model->prazo_responder = date("Y-m-d", strtotime($model->prazo_responder));
                 if($model->save()){
                     return $this->redirect(['update', 'id' => $model->id]);
@@ -1281,12 +1282,12 @@ class PropostaController extends Controller
                 $titulo_email = "Contrato pronto para assinatura!";
                 $textos_email = "
                     <p>
-                    Chegou a hora de você assinar seu contrato digital. Em breve você estará morando no seu novo imóvel 😊
-                    <p></p>
-                    Clique no botão abaixo para proceder com a assinatura.
+                    Chegou a hora de você assinar seu contrato digital. Sem filas de cartório, sem custo, e sem burocracia 😉
+                    </p>
                     <p>
-                    Viu só? tudo digital, rápido e sem burocracia né?! 😉
-                    </p>";
+                    Após assinatura do contrato, liberamos a chaves do seu novo imóvel em até 2 dias úteis (tempo para vistoria).
+                    </p>
+                    Clique no botão abaixo para proceder com a assinatura.";
                 break;
             case '6':
                 $titulo_email = "Vistoria em andamento";
@@ -1355,8 +1356,9 @@ class PropostaController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public function actionAtualizarprop ($id) {
+    public function actionAtualizarprop () {
         // echo 'chegou '.$id;
+        $id = $_REQUEST['id'];
         $etapa = $_REQUEST['etapa'];
         $resposta = $_REQUEST['resposta'];
         $model = $this->findModel($id);
@@ -1365,63 +1367,14 @@ class PropostaController extends Controller
             $model->opcoes = $resposta;
         }
         if ($model->save()) {
-            // Envia o email
-            $complementando = '/'.$model->id.'X'.$model->codigo;
-            // if ($model->etapa_andamento - 1 == 2) {
-            //     $complementando .= '/3';
-            // } else {
-            //     if ($model->etapa_andamento - 1 == 1) {
-            //         $complementando .= '/2';
-            //     }
-            // }
-            // if ($model->etapa_andamento) {
-            //     $nome = 'Nosso Cliente';
-            //     $nome_gravado = explode(" ", $model->nome);
-            //     $nome = $nome_gravado[0];
-            //     $complementando .= '/'.$nome;
-            // }
-            // if ($model->etapa_andamento - 1 == 1) {
-            //     $complementando .= '/'.$model->opcoes;
-            // }
-            // if ($model->etapa_andamento < 1) {
-            //     $model->etapa_andamento = 1;
-            // }
-            $url = 'https://alugadigital.com.br/'.($model->tipo === 'Credpago' ? 'credpago' : 'seguro-fianca').'/'.$complementando;
-            
-            //Gera a URL encurtada!
-            $bitly = new Bitly('o_21m850qm97', 'dc5e209e26b7595ba7e956d3e22e2ff50a516cf8');
-            $bitly->shorten($url);
-            
-            // $assunto = 'Café Inteligência Imobiliária: Atualização '.date("d M/Y H:i:s");
-            $assunto = 'Café Inteligência Imobiliária: Atualização '.date("d M/Y H:i:s");
-            $msg = '<center>';
-            $msg.= '<h3>Atualização da sua negociação de Locação do Imóvel PIN-'.$model->codigo_imovel.'</h3>';
-            $msg.= '<p>';
-            $msg.= 'A etapa de sua negociação foi modificada para "'.$etapa.'"';
-            $msg.= '</p>';
-            $msg.= '<p>';
-            $msg.= '<a style="cursor: pointer" href="'.$bitly->debug().'"><button style="background-color: blue; color: white; font-weight: bolder;padding: 10px; border: 1px solid blue; border-radius: 5px; cursor: pointer">Clique aqui para acompanhar</button></a>';
-            $msg.= '<br /><br />Ou acesse "<a href="'.$bitly->debug().'">'.$bitly->debug().'</a>"';
-            $msg.= '</p>';
-            $msg.= '<img src="https://alugadigital.com.br/img/logo_a_empresa.f21cb89d.png">';
-            $msg.= '</center>';
-
-            // echo $assunto;
-            // echo '<br>';
-            // echo $msg;
-            // exit();
-            // if(Mail::send($model->email, $assunto, $msg)){
-            //     $alerta_enviado .= "Sucesso: Atualização enviada para {$usuario->nome} - {$usuario->email} <br>";//'enviou!';                            
-            // } else {
-            //     $alerta_enviado .= "Erro: Atualização não enviada para {$usuario->nome} - {$usuario->email} <br>";//'não enviou!';                            
-            // }
-            // Retorna
-            return $this->redirect(Yii::$app->request->referrer);
+            // return $this->redirect(Yii::$app->request->referrer);
+            return true;
         } else {
             echo 'erro de registro, envie isso ao seu programador: <br>';
             echo '<pre>';
             print_r($model);
             echo '</pre>';
+            return false;
         }
     }
 

@@ -95,7 +95,7 @@ $imoveis = $this->context->retorna_imoveis();
                     'codigo_imovel' => $model->codigo_imovel
                 ])->one();
                 if ($proprietario) {
-                    echo $this->render('/proprietario/_resumo', [
+                    echo $this->render('/proprietario/_resumotext', [
                         'model' => $proprietario,
                         'proposta' => $model->id,
                         'action' => 'update'

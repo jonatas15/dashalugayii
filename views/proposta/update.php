@@ -454,20 +454,20 @@ $this->params['breadcrumbs'][] = 'Editar';
                         <label class="descricao-formulario desaparece-mobile">Aprovação</label>
                     </div>
                 </a>
-                <a href="<?=Yii::$app->homeUrl.'proposta/atualizarprop?etapa=4&id='.$model->id?>">
+                <a id="passa-etapa-4" href="#">
                     <div class="item4 <?=$etp_4?>">
                         <label class="item-formulario">4</label>
                         <label class="descricao-formulario desaparece-mobile">Resultado</label>
                     </div>
                 </a>
-                <a href="<?=Yii::$app->homeUrl.'proposta/atualizarprop?etapa=5&id='.$model->id?>">
+                <a id="passa-etapa-5" href="#">
                     <div class="item5 <?=$etp_5?>">
                         <label class="item-formulario">5</label>
                         <label class="descricao-formulario desaparece-mobile"><?= $model->tipo == 'Credpago' ? 'Assinatura' : 'Vistoria<br>Entrega de Chaves'; ?></label>
                     </div>
                 </a>
                 <?php if ($model->tipo == 'Credpago'): ?>
-                <a href="<?=Yii::$app->homeUrl.'proposta/atualizarprop?etapa=6&id='.$model->id?>">
+                <a id="passa-etapa-6" href="#">
                     <div class="item6 <?=$etp_6?>">
                         <label class="item-formulario">6</label>
                         <label class="descricao-formulario desaparece-mobile">Vistoria<br>Entrega de Chaves</label>
@@ -538,7 +538,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                     <div class="col-md-12 estilo-card-caixa" style="text-align: center">
                         <h3 style="text-align: center"><strong>Opções da Etapa de Análise (2)</strong></h3>
                         <?php if ($model->etapa_andamento - 1 == 1): ?>
-                            <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprop?resposta=0&etapa=3&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
+                            <a id="passa-etapa-3" href="<?= Yii::$app->homeUrl.'proposta/atualizarprop?resposta=0&etapa=3&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
                             <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=1&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '1' ? 'primary' : 'default')?>">Pendenciado</a>
                             <?php 
                                 // Modal aqui
@@ -838,6 +838,8 @@ $this->params['breadcrumbs'][] = 'Editar';
                     'mensagem': '".$msg_whats."'
                 }
             };
+            //tá ficando com a mensagem velha de tempo de execução...
+            // Para os botões das Etapas 3, 4, 5 e 6, substituir settings por mensagens equivalentes
 
             var settings_subs = {
                 'url': '".Yii::$app->homeUrl."proposta/apibotsubscriber',
@@ -876,6 +878,143 @@ $this->params['breadcrumbs'][] = 'Editar';
                         console.log(response);
                         document.location.reload(true);
                     }
+                });
+            });
+            // Dispara a Mensagem para a Etapa 3
+            $('#passa-etapa-3').on('click', function() {
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                    if(response == 1 || response == '1') {
+                        $.ajax({
+                            'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
+                            'method': 'POST',
+                            'data': {
+                                'proposta_id': '{$model->id}',
+                                'data': '".date('yy-m-d h:i:s')."',
+                                'mensagem': '$msg_whats',
+                                'usuario_id': '".Yii::$app->user->identity->id."',
+                                'etapa': '3',
+                                'modo': 'whats',
+                                'status': '{$model->opcoes}'
+                            }
+                        });
+                        createAutoClosingAlert('Mensagem enviada com sucesso!', 2000);
+                        document.location.reload(true);
+                    } else {
+                        console.log(response);
+                        document.location.reload(true);
+                    }
+                });
+            });
+            // Dispara a Mensagem para a Etapa 4
+            $('#passa-etapa-4').on('click', function() {
+                // atualiza pra Etapa 4
+                $.ajax({
+                    'url': '".Yii::$app->homeUrl."proposta/atualizarprop',
+                    'method': 'POST',
+                    'data': {
+                        'id': '{$model->id}',
+                        'etapa': '4'
+                    }
+                }).done(function (response) {
+                    // dispara para o whats
+                    $.ajax(settings);
+                    // grava o histórico de disparo para o whats
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
+                        'method': 'POST',
+                        'data': {
+                            'proposta_id': '{$model->id}',
+                            'data': '".date('yy-m-d h:i:s')."',
+                            'mensagem': '$msg_whats',
+                            'usuario_id': '".Yii::$app->user->identity->id."',
+                            'etapa': '4',
+                            'modo': 'whats',
+                            'status': '{$model->opcoes}'
+                        }
+                    });
+                    // Dispara para o email e grava o histórico de disparo para o email, e atualiza a página
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/atualizaremail?id={$model->id}',
+                        'method': 'POST',
+                        'data': {
+                            'id': '{$model->id}'
+                        }
+                    });
+                });
+            });
+            // Dispara a Mensagem para a Etapa 5
+            $('#passa-etapa-5').on('click', function() {
+                // atualiza pra Etapa 5
+                $.ajax({
+                    'url': '".Yii::$app->homeUrl."proposta/atualizarprop?etapa=5&id={$model->id}',
+                    'method': 'POST',
+                    'data': {
+                        'id': '{$model->id}',
+                        'etapa': '5'
+                    }
+                }).done(function (response) {
+                    // dispara para o whats
+                    $.ajax(settings);
+                    // grava o histórico de disparo para o whats
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
+                        'method': 'POST',
+                        'data': {
+                            'proposta_id': '{$model->id}',
+                            'data': '".date('yy-m-d h:i:s')."',
+                            'mensagem': '$msg_whats',
+                            'usuario_id': '".Yii::$app->user->identity->id."',
+                            'etapa': '5',
+                            'modo': 'whats',
+                            'status': '{$model->opcoes}'
+                        }
+                    });
+                    // Dispara para o email e grava o histórico de disparo para o email, e atualiza a página
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/atualizaremail?id={$model->id}',
+                        'method': 'POST',
+                        'data': {
+                            'id': '{$model->id}'
+                        }
+                    });
+                });
+            });
+            // Dispara a Mensagem para a Etapa 6
+            $('#passa-etapa-6').on('click', function() {
+                // atualiza pra Etapa 6
+                $.ajax({
+                    'url': '".Yii::$app->homeUrl."proposta/atualizarprop?etapa=6&id={$model->id}',
+                    'method': 'POST',
+                    'data': {
+                        'id': '{$model->id}',
+                        'etapa': '6'
+                    }
+                }).done(function (response) {
+                    // dispara para o whats
+                    $.ajax(settings);
+                    // grava o histórico de disparo para o whats
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
+                        'method': 'POST',
+                        'data': {
+                            'proposta_id': '{$model->id}',
+                            'data': '".date('yy-m-d h:i:s')."',
+                            'mensagem': '$msg_whats',
+                            'usuario_id': '".Yii::$app->user->identity->id."',
+                            'etapa': '6',
+                            'modo': 'whats',
+                            'status': '{$model->opcoes}'
+                        }
+                    });
+                    // Dispara para o email e grava o histórico de disparo para o email, e atualiza a página
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/atualizaremail?id={$model->id}',
+                        'method': 'POST',
+                        'data': {
+                            'id': '{$model->id}'
+                        }
+                    });
                 });
             });
 

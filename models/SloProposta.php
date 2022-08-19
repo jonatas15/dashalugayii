@@ -278,6 +278,13 @@ class SloProposta extends \yii\db\ActiveRecord
                     return false;
                 }
             },
+            'recebeu_documentos' => function(SloProposta $model) {
+                if (count($model->maisarquivos) > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
             'recebeu_corresponsavel' => function(SloProposta $model) {
                 if ($model->corresponsavel) {
                     return true;

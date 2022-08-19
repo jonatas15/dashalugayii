@@ -190,13 +190,17 @@ class BotconversaController extends ActiveController
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
                 curl_setopt($curl, CURLOPT_URL, $url."$subscriberid/send_message/");
                 if ($proposta->opcoes == 2) {
-                    $mensagem1 = "📋 *Corresponsável: dados recebidos* 📋 \n \n".
+                    $mensagem1 = "📋 *Corresponsável: dados recebidos* \n \n".
                         "Pretendente: {$proposta->nome} \n".
                         "Ver no Sistema: https://alugadigital.com.br/adigitalsistema/proposta/update?id={$proposta->id} \n".
                         "Url para o Cliente: {$proposta->shorturl} \n \n".
                         "⚙️ [*Mensagem automática da AlugaDigital*] ⚙️";
                 } else {
-                    $mensagem1 = "📋 *Documentação recebida: Última Fatura* 📋 \n \n".
+                    $descdocs = "Última Fatura";
+                    if ($proposta->tipo = 'Credpago') {
+                        $descdocs = "Arquivos";
+                    }
+                    $mensagem1 = "📋 *Documentação recebida: $descdocs* \n \n".
                         "Pretendente: {$proposta->nome} \n".
                         "Ver no Sistema: https://alugadigital.com.br/adigitalsistema/proposta/update?id={$proposta->id} \n".
                         "Url para o Cliente: {$proposta->shorturl} \n \n".
@@ -248,7 +252,7 @@ class BotconversaController extends ActiveController
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
                 curl_setopt($curl, CURLOPT_URL, $url."$subscriberid/send_message/");
                 
-                $mensagem1 = "📋 *Formulário Recebido: dados para completar o cadastro* 📋 \n \n".
+                $mensagem1 = "📋 *Formulário Recebido: dados para completar o cadastro* \n \n".
                 "Pretendente: {$proposta->nome} \n".
                 "Tipo: {$proposta->tipo} \n".
                 "Ver no Sistema: https://alugadigital.com.br/adigitalsistema/proposta/update?id={$proposta->id} \n".
