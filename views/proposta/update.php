@@ -538,7 +538,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                     <div class="col-md-12 estilo-card-caixa" style="text-align: center">
                         <h3 style="text-align: center"><strong>Opções da Etapa de Análise (2)</strong></h3>
                         <?php if ($model->etapa_andamento - 1 == 1): ?>
-                            <a id="passa-etapa-3" href="<?= Yii::$app->homeUrl.'proposta/atualizarprop?resposta=0&etapa=3&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
+                            <a id="passa-etapa-3" href="#" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
                             <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=1&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '1' ? 'primary' : 'default')?>">Pendenciado</a>
                             <?php 
                                 // Modal aqui
@@ -789,6 +789,35 @@ $this->params['breadcrumbs'][] = 'Editar';
         } else {
             $caminho_da_volta = Yii::$app->homeUrl.'uploads/capturas-tela/'.$arquivo.'_'.$model->etapa_andamento.'.png';
         }
+
+        // Mensagens para os Disparos Automáticos dee Mudança de Etapas diretas:
+        $msg_whats_3 = "\\n*Cadastro APROVADO 🥳* \\n \\n";
+        $msg_whats_3.= "Acesse o link {$model->shorturl} para completar seu cadastro. Após essa etapa nossa equipe vai começar a redigir seu contrato!! \\n";
+        $msg_whats_3.= "⭐ Em até 24 horas seu contrato estará disponível para assinatura digital. \\n";
+        $msg_whats_3.= "⭐ Após assinado você já pode preparar sua mudança. Entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato). \\n \\n";
+        $msg_whats_3.= "Viu só? tudo digital, rápido e sem burocracia né?! 😉 \\n \\n";
+        $msg_whats_3.= "Acompanhe aqui seu processo 👉 ".$model->shorturl."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
+
+        $msg_whats_4 = "\\n*Tudo certo! 👏🙌* \\n \\n";
+        $msg_whats_4.= "Nossa equipe vai começar a redigir seu contrato! \\n";
+        $msg_whats_4.= "⭐ Em até 24 horas seu contrato estará disponível para assinatura digital (lhe avisaremos aqui no whatsapp). \\n";
+        $msg_whats_4.= "⭐ Após assinado, você já pode preparar sua mudança, entregaremos as chaves do seu imóvel em até 2 dias úteis (após assinatura do contrato). \\n \\n";
+        $msg_whats_4.= "Viu só? tudo digital, rápido e sem burocracia né?! 😉 \\n \\n";
+        $msg_whats_4.= "Acompanhe aqui seu processo 👉 ".$model->shorturl."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
+        
+        $msg_whats_5 = "\\n*Contrato pronto para assinatura! 😍* \\n \\n";
+        $msg_whats_5.= "Chegou a hora de você assinar seu contrato digital. Sem filas de cartório, sem custo, e sem burocracia 😉 \\n";
+        $msg_whats_5.= "Após assinatura do contrato, liberamos a chaves do seu novo imóvel em até 2 dias úteis (tempo para vistoria). 😉 \\n";
+        $msg_whats_5.= "Clique no link abaixo para proceder com a assinatura. \\n \\n";
+        $msg_whats_5.= "Acompanhe aqui seu processo 👉 ".$model->shorturl."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
+        
+        $msg_whats_6 = "\\n*Contrato Assinado!! 🙌👊* \\n \\n";
+        $msg_whats_6.= "Parabéns 👏  seu contrato foi assinado com sucesso! \\n";
+        $msg_whats_6.= "Agora é só aguardar a vistoria de entrada. Em até 2 dias úteis as chaves do seu novo imóvel estará disponível para retirada. \\n \\n";
+        $msg_whats_6.= "Não se preocupe! Vamos lhe avisar assim que disponível. \\n \\n";
+        $msg_whats_6.= "Acompanhe aqui seu processo 👉 ".$model->shorturl."\\n \\n"."[*Mensagem automática da AlugaDigital*] 📢";
+
+
         $this->registerJs("
             $('#preview-site').attr({'src':'".$caminho_da_volta."'});
             
@@ -882,28 +911,51 @@ $this->params['breadcrumbs'][] = 'Editar';
             });
             // Dispara a Mensagem para a Etapa 3
             $('#passa-etapa-3').on('click', function() {
-                $.ajax(settings).done(function (response) {
-                    console.log(response);
-                    if(response == 1 || response == '1') {
-                        $.ajax({
-                            'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
-                            'method': 'POST',
-                            'data': {
-                                'proposta_id': '{$model->id}',
-                                'data': '".date('yy-m-d h:i:s')."',
-                                'mensagem': '$msg_whats',
-                                'usuario_id': '".Yii::$app->user->identity->id."',
-                                'etapa': '3',
-                                'modo': 'whats',
-                                'status': '{$model->opcoes}'
-                            }
-                        });
-                        createAutoClosingAlert('Mensagem enviada com sucesso!', 2000);
-                        document.location.reload(true);
-                    } else {
-                        console.log(response);
-                        document.location.reload(true);
+                // atualiza pra Etapa 3
+                $.ajax({
+                    'url': '".Yii::$app->homeUrl."proposta/atualizarprop',
+                    'method': 'POST',
+                    'data': {
+                        'id': '{$model->id}',
+                        'etapa': '3'
                     }
+                }).done(function (response) {
+                    // dispara para o whats
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/apibotmensagem',
+                        'method': 'POST',
+                        'timeout': 0,
+                        'headers': {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        'data': {
+                            'subscriberid': ".($model->apibotsubs ? $model->apibotsubs : '"nulo"').",
+                            'proposta_id': ".$model->id.",
+                            'mensagem': '".$msg_whats_3."'
+                        }
+                    });
+                    // grava o histórico de disparo para o whats
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
+                        'method': 'POST',
+                        'data': {
+                            'proposta_id': '{$model->id}',
+                            'data': '".date('yy-m-d h:i:s')."',
+                            'mensagem': '$msg_whats_3',
+                            'usuario_id': '".Yii::$app->user->identity->id."',
+                            'etapa': '3',
+                            'modo': 'whats',
+                            'status': '{$model->opcoes}'
+                        }
+                    });
+                    // Dispara para o email e grava o histórico de disparo para o email, e atualiza a página
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/atualizaremail?id={$model->id}',
+                        'method': 'POST',
+                        'data': {
+                            'id': '{$model->id}'
+                        }
+                    });
                 });
             });
             // Dispara a Mensagem para a Etapa 4
@@ -918,7 +970,19 @@ $this->params['breadcrumbs'][] = 'Editar';
                     }
                 }).done(function (response) {
                     // dispara para o whats
-                    $.ajax(settings);
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/apibotmensagem',
+                        'method': 'POST',
+                        'timeout': 0,
+                        'headers': {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        'data': {
+                            'subscriberid': ".($model->apibotsubs ? $model->apibotsubs : '"nulo"').",
+                            'proposta_id': ".$model->id.",
+                            'mensagem': '".$msg_whats_4."'
+                        }
+                    });
                     // grava o histórico de disparo para o whats
                     $.ajax({
                         'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
@@ -926,7 +990,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                         'data': {
                             'proposta_id': '{$model->id}',
                             'data': '".date('yy-m-d h:i:s')."',
-                            'mensagem': '$msg_whats',
+                            'mensagem': '$msg_whats_4',
                             'usuario_id': '".Yii::$app->user->identity->id."',
                             'etapa': '4',
                             'modo': 'whats',
@@ -955,7 +1019,19 @@ $this->params['breadcrumbs'][] = 'Editar';
                     }
                 }).done(function (response) {
                     // dispara para o whats
-                    $.ajax(settings);
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/apibotmensagem',
+                        'method': 'POST',
+                        'timeout': 0,
+                        'headers': {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        'data': {
+                            'subscriberid': ".($model->apibotsubs ? $model->apibotsubs : '"nulo"').",
+                            'proposta_id': ".$model->id.",
+                            'mensagem': '".$msg_whats_5."'
+                        }
+                    });
                     // grava o histórico de disparo para o whats
                     $.ajax({
                         'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
@@ -963,7 +1039,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                         'data': {
                             'proposta_id': '{$model->id}',
                             'data': '".date('yy-m-d h:i:s')."',
-                            'mensagem': '$msg_whats',
+                            'mensagem': '$msg_whats_5',
                             'usuario_id': '".Yii::$app->user->identity->id."',
                             'etapa': '5',
                             'modo': 'whats',
@@ -992,7 +1068,19 @@ $this->params['breadcrumbs'][] = 'Editar';
                     }
                 }).done(function (response) {
                     // dispara para o whats
-                    $.ajax(settings);
+                    $.ajax({
+                        'url': '".Yii::$app->homeUrl."proposta/apibotmensagem',
+                        'method': 'POST',
+                        'timeout': 0,
+                        'headers': {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        'data': {
+                            'subscriberid': ".($model->apibotsubs ? $model->apibotsubs : '"nulo"').",
+                            'proposta_id': ".$model->id.",
+                            'mensagem': '".$msg_whats_6."'
+                        }
+                    });
                     // grava o histórico de disparo para o whats
                     $.ajax({
                         'url': '".Yii::$app->homeUrl."proposta/gravahistorico',
@@ -1000,7 +1088,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                         'data': {
                             'proposta_id': '{$model->id}',
                             'data': '".date('yy-m-d h:i:s')."',
-                            'mensagem': '$msg_whats',
+                            'mensagem': '$msg_whats_6',
                             'usuario_id': '".Yii::$app->user->identity->id."',
                             'etapa': '6',
                             'modo': 'whats',
