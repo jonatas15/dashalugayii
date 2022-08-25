@@ -1101,7 +1101,7 @@ class PropostaController extends Controller
     // Pega Json do Imóvel e cadastra
     public function cadastraimovelupdate($id, $codigo) {
         // Pega os dados no Jetimob
-        $json_imoveis = $this->get_content('https://api.jetimob.app/webservice/tZuuHuri8Q3ohAf7cvmMm8hTmWrXKJoEdes8ViSi/imoveis?v=v2',864000);
+        $json_imoveis = $this->get_content('https://api.jetimob.app/webservice/tZuuHuri8Q3ohAf7cvmMm8hTmWrXKJoEdes8ViSi/imoveis?v=v2',1);
         // $json_imoveis = $this->get_content('http://www.jetimob.com/services/tZuuHuri8Q3ohAf7cvmMm8hTmWrXKJoEdes8ViSi/imoveis/',864000);
         $imoveis = json_decode($json_imoveis);
         $imovel = array();

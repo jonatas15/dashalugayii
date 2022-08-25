@@ -179,10 +179,10 @@ class BotconversaController extends ActiveController
                 // $subscriberid = $proposta->apibotsubs;
                 
                 # => ID botconversa da Aluga Digital
-                // $subscriberid = '12651452';
+                $subscriberid = '12651452';
                 
                 # => ID botconversa do Webmaster Bonitão
-                $subscriberid = '33787259';
+                // $subscriberid = '33787259';
 
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($curl, CURLOPT_HEADER, true);
@@ -241,10 +241,10 @@ class BotconversaController extends ActiveController
                 // $subscriberid = $proposta->apibotsubs;
                 
                 # => ID botconversa da Aluga Digital
-                // $subscriberid = '12651452';
+                $subscriberid = '12651452';
                 
                 # => ID botconversa do Webmaster Bonitão
-                $subscriberid = '33787259';
+                // $subscriberid = '33787259';
 
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($curl, CURLOPT_HEADER, true);
