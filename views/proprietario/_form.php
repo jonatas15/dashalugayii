@@ -109,9 +109,11 @@ use yii\widgets\MaskedInput;
         <div class="col-md-6">
             <?= $form->field($model, 'estado')->textInput(['maxlength' => true]) ?>
         </div>
+        <div class="col-md-6">
+            <?= $form->field($model, 'codigo_imovel')->textInput(['maxlength' => true, 'value' => $codigo]) ?>
+        </div>
         <div class="hidden">
             <?= $form->field($model, 'cpf')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'codigo_imovel')->textInput(['maxlength' => true, 'value' => $codigo]) ?>
             <?= $form->field($model, 'usuario_id')->textInput(['value' => Yii::$app->user->identity->id]) ?>
             <?= $form->field($model, 'superlogica')->hiddenInput()->label(false) ?>
             <?= $form->field($model, 'nome_fantasia')->textInput(['maxlength' => true]) ?>

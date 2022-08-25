@@ -13,7 +13,8 @@ Modal::begin([
     'size' => 'modal-lg',
     'toggleButton' => [
         'label' => "Cadastrar novo Proprietário",
-        'class' => "btn btn-primary"
+        'class' => "btn btn-primary",
+        'style' => "text-align: left !important; float: left !important;"
     ],
     'options' => [
         'tabindex' => true
@@ -26,3 +27,10 @@ Modal::begin([
     ]) ?>
 
 <?php Modal::end(); ?>
+<style scoped>
+    label {
+        text-align: left !important;
+        float: left !important;
+        font-weight: bolder !important;
+    }
+</style>

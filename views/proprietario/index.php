@@ -31,7 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?php //= Html::encode($this->title) ?></h1>
 
     <p>
-        <?php //= Html::a('Create Proprietario', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php //= Html::a('Create Proprietario', ['create'], ['class' => 'btn btn-success']) 
+            echo '<h4>Cadastre um novo Proprietário pra esse Imóvel</h4>';
+            echo '<br />';
+            $proprietario = new \app\models\Proprietario();
+            echo $this->render('/proprietario/create', [
+                'action' => 'create',
+                'model' => $proprietario
+            ]);
+        ?>
+        
         <br />
         <br />
         <br />

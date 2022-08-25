@@ -48,9 +48,37 @@ use kartik\spinner\Spinner;
     .estilo-card-caixa {
         text-align: center !important; box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%); padding: 2% !important;
     }
+    .recarregando-pagina {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden !important;
+        background-color: rgba(0,0,0,0.7);
+        z-index: 999999999999999999;
+        display: none;
+    }
 </style>
 <div class="tooltip">Hover over me
   <span class="tooltiptext">Tooltip text</span>
+</div>
+<div class="recarregando-pagina">
+    <?php 
+        echo Spinner::widget([
+            // 'align' => 'center',
+            'pluginOptions' => [
+                'top' => '200px',
+                'left' => '50%',
+                'color' => 'lime',
+                'caption' => 'Exacutando....',
+                'position' => 'absolute',
+                'width' => '2',
+                'lines' => '50',
+                'radius' => '50'
+            ]
+        ]);
+    ?>
 </div>
 <?php
     echo $this->render('/site/avisos', [
@@ -607,7 +635,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     case '1': $resultado_analise_feita = 'Precisa de fatura'; break;
                                     case '2': $resultado_analise_feita = 'Precisa de Co-responsável'; break;
                                     case '3': $resultado_analise_feita = 'Reprovado'; break;
-                                    default: $resultado_analise_feita = 'A verificar'; break;
+                                    default: $resultado_analise_feita = 'Não há pendências'; break;
                                 }    
                             ?>
                             <label for=""><strong>Resultado da Análise: </strong><?=$resultado_analise_feita?></label>
@@ -912,6 +940,8 @@ $this->params['breadcrumbs'][] = 'Editar';
             // Dispara a Mensagem para a Etapa 3
             $('#passa-etapa-3').on('click', function() {
                 // atualiza pra Etapa 3
+                createAutoClosingAlert('Início da etapa 3, mensagens disparadas!', 3000);
+                $('.recarregando-pagina').show();
                 $.ajax({
                     'url': '".Yii::$app->homeUrl."proposta/atualizarprop',
                     'method': 'POST',
@@ -961,6 +991,8 @@ $this->params['breadcrumbs'][] = 'Editar';
             // Dispara a Mensagem para a Etapa 4
             $('#passa-etapa-4').on('click', function() {
                 // atualiza pra Etapa 4
+                createAutoClosingAlert('Início da etapa 4, mensagens disparadas!', 3000);
+                $('.recarregando-pagina').show();
                 $.ajax({
                     'url': '".Yii::$app->homeUrl."proposta/atualizarprop',
                     'method': 'POST',
@@ -1010,6 +1042,8 @@ $this->params['breadcrumbs'][] = 'Editar';
             // Dispara a Mensagem para a Etapa 5
             $('#passa-etapa-5').on('click', function() {
                 // atualiza pra Etapa 5
+                createAutoClosingAlert('Início da etapa 5, mensagens disparadas!', 3000);
+                $('.recarregando-pagina').show();
                 $.ajax({
                     'url': '".Yii::$app->homeUrl."proposta/atualizarprop?etapa=5&id={$model->id}',
                     'method': 'POST',
@@ -1059,6 +1093,8 @@ $this->params['breadcrumbs'][] = 'Editar';
             // Dispara a Mensagem para a Etapa 6
             $('#passa-etapa-6').on('click', function() {
                 // atualiza pra Etapa 6
+                createAutoClosingAlert('Início da etapa 6, mensagens disparadas!', 3000);
+                $('.recarregando-pagina').show();
                 $.ajax({
                     'url': '".Yii::$app->homeUrl."proposta/atualizarprop?etapa=6&id={$model->id}',
                     'method': 'POST',
