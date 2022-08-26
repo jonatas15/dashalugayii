@@ -501,10 +501,10 @@ use deyraka\materialdashboard\widgets\Card;
                             </div>';
                             echo '</div>';
                         } else {
-                            echo '<div class="col-md-3">';
+                            echo '<div class="col-md-4">';
                             // echo "<hr>";
                             echo "<h3 style='text-align: center;color:gray'><strong>".$arques->getAttributeLabel($key)."</strong></h3>";
-                            echo '<img src="'.Yii::$app->homeUrl.'uploads/'.$nome_arq.$value.'" style="width: auto;max-height: 300px;">';
+                            echo '<img src="'.Yii::$app->homeUrl.'uploads/'.$nome_arq.$value.'" style="max-width: 100%;max-height: 300px;">';
                             echo '</div>';
                         }
                         // echo '</div>';

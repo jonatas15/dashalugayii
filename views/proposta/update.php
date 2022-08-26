@@ -565,6 +565,20 @@ $this->params['breadcrumbs'][] = 'Editar';
                 <div class="col-md-6">
                     <div class="col-md-12 estilo-card-caixa" style="text-align: center">
                         <h3 style="text-align: center"><strong>Opções da Etapa de Análise (2)</strong></h3>
+                        <h4 style="text-align: center"><strong>
+                            <?php 
+                                $arquesx = $model->maisarquivos;
+                                if (count($arquesx) > 0){
+                                    $maisum = count($arquesx) + 1;
+                                    echo $maisum." Documento(s) recebido(s): ";
+                                    foreach ($arquesx as $key => $value) {
+                                        if (!in_array($key,['id','proposta_id']) and $value != null) {
+                                            echo $arquesx->getAttributeLabel($key).', ';
+                                        }
+                                    }
+                                }
+                            ?>
+                        </strong></h4>
                         <?php if ($model->etapa_andamento - 1 == 1): ?>
                             <a id="passa-etapa-3" href="#" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '0' ? 'primary' : 'default')?>">Sem pendências</a>
                             <a href="<?= Yii::$app->homeUrl.'proposta/atualizarprog?resposta=1&id='.$model->id ?>" class="btn-atividade-etapa-2 btn btn-<?=($model->opcoes == '1' ? 'primary' : 'default')?>">Pendenciado</a>
@@ -1246,7 +1260,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                                     'model' => $model,
                                 ]).
                             '</div>',
-                        'active' => true
+                        'active' => false
                     ],
                     [
                         'label' => '👤 Registro: Pretendente',
@@ -1256,7 +1270,7 @@ $this->params['breadcrumbs'][] = 'Editar';
                             'id' => $id,
                         ]).
                         '</div>',
-                        'active' => false 
+                        'active' => true 
                     ],
                     [
                         'label' => '⚙️ Operações no registro',
