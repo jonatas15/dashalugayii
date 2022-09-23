@@ -87,6 +87,14 @@ foreach ($visitas_grafico as $key => $val) {
         font-size: 11px !important;
         font-weight: 900 !important;
     }
+    .form-control {
+        background-color: white !important;
+    }
+    select.form-control {
+        background-color: white !important;
+        -webkit-appearance: auto;
+        height: 36px !important;
+    }
 </style>
 <div class="site-index">
     <h5>Bem vindo, <?=Yii::$app->user->identity->nome?></h5>
@@ -308,7 +316,7 @@ foreach ($visitas_grafico as $key => $val) {
         ?>
         <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-                // 'filterModel' => $searchModel,
+                'filterModel' => $searchModel,
                 'rowOptions' => function($data){
                     $historicos = app\models\Userhistvisto::find()->where([
                         'usuario_id' => Yii::$app->user->identity->id,
@@ -378,6 +386,11 @@ foreach ($visitas_grafico as $key => $val) {
                     [
                         'attribute' => 'codigo_imovel',
                         'header' => 'Imóvel',
+                        'filterInputOptions' => [
+                            'class'       => 'form-control',
+                            'placeholder' => 'Pesquisar...',
+                            'style' => 'padding: 2% !important'
+                        ],
                         'format'=>'raw',
                         'value' => function($data) {
                             if (!empty($data->codigo_imovel)) {
@@ -389,13 +402,30 @@ foreach ($visitas_grafico as $key => $val) {
                     ],
                     [
                         'header'=>'Proponente Principal',
+                        'attribute' => 'nome',
+                        'filterInputOptions' => [
+                            'class'       => 'form-control',
+                            'placeholder' => 'Pesquisar...',
+                            'style' => 'padding: 2% !important'
+                        ],
                         'format'=>'raw',
                         'value'=> function($data){
                             $link = Yii::$app->homeUrl."proposta/update?id={$data->id}";
                             return "<a href='{$link}'>".$data->nome."&nbsp;&nbsp;<i class='fa fa-arrow-right'></i></a>";
                         }
                     ],
-                    'tipo',
+                    [
+                        'attribute' => 'tipo',
+                        'filter' => [
+                            'Credpago' => 'Credpago',
+                            'Seguro Fiança' => 'Seguro Fiança'
+                        ],
+                        'filterInputOptions' => [
+                            'class'       => 'form-control',
+                            'prompt' => 'Pesquisar...',
+                            'style' => 'padding: 2% !important'
+                        ],
+                    ],
                     [
                         'header' =>'Início',
                         'attribute' => 'data_inicio',
@@ -428,6 +458,20 @@ foreach ($visitas_grafico as $key => $val) {
                     [
                         'header'=>'Estágio',
                         'format' => 'raw',
+                        'attribute' => 'etapa_andamento',
+                        'filter' => [
+                            '1' => '1 - Cadastro',
+                            '2' => '2 - Análise',
+                            '3' => '3 - Aprovação',
+                            '4' => '4 - Resultado/Assinatura',
+                            '5' => '5 - Assinatura/Entrega',
+                            '6' => '6 - Entrega das Chaves',
+                        ],
+                        'filterInputOptions' => [
+                            'class'       => 'form-control',
+                            'prompt' => 'Pesquisar...',
+                            'style' => 'padding: 2% !important'
+                        ],
                         'value'=> function($data){
                             $checklist = [];
                             if (isset($data->proponente->checklists)) {

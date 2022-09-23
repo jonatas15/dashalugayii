@@ -77,7 +77,12 @@ $config = [
                     'class' => 'yii\rest\UrlRule',
                     'pluralize' => false,
                     'controller' => 'api\botconversa'
-                ]
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'pluralize' => false,
+                    'controller' => 'api\dsigner'
+                ],
             ],
         ],
         'assetManager' => [ //SETTING FOR MATERIAL DASHBOARD THEME

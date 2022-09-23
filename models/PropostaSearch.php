@@ -19,7 +19,7 @@ class PropostaSearch extends SloProposta
     {
         return [
             [['id', 'usuario_id'], 'integer'],
-            [['nome','endereco','tipo', 'prazo_responder', 'proprietario', 'proprietario_info', 'imovel_info', 'imovel_valores','codigo_imovel'], 'safe'],
+            [['nome','endereco','tipo', 'prazo_responder', 'proprietario', 'proprietario_info', 'imovel_info', 'imovel_valores','codigo_imovel', 'etapa_andamento'], 'safe'],
         ];
     }
 
@@ -88,6 +88,8 @@ class PropostaSearch extends SloProposta
             ->andFilterWhere(['like', 'proprietario_info', $this->proprietario_info])
             ->andFilterWhere(['like', 'imovel_info', $this->imovel_info])
             ->andFilterWhere(['like', 'codigo_imovel', $this->codigo_imovel])
+            ->andFilterWhere(['like', 'nome', $this->nome])
+            ->andFilterWhere(['like', 'etapa_andamento', $this->etapa_andamento])
             ->andFilterWhere(['like', 'imovel_valores', $this->imovel_valores]);
 
         return $dataProvider;
