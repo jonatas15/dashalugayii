@@ -27,6 +27,10 @@ use yii\helpers\Html;
                     'icon' => 'table_chart', 'url' => ['/visita'],
                     'visible' => !Yii::$app->user->isGuest
                 ],
+                ['label' => 'Retiradas', 
+                    'icon' => 'key', 'url' => ['/visitchaves'],
+                    'visible' => !Yii::$app->user->isGuest
+                ],
                 ['label' => 'Proprietários', 
                     'icon' => 'list', 
                     'url' => ['/proprietario'],
