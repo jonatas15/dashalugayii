@@ -421,13 +421,64 @@ class VisitchavesController extends Controller
     /**
      * Ajustes
      */
+    public function actionBotmensagem($id) {
+        $id = $_REQUEST['id'];
+        $atualiza = $this->findModel($id);
+        $subscriberid = $atualiza->botconversaid;
+        $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
+        $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_URL, $url."$subscriberid/send_message/");
+
+        //Como array
+        $mensagem1 = "*Atualização no seu Imóvel* \n \n".
+            "".trim($atualiza->feedbacks)." \n".
+            "Qualquer dúvida não hesite em nos contatar. 🤝 \n \n".
+            "[*Mensagem automática da AlugaDigital*] 📢";
+
+        $arr_enviar = [
+            "type" => "text",
+            "value" => $mensagem1
+        ];
+        
+        
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
+        
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "API-KEY: $key",
+        ));
+
+        $response = curl_exec($curl);
+        $response = json_decode($response, true);
+
+        if ($error = curl_error($curl)) {
+            throw new \Exception($error);
+            $retorno = 0;
+        } else {
+            $retorno = 1;
+        }
+
+        curl_close($curl);
+        $atualiza->msg_enviada = 1;
+        // Cadastra
+        if($atualiza->save()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
     public function actionRetornabot($id) {
         $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
         $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
         $telefonexx = $_REQUEST['telefone'];
         $id = $_REQUEST['id'];
         $telefone_para_api = $this->telefone_api($telefonexx);
-        $this->findModel($id);
         
         $curl = curl_init();
         // set url: para retornar dados do Botconversa, tenha sempre o "/" no final da URL - DICA DE OURO
@@ -454,12 +505,9 @@ class VisitchavesController extends Controller
         $atualiza->botconversaid = $output->id;
         // Cadastra
         if($atualiza->save()) {
-            print_r($output);
-            echo $url.$telefone_para_api.'/';
-            echo '<br>';
-            echo $telefonexx;
+            return $atualiza->botconversaid;
         } else {
-            echo 'isso nao';
+            return 0;
         }
     }
     public function telefone_api($telefone) {

@@ -155,32 +155,55 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['style' => 'width:5%'],
                     'value' => function ($data) {
                         // $retorno = '<a href=""><i class="material-icons">telegram</i></a>';
-                        $retorno = Html::button('<i class="material-icons">telegram</i></a>', ['onclick' => '
-                            $.ajax({
-                                type: "PUT",
-                                url: "'.Yii::$app->homeUrl.'/api/visitakeys/update?id='.$data->id.'",
-                                data: {
-                                    id: '.$data->id.',
-                                    acaobotconversa: "add_subscrito",
-                                    nome: "'.$data->nome_cliente.'",
-                                    tipo: "add_subscrito",
-                                    telefone: "'.$data->num_disparo.'",
-                                    mensagem: "add_subscrito"
-                                }, success: function(result) {
-                                    $.ajax({
-                                        type: "GET",
-                                        url: "'.Yii::$app->homeUrl.'/visitchaves/retornabot?id='.$data->id.'",
-                                        data: {
-                                            id: '.$data->id.',
-                                            telefone: "'.$data->num_disparo.'"
-                                        }, success: function(result) {
-                                            console.log("sucesso, subscrito: ");
-                                            console.log(result);
-                                        }
-                                    });
-                                }
-                            });
-                        ']);
+                        if ($data->botconversaid) {
+                            $retorno = Html::button('<i class="material-icons">telegram</i>', ['onclick' => '
+                                $.ajax({
+                                    type: "GET",
+                                    url: "'.Yii::$app->homeUrl.'/visitchaves/botmensagem?id='.$data->id.'",
+                                    data: {
+                                        idboot: '.$data->botconversaid.'
+                                    }, success: function(result) {
+                                        console.log("mensagem enviada");
+                                    }
+                                });
+                            ']);
+                        } else {
+                            $retorno = Html::button('<i class="material-icons">telegram</i>', ['onclick' => '
+                                $.ajax({
+                                    type: "PUT",
+                                    url: "'.Yii::$app->homeUrl.'/api/visitakeys/update?id='.$data->id.'",
+                                    data: {
+                                        id: '.$data->id.',
+                                        acaobotconversa: "add_subscrito",
+                                        nome: "'.$data->nome_cliente.'",
+                                        tipo: "add_subscrito",
+                                        telefone: "'.$data->num_disparo.'",
+                                        mensagem: "add_subscrito"
+                                    }, success: function(result) {
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "'.Yii::$app->homeUrl.'/visitchaves/retornabot?id='.$data->id.'",
+                                            data: {
+                                                id: '.$data->id.',
+                                                telefone: "'.$data->num_disparo.'"
+                                            }, success: function(result) {
+                                                console.log("sucesso, subscrito: ");
+                                                console.log(result);
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "'.Yii::$app->homeUrl.'/visitchaves/botmensagem?id='.$data->id.'",
+                                                    data: {
+                                                        idboot: '.$data->botconversaid.'
+                                                    }, success: function(result) {
+                                                        console.log("mensagem enviada");
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            ']);
+                        }
                         return $retorno;
                     }
                 ],
