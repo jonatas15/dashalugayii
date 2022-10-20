@@ -41,7 +41,7 @@ class Visitchaves extends \yii\db\ActiveRecord
     {
         return [
             [['usuario_id', 'nome', 'tipovisitante', 'codigo_imovel', 'dthr_retirada', 'data_visita'], 'required'],
-            [['usuario_id', 'convertido_venda'], 'integer'],
+            [['usuario_id', 'convertido_venda', 'botconversaid'], 'integer'],
             [['tipovisitante', 'feedbacks', 'mensagem'], 'string'],
             [['dthr_retirada', 'dthr_entrega', 'data_visita', 'hora_visita'], 'safe'],
             [['nome', 'nome_cliente'], 'string', 'max' => 200],

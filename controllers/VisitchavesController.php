@@ -262,6 +262,18 @@ class VisitchavesController extends Controller
         }
         return $retorno;        
     }
+    public function format_telefone($fone){
+        $fone = $this->clean($fone);
+        $f = str_split($fone,1);
+        $ddd = $f[0].$f[1];
+        $g1 = '';
+        if(count($f) == 11){
+          $g1 = $f[2].' '.$f[3].$f[4].$f[5].$f[6].'-'.$f[7].$f[8].$f[9].$f[10];
+        }else{
+          $g1 = $f[2].$f[3].$f[4].$f[5].'-'.$f[6].$f[7].$f[8].$f[9];
+        }
+        return '('.$ddd.') '.$g1;
+    }
     public function imprime_campo_editavel($col_md, $tabela, $campo, $title, $valor, $id, $conj = null) {
         $input = Editable::INPUT_TEXT;
         $editableoptions = [
@@ -333,7 +345,7 @@ class VisitchavesController extends Controller
                 $valore = $this->format_doc($valor, 'cnpj');
             }
         }
-        if (in_array($campo,['celular', 'telefone_celular', 'whatsapp', 'telefone', 'fone', 'telefone_residencial','fone_residencial', 'fone_celular'])) {
+        if (in_array($campo,['celular', 'telefone_celular', 'whatsapp', 'telefone', 'fone', 'telefone_residencial','fone_residencial', 'fone_celular', 'num_disparo'])) {
             $input = Editable::INPUT_WIDGET;
             $editableoptions = [
                 'class' => 'form-control',
@@ -404,5 +416,59 @@ class VisitchavesController extends Controller
     **/
     private function campopdf($label, $valor) {
         return '<exp style="font-size: 10px; color: blue">'.$label.':</exp><br><strong>'.$valor.'</strong><br><br>';
+    }
+
+    /**
+     * Ajustes
+     */
+    public function actionRetornabot($id) {
+        $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
+        $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+        $telefonexx = $_REQUEST['telefone'];
+        $id = $_REQUEST['id'];
+        $telefone_para_api = $this->telefone_api($telefonexx);
+        $this->findModel($id);
+        
+        $curl = curl_init();
+        // set url: para retornar dados do Botconversa, tenha sempre o "/" no final da URL - DICA DE OURO
+        curl_setopt($curl, CURLOPT_URL, $url.$telefone_para_api.'/');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        //chave
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "API-KEY: $key"
+        ));
+        // Captura as informações,em string
+        $output = curl_exec($curl);
+        if(!$output){
+            die("Sem conectar...");
+        }
+        // Fecha a conexão com a API
+        curl_close($curl); 
+        // Torna Objeto para captura dos dados
+        $output = json_decode($output);
+        // return $output->id;
+        $atualiza = $this->findModel($id);
+        $atualiza->botconversaid = $output->id;
+        // Cadastra
+        if($atualiza->save()) {
+            print_r($output);
+            echo $url.$telefone_para_api.'/';
+            echo '<br>';
+            echo $telefonexx;
+        } else {
+            echo 'isso nao';
+        }
+    }
+    public function telefone_api($telefone) {
+        $telefone_clean = $this->clean($telefone);
+        $fone_arr = str_split($telefone_clean);
+
+        $telefone_para_api = '+55'.$fone_arr[0].$fone_arr[1]
+        .$fone_arr[3].$fone_arr[4].$fone_arr[5].$fone_arr[6]    //retiramos o arr[2] ou terceiro número, que é o nono dígito
+        .$fone_arr[7].$fone_arr[8].$fone_arr[9].$fone_arr[10];
+        return $telefone_para_api;
     }
 }
