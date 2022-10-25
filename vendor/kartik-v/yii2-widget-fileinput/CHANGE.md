@@ -1,6 +1,16 @@
 Change Log: `yii2-widget-fileinput`
 ===================================
 
+## Version 1.1.1
+
+**Date:** 28-Jun-2022
+
+- (enh #186): New property `autoFileTypeParsing` for parsing file types.
+- (enh #185): Add Uzbek (Cyrillic) language translations.
+- (enh #184): Add Uzbek (Cyrillic) language in messages config.
+- (enh #180): Enhancements to support Bootstrap v5.x.
+- (bug #179): Support translations for language codes with hyphen.
+
 ## Version 1.1.0
 
 **Date:** 24-Oct-2020

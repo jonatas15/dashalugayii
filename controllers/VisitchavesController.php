@@ -48,6 +48,14 @@ class VisitchavesController extends Controller
         ]);
     }
 
+    public function actionExcell()
+    {
+        // $searchModel = new VisitchavesSearch();
+        // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('excell', []);
+    }
+
     /**
      * Displays a single Visitchaves model.
      * @param integer $id
@@ -375,7 +383,7 @@ class VisitchavesController extends Controller
             $valore = $valor;
         }
         if ($title) {
-            $retorno = '<label>'.$title.'</label><br />';
+            $retorno = '<label>'.$title.' </label>';
         }
         $retorno .= Editable::widget([
             'language' => 'pt_BR',
@@ -403,8 +411,6 @@ class VisitchavesController extends Controller
             'valueIfNull' => 'valor alterado'
         ]);
         if ($title) {
-            $retorno .= "<br>";
-            $retorno .= "<br>";
             $retorno .= "<br>";
         }
         return '<div class="col-md-'.$col_md.'">'.$retorno.'</div>';
@@ -436,7 +442,7 @@ class VisitchavesController extends Controller
         curl_setopt($curl, CURLOPT_URL, $url."$subscriberid/send_message/");
 
         //Como array
-        $mensagem1 = "*Atualização no seu Imóvel* \n \n".
+        $mensagem1 = "*Atualização no seu Imóvel PIN-{$atualiza->codigo_imovel}* \n \n".
             "".trim($atualiza->feedbacks)." \n".
             "Qualquer dúvida não hesite em nos contatar. 🤝 \n \n".
             "[*Mensagem automática da AlugaDigital*] 📢";

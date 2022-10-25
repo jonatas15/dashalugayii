@@ -6,12 +6,26 @@ use yii\helpers\Url;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use yii\bootstrap\Modal;
+// use kartik\widgets\Alert;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\VisitchavesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Visitas: Controle de Chaves';
 $this->params['breadcrumbs'][] = $this->title;
+// echo Alert::widget([
+//     'type' => Alert::TYPE_SUCCESS,
+//     'title' => 'Mensagem enviada!',
+//     'icon' => 'fas fa-check-circle',
+//     'body' => '',
+//     'showSeparator' => true,
+//     'delay' => false,
+//     'id' => 'teste_alert',
+//     'options' => [
+//         'style' => 'display: none'
+//     ]
+// ]);
 ?>
 <style>
     .kv-editable-value {
@@ -36,6 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
     select, select.form-control {
         -moz-appearance: auto !important;
         -webkit-appearance: auto !important;
+    }
+    .w2 button {
+        border: 1px solid ghostwhite;
+        border-radius: 5px;
+        color: darkgreen;
     }
 </style>
 <div class="visitchaves-index col-md-12">
@@ -91,20 +110,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 [
-                    'attribute' => 'nome_cliente',
-                    'format' => 'raw',
-                    'headerOptions' => ['style' => 'width:20%'],
-                    'value' => function ($data) {
-                        return $this->context->imprime_campo_editavel('12', 'Visitchaves', 'nome_cliente', '', $data->nome_cliente, $data->id);
-                    }
-                ],
-                [
                     'attribute' => 'tipovisitante',
                     'format' => 'raw',
                     'filter' => ['Corretor' => 'Corretor', 'Corretor externo' => 'Corretor externo', 'Cliente' => 'Cliente'],
                     'headerOptions' => ['style' => 'width:15%'],
                     'value' => function ($data) {
                         return $this->context->imprime_campo_editavel('12', 'Visitchaves', 'tipovisitante', '', $data->tipovisitante, $data->id);
+                    }
+                ],
+                [
+                    'attribute' => 'nome_cliente',
+                    'format' => 'raw',
+                    'headerOptions' => ['style' => 'width:20%'],
+                    'value' => function ($data) {
+                        return 
+                        $this->context->imprime_campo_editavel('12', 'Visitchaves', 'nome_cliente', '', $data->nome_cliente, $data->id).
+                        '<br/><hr style="margin: 8px">'.
+                        // '<span style="position:absolute;display: block;">📞</span>'.
+                        $this->context->imprime_campo_editavel('12', 'Visitchaves', 'num_disparo', '📞', $data->num_disparo, $data->id);
                     }
                 ],
                 [
@@ -118,19 +141,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'data_visita',
                     'format' => 'raw',
-                    'headerOptions' => ['style' => 'width:3%'],
+                    'headerOptions' => ['style' => 'width:15%'],
                     'value' => function ($data) {
-                        return $this->context->imprime_campo_editavel('12', 'Visitchaves', 'data_visita', '', $data->data_visita, $data->id);
+                        return 
+                        $this->context->imprime_campo_editavel('12', 'Visitchaves', 'data_visita', '🗓️', $data->data_visita, $data->id).
+                        '<br/><hr style="margin: 8px">'.
+                        // '<span style="position:absolute;display: block;">🕒</span>' . 
+                        $this->context->imprime_campo_editavel('12', 'Visitchaves', 'hora_visita', '🕒', $data->hora_visita, $data->id);
                     }
                 ],
-                [
-                    'attribute' => 'hora_visita',
-                    'format' => 'raw',
-                    'headerOptions' => ['style' => 'width:3%'],
-                    'value' => function ($data) {
-                        return $this->context->imprime_campo_editavel('12', 'Visitchaves', 'hora_visita', '', $data->hora_visita, $data->id);
-                    }
-                ],
+                // [
+                //     'attribute' => 'hora_visita',
+                //     'format' => 'raw',
+                //     'headerOptions' => ['style' => 'width:3%'],
+                //     'value' => function ($data) {
+                //         return $this->context->imprime_campo_editavel('12', 'Visitchaves', 'hora_visita', '', $data->hora_visita, $data->id);
+                //     }
+                // ],
                 [
                     'attribute' => 'feedbacks',
                     'format' => 'raw',
@@ -139,15 +166,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         return $this->context->imprime_campo_editavel('12', 'Visitchaves', 'feedbacks', '', $data->feedbacks, $data->id);
                     }
                 ],
-                [
-                    'attribute' => 'num_disparo',
-                    'format' => 'raw',
-                    'headerOptions' => ['style' => 'width:3%'],
-                    'value' => function ($data) {
-                        return $this->context->imprime_campo_editavel('12', 'Visitchaves', 'num_disparo', '', $data->num_disparo, $data->id);
-                    }
-                ],
-                'botconversaid',
+                // [
+                //     'attribute' => 'num_disparo',
+                //     'format' => 'raw',
+                //     'headerOptions' => ['style' => 'width:3%'],
+                //     'value' => function ($data) {
+                //         return $this->context->imprime_campo_editavel('12', 'Visitchaves', 'num_disparo', '', $data->num_disparo, $data->id);
+                //     }
+                // ],
+                // 'botconversaid',
                 [
                     'attribute' => 'id',
                     'filter' => '',
@@ -155,56 +182,64 @@ $this->params['breadcrumbs'][] = $this->title;
                     'headerOptions' => ['style' => 'width:5%'],
                     'value' => function ($data) {
                         // $retorno = '<a href=""><i class="material-icons">telegram</i></a>';
-                        if ($data->botconversaid) {
-                            $retorno = Html::button('<i class="material-icons">telegram</i>', ['onclick' => '
-                                $.ajax({
-                                    type: "GET",
-                                    url: "'.Yii::$app->homeUrl.'/visitchaves/botmensagem?id='.$data->id.'",
-                                    data: {
-                                        idboot: '.$data->botconversaid.'
-                                    }, success: function(result) {
-                                        console.log("mensagem enviada");
-                                    }
-                                });
-                            ']);
-                        } else {
-                            $retorno = Html::button('<i class="material-icons">telegram</i>', ['onclick' => '
-                                $.ajax({
-                                    type: "PUT",
-                                    url: "'.Yii::$app->homeUrl.'/api/visitakeys/update?id='.$data->id.'",
-                                    data: {
-                                        id: '.$data->id.',
-                                        acaobotconversa: "add_subscrito",
-                                        nome: "'.$data->nome_cliente.'",
-                                        tipo: "add_subscrito",
-                                        telefone: "'.$data->num_disparo.'",
-                                        mensagem: "add_subscrito"
-                                    }, success: function(result) {
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "'.Yii::$app->homeUrl.'/visitchaves/retornabot?id='.$data->id.'",
-                                            data: {
-                                                id: '.$data->id.',
-                                                telefone: "'.$data->num_disparo.'"
-                                            }, success: function(result) {
-                                                console.log("sucesso, subscrito: ");
-                                                console.log(result);
-                                                $.ajax({
-                                                    type: "GET",
-                                                    url: "'.Yii::$app->homeUrl.'/visitchaves/botmensagem?id='.$data->id.'",
-                                                    data: {
-                                                        idboot: '.$data->botconversaid.'
-                                                    }, success: function(result) {
-                                                        console.log("mensagem enviada");
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            ']);
+                        $msg_env = '';
+                        $retorno = '';
+                        if ($data->msg_enviada == 1) {
+                            $msg_env = '📢 Msg Enviada!';
                         }
-                        return $retorno;
+                        if ($data->num_disparo) {
+                            if ($data->botconversaid) {
+                                $retorno = Html::button('<i class="material-icons">telegram</i>', ['onclick' => '
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "'.Yii::$app->homeUrl.'/visitchaves/botmensagem?id='.$data->id.'",
+                                        data: {
+                                            idboot: '.$data->botconversaid.'
+                                        }, success: function(result) {
+                                            console.log("mensagem enviada");
+                                            createAutoClosingAlert(\'Mensagem enviada ao Cliente!\', 2000);
+                                        }
+                                    });
+                                ']);
+                            } else {
+                                $retorno = Html::button('<i class="material-icons">telegram</i>', ['onclick' => '
+                                    $.ajax({
+                                        type: "PUT",
+                                        url: "'.Yii::$app->homeUrl.'/api/visitakeys/update?id='.$data->id.'",
+                                        data: {
+                                            id: '.$data->id.',
+                                            acaobotconversa: "add_subscrito",
+                                            nome: "'.$data->nome_cliente.'",
+                                            tipo: "add_subscrito",
+                                            telefone: "'.$data->num_disparo.'",
+                                            mensagem: "add_subscrito"
+                                        }, success: function(result) {
+                                            $.ajax({
+                                                type: "GET",
+                                                url: "'.Yii::$app->homeUrl.'/visitchaves/retornabot?id='.$data->id.'",
+                                                data: {
+                                                    id: '.$data->id.',
+                                                    telefone: "'.$data->num_disparo.'"
+                                                }, success: function(result) {
+                                                    console.log("sucesso, subscrito: ");
+                                                    console.log(result);
+                                                    $.ajax({
+                                                        type: "GET",
+                                                        url: "'.Yii::$app->homeUrl.'/visitchaves/botmensagem?id='.$data->id.'",
+                                                        data: {
+                                                            idboot: '.$data->botconversaid.'
+                                                        }, success: function(result) {
+                                                            console.log("mensagem enviada");
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                ']);
+                            }
+                        }
+                        return $msg_env.$retorno;
                     }
                 ],
                 // 'tipovisitante',
@@ -243,3 +278,15 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </div>
 </div>
+<script>
+    function createAutoClosingAlert (msg,duration) {
+        var el = document.createElement("div");
+        el.setAttribute("style","z-index:1000000;position:fixed;top:40%;left:45%;background-color:rgba(0, 0, 0, 0.7);font-size:14px;color:yellow;font-weight: bold;padding:20px;border-radius:20px;");
+        el.innerHTML = msg;
+        setTimeout(function(){
+        el.parentNode.removeChild(el);
+        },duration);
+        document.body.appendChild(el);
+    }
+    // createAutoClosingAlert ('Boooora eu',2000)
+</script>
