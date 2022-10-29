@@ -74,7 +74,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'style'=>'float: left;margin-right: 5px;'
                 ],
                 'options' => [
-                    'tabindex' => true
+                    'id' => 'kartik-modal',
+                    'tabindex' => false
                 ],
             ]);
             $model = new \app\models\visitChaves;

@@ -1,1 +1,30 @@
-{"96":{"id":96,"nome":"39475422791","etapa_andamento":1,"status":null,"pretendente_id":236},"97":{"id":97,"nome":"841651910","etapa_andamento":1,"status":null,"pretendente_id":237},"98":{"id":98,"nome":"88269001815","etapa_andamento":1,"status":"2","pretendente_id":238},"99":{"id":99,"nome":"17294737768","etapa_andamento":1,"status":null,"pretendente_id":239}}
+{
+    "96": {
+        "id": 96,
+        "nome": "39475422791",
+        "etapa_andamento": 1,
+        "status": null,
+        "pretendente_id": 236
+    },
+    "97": {
+        "id": 97,
+        "nome": "841651910",
+        "etapa_andamento": 1,
+        "status": null,
+        "pretendente_id": 237
+    },
+    "98": {
+        "id": 98,
+        "nome": "88269001815",
+        "etapa_andamento": 1,
+        "status": "2",
+        "pretendente_id": 238
+    },
+    "99": {
+        "id": 99,
+        "nome": "17294737768",
+        "etapa_andamento": 1,
+        "status": null,
+        "pretendente_id": 239
+    }
+}

@@ -1,5 +1,5 @@
 <?php
-use app\models\NewTable as V;
+use app\models\Pessoasjet as V;
 
 function RemoveSpecialChar($str){
       
@@ -13,22 +13,21 @@ function RemoveSpecialChar($str){
 
 function cadastra($arr) {
     $model = new V();
-    $model->pessoa_responsavel = $arr['C'];
-    $model->pessoa_agenciou = $arr['G'];
-    $model->id_proprietarios = RemoveSpecialChar($arr['H']);
-    $model->proprietarios = $arr['I'];
-    $model->codigo = RemoveSpecialChar($arr['L']);
+    $model->person_id = RemoveSpecialChar($arr['A']);
+    $model->nome = $arr['B'];
+    $model->telefones = $arr['R'];
+    $model->emails = $arr['S'];
     if ($model->save()) {
-        echo '<br> Registro feito: '.$arr['I'];
+        echo '<br> Registro feito: '.$arr['B'];
     } else {
-        echo '<br> houve erro aqui: '.$arr['I'];
+        echo '<br> houve erro aqui: '.$arr['B'];
     }
 }
 
 
-if (file_exists(Yii::$app->basePath.'/web/planilias/'. 'backup.xlsx')) {
+if (file_exists(Yii::$app->basePath.'/web/planilias/'. 'pessoas-backup.xlsx')) {
     echo 'existe! <hr>';
-    $objPHPExcel = \PHPExcel_IOFactory::load(Yii::$app->basePath.'/web/planilias/'. 'backup.xlsx');
+    $objPHPExcel = \PHPExcel_IOFactory::load(Yii::$app->basePath.'/web/planilias/'. 'pessoas-backup.xlsx');
     $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
     // echo '<pre>';
     // print_r($sheetData);
@@ -41,19 +40,16 @@ if (file_exists(Yii::$app->basePath.'/web/planilias/'. 'backup.xlsx')) {
             if ($key != '1') {
                 // $imprime_isso .= '<tr>';
                 // $imprime_isso .= '<td>';
-                // $imprime_isso .= RemoveSpecialChar($value['C']);
+                // $imprime_isso .= RemoveSpecialChar($value['A']);
                 // $imprime_isso .= '</td>';
                 // $imprime_isso .= '<td>';
-                // $imprime_isso .= RemoveSpecialChar($value['G']);
+                // $imprime_isso .= RemoveSpecialChar($value['B']);
                 // $imprime_isso .= '</td>';
                 // $imprime_isso .= '<td>';
-                // $imprime_isso .= RemoveSpecialChar($value['H']);
+                // $imprime_isso .= RemoveSpecialChar($value['R']);
                 // $imprime_isso .= '</td>';
                 // $imprime_isso .= '<td>';
-                // $imprime_isso .= RemoveSpecialChar($value['I']);
-                // $imprime_isso .= '</td>';
-                // $imprime_isso .= '<td>';
-                // $imprime_isso .= RemoveSpecialChar($value['L']);
+                // $imprime_isso .= RemoveSpecialChar($value['S']);
                 // $imprime_isso .= '</td>';
                 // $imprime_isso .= '</tr>';
                 // EXECUTA O REGISTRO TODO:

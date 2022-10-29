@@ -48,6 +48,34 @@ class VisitchavesController extends Controller
         ]);
     }
 
+    public function actionProprietarios() {
+        $connection = Yii::$app->getDb();
+        $command = $connection->createCommand("select p.nome, n.codigo, p.telefones, p.emails from new_table as n, pessoasjet as p where n.id_proprietarios = p.person_id group by n.proprietarios;");
+        $result = $command->queryAll();
+        // echo '<pre>';
+        return json_encode($result);
+        // echo '</pre>';
+    }
+
+    public function actionFiltradados() {
+        header('Content-type: application/json');
+        $url2 = Yii::$app->basePath.'/web/jsons/props_copy.json';
+        $nome = $_REQUEST['nome'];
+        $content = file_get_contents($url2);
+        $json = json_decode($content, true);
+        $retorno = [];
+        foreach ($json as $k) {
+            if ($k['nome'] == $nome) {
+                $retorno['nome'] = $k['nome'];
+                $retorno['codigo'] = $k['codigo'];
+                $retorno['telefones'] = json_decode(str_replace('+55', '', $k['telefones']));
+                $retorno['emails'] = $k['emails'];
+                break;
+            }
+        }
+        echo json_encode($retorno);
+    }
+
     public function actionExcell()
     {
         // $searchModel = new VisitchavesSearch();

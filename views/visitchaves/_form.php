@@ -12,6 +12,14 @@ use yii\widgets\MaskedInput;
 /* @var $model app\models\Visitchaves */
 /* @var $form yii\widgets\ActiveForm */
 $datahora_atual = date("Y-m-d H:i:s");
+$url = Yii::$app->homeUrl.'jsons/props.json';
+$url1 = Yii::$app->homeUrl.'jsons/props_copy.json';
+$url2 = Yii::$app->basePath.'/web/jsons/props_copy.json';
+ 
+// The widget
+use kartik\select2\Select2; // or kartik\select2\Select2
+use yii\web\JsExpression;
+use yii\helpers\ArrayHelper;
 ?>
 <style>
     .control-label {
@@ -54,7 +62,7 @@ $datahora_atual = date("Y-m-d H:i:s");
         <?= $form->field($model, 'nome')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-md-6">    
-        <?= $form->field($model, 'nome_cliente')->textInput(['maxlength' => true]) ?>
+        <?php  //= $form->field($model, 'nome_cliente')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-md-6">    
         <?= $form->field($model, 'tipovisitante')->dropDownList([ 'Corretor' => 'Corretor', 'Corretor externo' => 'Corretor externo', 'Cliente' => 'Cliente', ], ['prompt' => '']) ?>
@@ -121,14 +129,71 @@ $datahora_atual = date("Y-m-d H:i:s");
             ]);
         ?>
     </div>
+    <div class="col-md-6">    
+        <?= $form->field($model, 'num_disparo')->widget(MaskedInput::className(), [
+            'mask' => '(99) 99999-9999',
+            'clientOptions' => [
+            ]
+        ]); ?>
+    </div>
+    <div class="col-md-12">
+        <?php
+            $dataList = \app\models\VisitChaves::find()->all();
+            $content = file_get_contents($url2);
+            $json = json_decode($content, true);
+            $instArray = ArrayHelper::map($json,'nome','nome');
+            // echo '<pre>';
+            // echo $url2;
+            // // print_r($instArray);
+            // echo '</pre>';
+            echo $form->field($model, 'nome_cliente')->widget(Select2::classname(), [
+                'data' => $instArray,
+                'options' => [
+                    'placeholder' => 'Search for a city ...'
+                ],
+                'pluginOptions' => [
+                    // 'allowClear' => true,
+                    'dropdownParent' => '#kartik-modal',
+                    'minimumInputLength' => 1,
+                    'language' => [
+                        'errorLoading' => new JsExpression("function () { return 'Erro...'; }"),
+                    ]
+                ],
+                "pluginEvents" => [
+                    "change" => 
+                    // [
+                    //     'ajax' => [
+                    //         'url' => $url,
+                    //         'dataType' => 'json',
+                    //         'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+                    //         'success' => new JsExpression('function(data) { console.log(data); }')
+                    //     ],
+                    // ]
+                    "function() { 
+                        $.ajax({
+                            url: '".Yii::$app->homeUrl."/visitchaves/filtradados',
+                            dataType: 'json',
+                            data: {
+                                nome: $(this).val()
+                            }, 
+                            success: function(result){
+                                console.log(result);
+                                console.log(result.codigo);
+                                $('#visitchaves-codigo_imovel').val(result.codigo);
+                                $('#visitchaves-num_disparo').val(result.telefones[0].telefone);
+                            }
+                        });
+                    }",
+
+                ]
+            ]);
+        ?>
+    </div>    
     <div class="col-md-6 hidden">    
         <?= $form->field($model, 'feedbacks')->textarea(['rows' => 6]) ?>
     </div>
     <div class="col-md-6 hidden">    
         <?= $form->field($model, 'mensagem')->textarea(['rows' => 6]) ?>
-    </div>
-    <div class="col-md-6 hidden">    
-        <?= $form->field($model, 'num_disparo')->textInput(['maxlength' => true]) ?>
     </div>
     <div class="col-md-6 hidden">    
         <?= $form->field($model, 'convertido_venda')->textInput() ?>
