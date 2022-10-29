@@ -214,22 +214,25 @@ $this->params['breadcrumbs'][] = $this->title;
                                             tipo: "add_subscrito",
                                             telefone: "'.$data->num_disparo.'",
                                             mensagem: "add_subscrito"
-                                        }, success: function(result) {
+                                        },
+                                        success: function(result) {
                                             $.ajax({
                                                 type: "GET",
                                                 url: "'.Yii::$app->homeUrl.'/visitchaves/retornabot?id='.$data->id.'",
                                                 data: {
                                                     id: '.$data->id.',
                                                     telefone: "'.$data->num_disparo.'"
-                                                }, success: function(result) {
+                                                }, 
+                                                success: function(result) {
                                                     console.log("sucesso, subscrito: ");
                                                     console.log(result);
                                                     $.ajax({
                                                         type: "GET",
                                                         url: "'.Yii::$app->homeUrl.'/visitchaves/botmensagem?id='.$data->id.'",
                                                         data: {
-                                                            idboot: '.$data->botconversaid.'
-                                                        }, success: function(result) {
+                                                            idboot: result
+                                                        }, 
+                                                        success: function(result) {
                                                             console.log("mensagem enviada");
                                                         }
                                                     });

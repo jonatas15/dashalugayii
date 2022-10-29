@@ -67,9 +67,6 @@ use yii\helpers\ArrayHelper;
     <div class="col-md-6">    
         <?= $form->field($model, 'tipovisitante')->dropDownList([ 'Corretor' => 'Corretor', 'Corretor externo' => 'Corretor externo', 'Cliente' => 'Cliente', ], ['prompt' => '']) ?>
     </div>
-    <div class="col-md-6">    
-        <?= $form->field($model, 'codigo_imovel')->textInput(['maxlength' => true]) ?>
-    </div>
     <div class="col-md-6 hidden">    
         <?= 
             $form->field($model, 'dthr_retirada')->textInput([
@@ -129,13 +126,6 @@ use yii\helpers\ArrayHelper;
             ]);
         ?>
     </div>
-    <div class="col-md-6">    
-        <?= $form->field($model, 'num_disparo')->widget(MaskedInput::className(), [
-            'mask' => '(99) 99999-9999',
-            'clientOptions' => [
-            ]
-        ]); ?>
-    </div>
     <div class="col-md-12">
         <?php
             $dataList = \app\models\VisitChaves::find()->all();
@@ -149,12 +139,12 @@ use yii\helpers\ArrayHelper;
             echo $form->field($model, 'nome_cliente')->widget(Select2::classname(), [
                 'data' => $instArray,
                 'options' => [
-                    'placeholder' => 'Search for a city ...'
+                    'placeholder' => 'Selecione o proprietário ...'
                 ],
                 'pluginOptions' => [
                     // 'allowClear' => true,
                     'dropdownParent' => '#kartik-modal',
-                    'minimumInputLength' => 1,
+                    'minimumInputLength' => 3,
                     'language' => [
                         'errorLoading' => new JsExpression("function () { return 'Erro...'; }"),
                     ]
@@ -188,7 +178,17 @@ use yii\helpers\ArrayHelper;
                 ]
             ]);
         ?>
-    </div>    
+    </div>
+    <div class="col-md-6">    
+        <?= $form->field($model, 'codigo_imovel')->textInput(['maxlength' => true]) ?>
+    </div>
+    <div class="col-md-6">    
+        <?= $form->field($model, 'num_disparo')->widget(MaskedInput::className(), [
+            'mask' => '(99) 99999-9999',
+            'clientOptions' => [
+            ]
+        ])->label("Número (Whatsapp)"); ?>
+    </div>
     <div class="col-md-6 hidden">    
         <?= $form->field($model, 'feedbacks')->textarea(['rows' => 6]) ?>
     </div>
