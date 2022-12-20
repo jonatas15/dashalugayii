@@ -31,6 +31,18 @@ use yii\helpers\Html;
                     'icon' => 'key', 'url' => ['/visitchaves'],
                     'visible' => !Yii::$app->user->isGuest
                 ],
+                ['label' => 'Mensagens', 
+                    'icon' => 'speaker_notes', 'url' => ['/disparoswh'],
+                    'visible' => !Yii::$app->user->isGuest
+                ],
+                ['label' => 'Corretores', 
+                    'icon' => 'attribution', 'url' => ['/corretor'],
+                    'visible' => !Yii::$app->user->isGuest
+                ],
+                ['label' => 'Leads', 
+                    'icon' => 'quickreply', 'url' => ['/lead'],
+                    'visible' => !Yii::$app->user->isGuest
+                ],
                 ['label' => 'Proprietários', 
                     'icon' => 'list', 
                     'url' => ['/proprietario'],

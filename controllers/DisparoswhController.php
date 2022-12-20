@@ -35,7 +35,10 @@ class DisparoswhController extends Controller
                         'addcelular',
                         'addcelulares',
                         'gravahistorico',
-                        'excluinumero'
+                        'excluinumero',
+                        'botmensagem',
+                        'retornabot',
+                        'corretorhistorico'
                     ], 'allow' => true,   'roles' => ['faturas-indexa']],
                     ['actions' => ['delete'], 'allow' => true,   'roles' => ['faturas-delete']],
                 ],
@@ -249,6 +252,21 @@ class DisparoswhController extends Controller
 
         // $historico->save();
     }
+    public function actionCorretorhistorico() {
+        $id = $_REQUEST['id'];
+        $msg = $_REQUEST['mensagem'];
+        $corretor = \app\models\Corretor::findOne($id);
+        
+        $corretor->historico = $corretor->historico.'{"data":"'.date("Y-m-d H:i:s").'","mensagem":"'.$msg.'"},';
+        
+        if ($corretor->save()) {
+            echo 'registro gravado';
+        } else {
+            echo 'registro não gravado';
+        }
+
+        // $historico->save();
+    }
     public function actionExcluinumero() {
         $id = $_REQUEST['id'];
         $nm = $_REQUEST['numero'];
@@ -283,5 +301,103 @@ class DisparoswhController extends Controller
 
         return $this->redirect(['index']);
 
+    }
+    public function actionBotmensagem($id) {
+        $id = $_REQUEST['id'];
+        // $atualiza = $this->findModel($id);
+        // $subscriberid = $atualiza->botconversaid;
+        $subscriberid = $_REQUEST['idboot'];
+        $requestmsg = $_REQUEST['mensagem'];
+        $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
+        $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_URL, $url."$subscriberid/send_message/");
+
+        //Como array
+        $mensagem1 = $requestmsg;
+
+        $arr_enviar = [
+            "type" => "text",
+            "value" => "$mensagem1"
+        ];
+        
+        
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($arr_enviar));
+        
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "API-KEY: $key",
+        ));
+
+        $response = curl_exec($curl);
+        $response = json_decode($response, true);
+
+        if ($error = curl_error($curl)) {
+            throw new \Exception($error);
+            $retorno = 0;
+        } else {
+            $retorno = 1;
+        }
+
+        curl_close($curl);
+        // $atualiza->msg_enviada = 1;
+        // // Cadastra
+        // if($atualiza->save()) {
+        //     return 1;
+        // } else {
+        //     return 0;
+        // }
+        return $retorno;
+    }
+    public function actionRetornabot($id) {
+        $url = 'https://backend.botconversa.com.br/api/v1/webhook/subscriber/';
+        $key = '2575d5e8-9f95-4338-9cb0-cf8f2b23ab44';
+        $telefonexx = $_REQUEST['telefone'];
+        $id = $_REQUEST['id'];
+        $telefone_para_api = $this->telefone_api($telefonexx);
+        
+        $curl = curl_init();
+        // set url: para retornar dados do Botconversa, tenha sempre o "/" no final da URL - DICA DE OURO
+        curl_setopt($curl, CURLOPT_URL, $url.$telefone_para_api.'/');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        //chave
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+            "API-KEY: $key"
+        ));
+        // Captura as informações,em string
+        $output = curl_exec($curl);
+        if(!$output){
+            die("Sem conectar...");
+        }
+        // Fecha a conexão com a API
+        curl_close($curl); 
+        // Torna Objeto para captura dos dados
+        $output = json_decode($output);
+        return $output->id;
+        // $atualiza = $this->findModel($id);
+        // $atualiza->botconversaid = $output->id;
+        // // Cadastra
+        // if($atualiza->save()) {
+        //     return $atualiza->botconversaid;
+        // } else {
+        //     return 0;
+        // }
+    }
+    public function telefone_api($telefone) {
+        $telefone_clean = $this->clean($telefone);
+        $fone_arr = str_split($telefone_clean);
+
+        $telefone_para_api = '+55'.$fone_arr[0].$fone_arr[1]
+        .$fone_arr[3].$fone_arr[4].$fone_arr[5].$fone_arr[6]    //retiramos o arr[2] ou terceiro número, que é o nono dígito
+        .$fone_arr[7].$fone_arr[8].$fone_arr[9].$fone_arr[10];
+        return $telefone_para_api;
     }
 }
